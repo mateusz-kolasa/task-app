@@ -1,0 +1,4 @@
+{
+  "*.{js, jsx,ts,tsx}": ["eslint --ignore-path .gitignore --fix"],
+  "*.{json,js,ts,jsx,tsx,html}": ["prettier --ignore-path .gitignore --write --ignore-unknown"]
+}
