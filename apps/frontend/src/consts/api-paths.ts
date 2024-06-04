@@ -1,6 +1,8 @@
 const API_PATHS = {
-  login: 'auth/login',
-  register: 'auth/register',
-};
+  login: 'login',
+  register: 'register',
+  logout: 'logout',
+  createBoard: 'create',
+}
 
-export default API_PATHS;
+export default API_PATHS
