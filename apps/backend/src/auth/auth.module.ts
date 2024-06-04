@@ -11,7 +11,10 @@ import { ConfigService } from '@nestjs/config'
 @Module({
   imports: [
     UsersModule,
-    PassportModule,
+    PassportModule.register({
+      defaultStrategy: 'jwt',
+      session: false,
+    }),
     JwtModule.registerAsync({
       useFactory: (configService: ConfigService) => {
         return {
