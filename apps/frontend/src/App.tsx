@@ -33,7 +33,7 @@ i18next
 
 function App() {
   return (
-    <MantineProvider theme={theme} forceColorScheme='light'>
+    <MantineProvider theme={theme} defaultColorScheme='light'>
       <Notifications />
       <Provider store={store}>
         <AppShell header={{ height: 60 }} padding='md'>

@@ -1,10 +1,14 @@
-import { Center } from '@mantine/core'
+import { Center, Group } from '@mantine/core'
 import LanguagePicker from '../LanguagePicker/LanguagePicker'
+import LightModeSwitch from '../LightModeSwitch/LightModeSwitch'
 
 function Header() {
   return (
     <Center>
-      <LanguagePicker />
+      <Group>
+        <LanguagePicker />
+        <LightModeSwitch />
+      </Group>
     </Center>
   )
 }
