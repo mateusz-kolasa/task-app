@@ -7,12 +7,15 @@ import { TextInput } from 'react-hook-form-mantine'
 import { useCreateBoardMutation } from '../../../store/slices/board-api-slice'
 import { useState } from 'react'
 import { notifications } from '@mantine/notifications'
+import { useTranslation } from 'react-i18next'
 
 export interface BoardCreate {
   title: string
 }
 
 function CreateBoardCard() {
+  const { t } = useTranslation()
+
   const [isOpened, setIsOpened] = useState(false)
 
   const methods = useForm<BoardCreate>({
@@ -33,8 +36,8 @@ function CreateBoardCard() {
       })
       .catch(() => {
         notifications.show({
-          title: 'Could not create board',
-          message: 'An error has occured during board creation, try later.',
+          title: t('board.create.error.title'),
+          message: t('board.create.error.message'),
           color: 'red',
         })
       })
@@ -54,7 +57,7 @@ function CreateBoardCard() {
     >
       <Popover.Target>
         <UnstyledButton className={classes.card} w={200} h={80} onClick={togglePopover}>
-          Create new board
+          {t('board.create.new')}
         </UnstyledButton>
       </Popover.Target>
       <Popover.Dropdown>
@@ -69,7 +72,7 @@ function CreateBoardCard() {
                 disabled={isLoading}
               />
               <Button onClick={methods.handleSubmit(handleSubmit)} disabled={isLoading}>
-                Create board
+                {t('board.create.button')}
               </Button>
             </Stack>
           </form>

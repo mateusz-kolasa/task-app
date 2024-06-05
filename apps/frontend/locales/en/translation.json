@@ -1,0 +1,38 @@
+{
+  "board": {
+    "create": {
+      "error": {
+        "title": "Could not create board",
+        "message": "An error has occured during board creation, try later."
+      },
+      "new": "Create new board",
+      "button": "Create board"
+    }
+  },
+  "username": {
+    "validation": {
+      "auth": "Used username or password is invalid.",
+      "taken": "Username is already taken."
+    },
+    "label": "Username"
+  },
+  "password": {
+    "label": "Password",
+    "confirm": {
+      "label": "Confirm password"
+    },
+    "validation": {
+      "minLength": "Password must have atleast 8 characters.",
+      "strength": "Password must have small and capital letter, number and a special character.",
+      "different": "Passwords must be same."
+    }
+  },
+  "signup": {
+    "redirect": "Don't have an account? Sign up",
+    "button": "Sign up"
+  },
+  "signin": {
+    "button": "Sign in",
+    "redirect": "Already have an account? Sign in"
+  }
+}

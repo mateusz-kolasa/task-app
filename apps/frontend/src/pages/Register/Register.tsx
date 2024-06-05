@@ -2,11 +2,11 @@ import { Anchor, Button, Card, Center, Group, Stack } from '@mantine/core'
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form'
 import { PasswordInput, TextInput } from 'react-hook-form-mantine'
 import { useNavigate } from 'react-router-dom'
-import schema from './schema'
 import { zodResolver } from '@hookform/resolvers/zod'
 import SERVER_ERRORS from '../../consts/server-errors'
-import ERROR_MESSAGES from '../../consts/error-messages'
 import { useRegisterMutation } from '../../store/slices/auth-api-slice'
+import { useTranslation } from 'react-i18next'
+import useSchema from './useSchema'
 
 export interface UserRegister {
   username: string
@@ -15,6 +15,10 @@ export interface UserRegister {
 }
 
 function Register() {
+  const { t } = useTranslation()
+  const navigate = useNavigate()
+
+  const schema = useSchema()
   const methods = useForm<UserRegister>({
     resolver: zodResolver(schema),
     defaultValues: {
@@ -23,7 +27,6 @@ function Register() {
       passwordConfirm: '',
     },
   })
-  const navigate = useNavigate()
 
   const [register, { isLoading }] = useRegisterMutation()
 
@@ -32,7 +35,7 @@ function Register() {
       .unwrap()
       .catch(error => {
         if (error.data.message === SERVER_ERRORS.usernameTaken) {
-          methods.setError('username', { message: ERROR_MESSAGES.usernameTaken })
+          methods.setError('username', { message: t('username.validation.taken') })
         }
       })
   }
@@ -45,9 +48,13 @@ function Register() {
         <form>
           <Card withBorder>
             <Stack>
-              <TextInput name='username' label='Username' disabled={isLoading} />
-              <PasswordInput name='password' label='Password' disabled={isLoading} />
-              <PasswordInput name='passwordConfirm' label='Confirm Password' disabled={isLoading} />
+              <TextInput name='username' label={t('username.label')} disabled={isLoading} />
+              <PasswordInput name='password' label={t('password.label')} disabled={isLoading} />
+              <PasswordInput
+                name='passwordConfirm'
+                label={t('password.confirm.label')}
+                disabled={isLoading}
+              />
               <Group justify='space-between'>
                 <Anchor
                   component='button'
@@ -56,10 +63,10 @@ function Register() {
                   size='xs'
                   onClick={handleSignInClick}
                 >
-                  Already have an account? Sign in
+                  {t('signin.redirect')}
                 </Anchor>
                 <Button onClick={methods.handleSubmit(handleSubmit)} disabled={isLoading}>
-                  Sign up
+                  {t('signup.button')}
                 </Button>
               </Group>
             </Stack>

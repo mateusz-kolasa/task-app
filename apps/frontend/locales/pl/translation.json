@@ -1,0 +1,38 @@
+{
+  "board": {
+    "create": {
+      "error": {
+        "title": "Nie udało się stworzyć tablicy",
+        "message": "Wystąpił błąd przy tworzeniu tablicy, spóbuj ponownie później"
+      },
+      "new": "Dodaj nową tablicę",
+      "button": "Dodaj tablicę"
+    }
+  },
+  "username": {
+    "validation": {
+      "auth": "Nazwa użytkownika lub hasło jest nieprawidłowe",
+      "taken": "Nazwa użytkownika jest już zajęta"
+    },
+    "label": "Nazwa użytkownika"
+  },
+  "password": {
+    "label": "Hasło",
+    "confirm": {
+      "label": "Potwierdź hasło"
+    },
+    "validation": {
+      "minLength": "Hasło musi mieć conajmniej 8 znaków.",
+      "strength": "Hasło musi zawierać małą i wielką litera, cyfrę oraz znak specjalny.",
+      "different": "Hasło muszą być identyczne."
+    }
+  },
+  "signup": {
+    "redirect": "Nie masz konta? Zarejestruj się",
+    "button": "Zarejestruj"
+  },
+  "signin": {
+    "button": "Masz już konto? Zaloguj się",
+    "redirect": "Zaloguj"
+  }
+}

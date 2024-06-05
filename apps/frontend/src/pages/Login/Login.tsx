@@ -4,8 +4,8 @@ import { PasswordInput, TextInput } from 'react-hook-form-mantine'
 import { useNavigate } from 'react-router-dom'
 import { zodResolver } from '@hookform/resolvers/zod'
 import schema from './schema'
-import ERROR_MESSAGES from '../../consts/error-messages'
 import { useLoginMutation } from '../../store/slices/auth-api-slice'
+import { useTranslation } from 'react-i18next'
 
 export interface UserLogin {
   username: string
@@ -13,6 +13,7 @@ export interface UserLogin {
 }
 
 function Login() {
+  const { t } = useTranslation()
   const navigate = useNavigate()
 
   const methods = useForm<UserLogin>({
@@ -30,7 +31,7 @@ function Login() {
       .unwrap()
       .catch(error => {
         if (error.status === 401) {
-          methods.setError('password', { message: ERROR_MESSAGES.invalidAuth })
+          methods.setError('password', { message: t('username.validation.auth') })
         }
       })
   }
@@ -43,8 +44,8 @@ function Login() {
         <form>
           <Card withBorder>
             <Stack>
-              <TextInput name='username' label='Username' disabled={isLoading} />
-              <PasswordInput name='password' label='Password' disabled={isLoading} />
+              <TextInput name='username' label={t('username.label')} disabled={isLoading} />
+              <PasswordInput name='password' label={t('password.label')} disabled={isLoading} />
               <Group justify='space-between'>
                 <Anchor
                   component='button'
@@ -53,10 +54,10 @@ function Login() {
                   size='xs'
                   onClick={handleSignUpClick}
                 >
-                  "Don't have an account? Sign up
+                  {t('signup.redirect')}
                 </Anchor>
                 <Button onClick={methods.handleSubmit(handleSubmit)} disabled={isLoading}>
-                  Sign in
+                  {t('signin.button')}
                 </Button>
               </Group>
             </Stack>
