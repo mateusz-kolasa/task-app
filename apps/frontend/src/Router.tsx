@@ -3,9 +3,10 @@ import Register from './pages/Register/Register'
 import Login from './pages/Login/Login'
 import Dashboard from './pages/Dashboard/Dashboard'
 import { useGetUserStatusQuery } from './store/slices/auth-api-slice'
-import { Loader } from '@mantine/core'
+import { Center, Loader } from '@mantine/core'
 import ProtectedRoutes from './pages/ProtectedRoutes/ProtectedRoutes'
 import AuthenticationRoutes from './pages/AuthenticationRoutes/AuthenticationRoutes'
+import Board from './pages/Board/Board'
 
 const router = createBrowserRouter([
   {
@@ -14,6 +15,10 @@ const router = createBrowserRouter([
       {
         path: '/dashboard',
         element: <Dashboard />,
+      },
+      {
+        path: '/board/:boardId',
+        element: <Board />,
       },
     ],
   },
@@ -42,7 +47,11 @@ export function Router() {
   const { isLoading } = useGetUserStatusQuery()
 
   if (isLoading) {
-    return <Loader />
+    return (
+      <Center>
+        <Loader />
+      </Center>
+    )
   }
 
   return <RouterProvider router={router} />

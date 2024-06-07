@@ -6,7 +6,7 @@ import { UserLogin } from '../../pages/Login/Login'
 export const authApiSlice = createApi({
   reducerPath: 'authApi',
   baseQuery: fetchBaseQuery({
-    baseUrl: 'api/auth/',
+    baseUrl: '/api/auth/',
   }),
   endpoints: builder => ({
     getUserStatus: builder.query<UserInfoData, void>({

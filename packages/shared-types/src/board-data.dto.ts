@@ -1,5 +1,1 @@
-export interface BoardData {
-  id: number
-  title: string
-  description?: string
-}
+export type { Board as BoardData } from './prisma-import'

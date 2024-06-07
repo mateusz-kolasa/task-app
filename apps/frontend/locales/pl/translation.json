@@ -1,4 +1,14 @@
 {
+  "list": {
+    "create": {
+      "new": "Dodaj nową listę",
+      "error": {
+        "title": "Nie udało się stworzyć listy",
+        "message": "Wystąpił błąd przy tworzeniu list, spóbuj ponownie później"
+      },
+      "button": "Dodaj listę"
+    }
+  },
   "board": {
     "create": {
       "error": {
@@ -32,7 +42,7 @@
     "button": "Zarejestruj"
   },
   "signin": {
-    "button": "Masz już konto? Zaloguj się",
-    "redirect": "Zaloguj"
+    "button": "Zaloguj",
+    "redirect": "Masz już konto? Zaloguj się"
   }
 }

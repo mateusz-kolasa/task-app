@@ -8,17 +8,14 @@ import { useCreateBoardMutation } from '../../../store/slices/board-api-slice'
 import { useState } from 'react'
 import { notifications } from '@mantine/notifications'
 import { useTranslation } from 'react-i18next'
-
-export interface BoardCreate {
-  title: string
-}
+import { BoardCreateData } from 'shared-types'
 
 function CreateBoardCard() {
   const { t } = useTranslation()
 
   const [isOpened, setIsOpened] = useState(false)
 
-  const methods = useForm<BoardCreate>({
+  const methods = useForm<BoardCreateData>({
     resolver: zodResolver(schema),
     defaultValues: {
       title: '',
@@ -27,7 +24,7 @@ function CreateBoardCard() {
 
   const [createBoard, { isLoading }] = useCreateBoardMutation()
 
-  const handleSubmit: SubmitHandler<BoardCreate> = boardData => {
+  const handleSubmit: SubmitHandler<BoardCreateData> = boardData => {
     createBoard(boardData)
       .unwrap()
       .then(() => {

@@ -1,15 +1,22 @@
 import { Text, UnstyledButton } from '@mantine/core'
-import PropTypes, { InferProps } from 'prop-types'
 import classes from './Card.module.css'
+import { useNavigate } from 'react-router-dom'
+import { BoardData } from 'shared-types'
 
-function BoardCard({ title }: InferProps<typeof BoardCard.propTypes>) {
+interface BoardProps {
+  board: BoardData
+}
+
+function BoardCard({ board }: Readonly<BoardProps>) {
+  const navigate = useNavigate()
+
+  const handleClick = () => navigate(`/board/${board.id}`)
+
   return (
-    <UnstyledButton className={classes.card}>
-      <Text>{title}</Text>
+    <UnstyledButton className={classes.card} onClick={handleClick}>
+      <Text>{board.title}</Text>
     </UnstyledButton>
   )
 }
-
-BoardCard.propTypes = { title: PropTypes.string.isRequired }
 
 export default BoardCard

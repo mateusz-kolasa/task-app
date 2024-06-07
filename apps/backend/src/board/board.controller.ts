@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common'
+import { Body, Controller, Get, Param, Post, Req, UseGuards } from '@nestjs/common'
 import { BoardService } from './board.service'
 import { ApiBody } from '@nestjs/swagger'
 import BoardCreateData from 'src/dtos/board-create-data.dto'
@@ -13,6 +13,11 @@ export class BoardController {
   @Get()
   async getForUser(@Req() request: AuthRequest) {
     return this.boardService.getForUser(request)
+  }
+
+  @Get(':id')
+  async getFull(@Param('id') id: string) {
+    return this.boardService.getFull(id)
   }
 
   @Post('create')

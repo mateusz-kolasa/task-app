@@ -2,9 +2,11 @@ import { Injectable } from '@nestjs/common'
 import { Board } from '@prisma/client'
 import { BOARD_PERMISSIONS } from 'src/consts/user.consts'
 import BoardCreateData from 'src/dtos/board-create-data.dto'
-import { PrismaService } from 'src/prisma.service'
+import { BoardWithListsData } from 'src/dtos/board-lists-data.dto'
+import { PrismaService } from 'src/prisma/prisma.service'
 import { AuthRequest } from 'src/types/user-jwt-payload'
 import { UsersService } from 'src/users/users.service'
+import { BoardFullData } from 'shared-types'
 
 @Injectable()
 export class BoardService {
@@ -18,6 +20,41 @@ export class BoardService {
         users: {
           some: {
             userId: request.user.id,
+          },
+        },
+      },
+    })
+  }
+
+  get(boardId: number): Promise<Board> {
+    return this.prisma.board.findFirst({
+      where: {
+        id: boardId,
+      },
+    })
+  }
+
+  getWithLists(boardId: number): Promise<BoardWithListsData> {
+    return this.prisma.board.findFirst({
+      where: {
+        id: boardId,
+      },
+      include: {
+        lists: true,
+      },
+    })
+  }
+
+  getFull(boardId: string): Promise<BoardFullData> {
+    return this.prisma.board.findFirst({
+      where: {
+        id: parseInt(boardId),
+      },
+      include: {
+        users: true,
+        lists: {
+          include: {
+            cards: true,
           },
         },
       },

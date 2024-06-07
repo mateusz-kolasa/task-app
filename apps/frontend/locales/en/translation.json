@@ -1,4 +1,14 @@
 {
+  "list": {
+    "create": {
+      "new": "Create new list",
+      "error": {
+        "title": "Could not create list",
+        "message": "An error occured during list creation, try later."
+      },
+      "button": "Create list"
+    }
+  },
   "board": {
     "create": {
       "error": {
