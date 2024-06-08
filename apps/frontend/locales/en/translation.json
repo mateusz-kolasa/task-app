@@ -9,6 +9,16 @@
       "button": "Create list"
     }
   },
+  "card": {
+    "create": {
+      "new": "Create new card",
+      "error": {
+        "title": "Could not create card",
+        "message": "An error occured during card creation, try later."
+      },
+      "button": "Create card"
+    }
+  },
   "board": {
     "create": {
       "error": {

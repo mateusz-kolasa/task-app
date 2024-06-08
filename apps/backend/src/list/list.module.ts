@@ -8,5 +8,6 @@ import { BoardModule } from 'src/board/board.module'
   imports: [PrismaModule, BoardModule],
   controllers: [ListController],
   providers: [ListService],
+  exports: [ListService],
 })
 export class ListModule {}

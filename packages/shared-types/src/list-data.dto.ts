@@ -1,1 +1,1 @@
-export { List as ListData } from './prisma-import'
+export type { List as ListData } from './prisma-import'

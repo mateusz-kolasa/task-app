@@ -11,11 +11,10 @@ function Board() {
 
   return (
     <ScrollArea h={APP_SHELL_MAIN_HEIGHT}>
-      <Group wrap='nowrap'>
+      <Group wrap='nowrap' align='flex-start'>
         {board?.lists.map(list => <ListCard list={list} key={list.id} />)}
         <ListButton />
       </Group>
-      <div style={{ marginTop: 'auto' }} />
     </ScrollArea>
   )
 }

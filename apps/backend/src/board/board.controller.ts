@@ -1,10 +1,11 @@
 import { Body, Controller, Get, Param, Post, Req, UseGuards } from '@nestjs/common'
 import { BoardService } from './board.service'
-import { ApiBody } from '@nestjs/swagger'
+import { ApiTags } from '@nestjs/swagger'
 import BoardCreateData from 'src/dtos/board-create-data.dto'
 import { AuthRequest } from 'src/types/user-jwt-payload'
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard'
 
+@ApiTags('board')
 @Controller('board')
 @UseGuards(JwtAuthGuard)
 export class BoardController {
@@ -21,7 +22,6 @@ export class BoardController {
   }
 
   @Post('create')
-  @ApiBody({ type: BoardCreateData })
   async create(@Req() request: AuthRequest, @Body() boardData: BoardCreateData) {
     return this.boardService.create(request, boardData)
   }

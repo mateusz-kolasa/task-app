@@ -27,7 +27,7 @@ export class BoardService {
   }
 
   get(boardId: number): Promise<Board> {
-    return this.prisma.board.findFirst({
+    return this.prisma.board.findUnique({
       where: {
         id: boardId,
       },
@@ -35,7 +35,7 @@ export class BoardService {
   }
 
   getWithLists(boardId: number): Promise<BoardWithListsData> {
-    return this.prisma.board.findFirst({
+    return this.prisma.board.findUnique({
       where: {
         id: boardId,
       },
@@ -46,7 +46,7 @@ export class BoardService {
   }
 
   getFull(boardId: string): Promise<BoardFullData> {
-    return this.prisma.board.findFirst({
+    return this.prisma.board.findUnique({
       where: {
         id: parseInt(boardId),
       },

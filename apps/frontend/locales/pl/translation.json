@@ -4,16 +4,26 @@
       "new": "Dodaj nową listę",
       "error": {
         "title": "Nie udało się stworzyć listy",
-        "message": "Wystąpił błąd przy tworzeniu list, spóbuj ponownie później"
+        "message": "Wystąpił błąd przy tworzeniu listy, spóbuj ponownie później."
       },
       "button": "Dodaj listę"
+    }
+  },
+  "card": {
+    "create": {
+      "new": "Dodaj nową kartę",
+      "error": {
+        "title": "Nie udało się stworzyć karty",
+        "message": "Wystąpił błąd przy tworzeniu karty, spóbuj ponownie później."
+      },
+      "button": "Dodaj kartę"
     }
   },
   "board": {
     "create": {
       "error": {
         "title": "Nie udało się stworzyć tablicy",
-        "message": "Wystąpił błąd przy tworzeniu tablicy, spóbuj ponownie później"
+        "message": "Wystąpił błąd przy tworzeniu tablicy, spóbuj ponownie później."
       },
       "new": "Dodaj nową tablicę",
       "button": "Dodaj tablicę"
