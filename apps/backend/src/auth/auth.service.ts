@@ -17,7 +17,7 @@ export class AuthService {
   ) {}
 
   async validateUser(userData: UserLoginData): Promise<User> | null {
-    const user = await this.userService.find({ username: userData.username })
+    const user = await this.userService.findByUsername(userData.username)
     if (user) {
       const isCorrect = await bcrypt.compare(userData.password, user.passwordHash)
 
@@ -30,7 +30,7 @@ export class AuthService {
   }
 
   async register(userData: UserRegisterData, response: Response): Promise<Record<string, never>> {
-    const existingUser = await this.userService.find({ username: userData.username })
+    const existingUser = await this.userService.findByUsername(userData.username)
 
     if (existingUser) {
       throw new BadRequestException('username already exists')
@@ -41,7 +41,7 @@ export class AuthService {
       parseInt(process.env.PASSWORD_HASH_ROUNDS)
     )
     const newUser: Prisma.UserCreateInput = { username: userData.username, passwordHash }
-    const addedUser: User = await this.userService.create(newUser)
+    const addedUser = await this.userService.create(newUser)
 
     return this.login(addedUser, response)
   }
@@ -61,7 +61,7 @@ export class AuthService {
   }
 
   async getAuthStatus(request: AuthRequest): Promise<UserInfoData> {
-    const user = await this.userService.find({ id: request.user.id })
+    const user = await this.userService.findById(request.user.id)
     return { username: user.username }
   }
 }

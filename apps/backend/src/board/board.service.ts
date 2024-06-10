@@ -5,15 +5,12 @@ import BoardCreateData from 'src/dtos/board-create-data.dto'
 import { BoardWithListsData } from 'src/dtos/board-lists-data.dto'
 import { PrismaService } from 'src/prisma/prisma.service'
 import { AuthRequest } from 'src/types/user-jwt-payload'
-import { UsersService } from 'src/users/users.service'
 import { BoardFullData } from 'shared-types'
 
 @Injectable()
 export class BoardService {
-  constructor(
-    private prisma: PrismaService,
-    private userService: UsersService
-  ) {}
+  constructor(private prisma: PrismaService) {}
+
   async getForUser(request: AuthRequest): Promise<Board[]> {
     return this.prisma.board.findMany({
       where: {
@@ -26,15 +23,7 @@ export class BoardService {
     })
   }
 
-  get(boardId: number): Promise<Board> {
-    return this.prisma.board.findUnique({
-      where: {
-        id: boardId,
-      },
-    })
-  }
-
-  getWithLists(boardId: number): Promise<BoardWithListsData> {
+  async getWithLists(boardId: number): Promise<BoardWithListsData> {
     return this.prisma.board.findUnique({
       where: {
         id: boardId,
@@ -45,7 +34,7 @@ export class BoardService {
     })
   }
 
-  getFull(boardId: string): Promise<BoardFullData> {
+  async getFull(boardId: string): Promise<BoardFullData> {
     return this.prisma.board.findUnique({
       where: {
         id: parseInt(boardId),

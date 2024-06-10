@@ -13,13 +13,11 @@ export class CardService {
 
   async create(cardData: CardCreateData): Promise<ListFullData> {
     const list = await this.listService.getFull(cardData.listId)
-
     if (!list) {
       throw new BadRequestException('List not found')
     }
 
     const lastListPosition = Math.max(...list.cards.map(card => card.position), 0)
-
     await this.prisma.card.create({
       data: {
         title: cardData.title,
