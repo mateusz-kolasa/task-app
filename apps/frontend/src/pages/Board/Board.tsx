@@ -11,7 +11,7 @@ function Board() {
 
   return (
     <ScrollArea h={APP_SHELL_MAIN_HEIGHT}>
-      <Group wrap='nowrap' align='flex-start'>
+      <Group wrap='nowrap' align='flex-start' data-testid='board-group'>
         {board?.lists.map(list => <ListCard list={list} key={list.id} />)}
         <ListButton />
       </Group>

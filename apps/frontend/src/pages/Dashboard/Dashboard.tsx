@@ -8,7 +8,7 @@ function Dashboard() {
 
   return (
     <Center>
-      <SimpleGrid cols={{ base: 1, sm: 2, lg: 4 }}>
+      <SimpleGrid cols={{ base: 1, sm: 2, lg: 4 }} data-testid='dashboard-grid'>
         {boards.map(board => (
           <BoardCard board={board} key={board.title} />
         ))}

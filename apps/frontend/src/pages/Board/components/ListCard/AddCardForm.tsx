@@ -55,7 +55,7 @@ function AddCardForm({ listId, handleCloseForm }: Readonly<AddCardFormProps>) {
   return (
     <Stack gap='sm'>
       <FormProvider {...methods}>
-        <TextInput name='title' disabled={isLoading} />
+        <TextInput name='title' placeholder={t('card.create.placeholder')} disabled={isLoading} />
         <Group wrap='nowrap'>
           <Button onClick={methods.handleSubmit(handleSubmit)}>{t('card.create.button')}</Button>
           <Button variant='subtle' p='xs' onClick={handleCloseClick} disabled={isLoading}>

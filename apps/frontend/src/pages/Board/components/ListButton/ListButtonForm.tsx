@@ -58,7 +58,7 @@ function ListButtonForm({ handleCloseForm }: Readonly<ListButtonFormProps>) {
     <ListCardBase handleOutsideClick={handleCloseClick}>
       <Stack gap='sm'>
         <FormProvider {...methods}>
-          <TextInput name='title' disabled={isLoading} />
+          <TextInput name='title' placeholder={t('list.create.placeholder')} disabled={isLoading} />
           <Group>
             <Button onClick={methods.handleSubmit(handleSubmit)}>{t('list.create.button')}</Button>
             <Button variant='subtle' p='xs' onClick={handleCloseClick} disabled={isLoading}>

@@ -11,8 +11,8 @@ interface ListCardProps {
 function ListCard({ list }: Readonly<ListCardProps>) {
   return (
     <ListCardBase>
-      <Stack>
-        <Text>{list.title}</Text>
+      <Text>{list.title}</Text>
+      <Stack data-testid='list-stack' mt='md'>
         {list.cards.map(card => (
           <TaskCard card={card} key={card.id} />
         ))}

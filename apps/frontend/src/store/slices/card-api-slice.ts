@@ -5,7 +5,7 @@ import { boardApiSlice } from './board-api-slice'
 export const cardApiSlice = createApi({
   reducerPath: 'cardApi',
   baseQuery: fetchBaseQuery({
-    baseUrl: '/api/card/',
+    baseUrl: new URL('/api/card/', location.origin).href,
   }),
   endpoints: builder => ({
     createCard: builder.mutation<ListFullData, CardCreateData>({
@@ -27,7 +27,7 @@ export const cardApiSlice = createApi({
               }
             )
           )
-        } catch {
+        } catch (error) {
           /* empty */
         }
       },

@@ -5,7 +5,7 @@ import { boardApiSlice } from './board-api-slice'
 export const listApiSlice = createApi({
   reducerPath: 'listApi',
   baseQuery: fetchBaseQuery({
-    baseUrl: '/api/list/',
+    baseUrl: new URL('/api/list/', location.origin).href,
   }),
   endpoints: builder => ({
     createList: builder.mutation<BoardFullData, ListCreateData>({

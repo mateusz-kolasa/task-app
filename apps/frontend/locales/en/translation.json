@@ -6,6 +6,7 @@
         "title": "Could not create list",
         "message": "An error occured during list creation, try later."
       },
+      "placeholder": "Enter the list name",
       "button": "Create list"
     }
   },
@@ -16,6 +17,7 @@
         "title": "Could not create card",
         "message": "An error occured during card creation, try later."
       },
+      "placeholder": "Enter the card name",
       "button": "Create card"
     }
   },
@@ -26,6 +28,7 @@
         "message": "An error has occured during board creation, try later."
       },
       "new": "Create new board",
+      "label": "Board title",
       "button": "Create board"
     }
   },

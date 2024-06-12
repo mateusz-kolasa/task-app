@@ -1,12 +1,11 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
-import { BoardData, BoardFullData } from 'shared-types'
+import { BoardCreateData, BoardData, BoardFullData } from 'shared-types'
 import API_PATHS from '../../consts/api-paths'
-import { BoardCreate } from '../../pages/Dashboard/components/CreateBoardCard'
 
 export const boardApiSlice = createApi({
   reducerPath: 'boardApi',
   baseQuery: fetchBaseQuery({
-    baseUrl: '/api/board/',
+    baseUrl: new URL('/api/board/', location.origin).href,
   }),
   tagTypes: ['Boards'],
   endpoints: builder => ({
@@ -19,7 +18,7 @@ export const boardApiSlice = createApi({
         url: id,
       }),
     }),
-    createBoard: builder.mutation<BoardData, BoardCreate>({
+    createBoard: builder.mutation<BoardData, BoardCreateData>({
       query: createdBoard => ({
         url: API_PATHS.createBoard,
         method: 'POST',

@@ -63,8 +63,8 @@ function CreateBoardCard() {
             <Stack>
               <TextInput
                 name='title'
-                label='Board title'
-                placeholder='Board title'
+                label={t('board.create.label')}
+                placeholder={t('board.create.label')}
                 size='xs'
                 disabled={isLoading}
               />
