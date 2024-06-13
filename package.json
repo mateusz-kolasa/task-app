@@ -8,7 +8,8 @@
     "lint": "turbo run lint",
     "test": "turbo run test",
     "typecheck": "turbo run typecheck",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "database": "turbo run database"
   },
   "devDependencies": {
     "commitlint": "^19.3.0",

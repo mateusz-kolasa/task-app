@@ -3,6 +3,7 @@
   "globalDependencies": ["**/.env.*local"],
   "globalEnv": ["PORT"],
   "pipeline": {
+    "database": {},
     "build": {
       "dependsOn": ["^build"]
     },

@@ -12,6 +12,24 @@ jobs:
     timeout-minutes: 15
     runs-on: ubuntu-latest
 
+    services:
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+    env:
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/task-app
+      JWT_SECRET: 'ae79cc424e451a0af55ccf97ead94810906eb829290fd3000cf9dfd5db04b3e3'
+      PASSWORD_HASH_ROUNDS: 5
     steps:
       - name: Check out code
         uses: actions/checkout@v4
@@ -26,6 +44,9 @@ jobs:
 
       - name: Install dependencies
         run: yarn
+
+      - name: Setup database
+        run: yarn prisma migrate deploy
 
       - name: Build
         run: yarn build
