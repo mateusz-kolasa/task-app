@@ -103,7 +103,7 @@ describe('BoardService', () => {
   describe('getFull', () => {
     it('Selects board by id', async () => {
       prisma.board.findUnique = jest.fn()
-      await service.getFull('1')
+      await service.getFull(1)
       expect(prisma.board.findUnique).toHaveBeenCalledWith({
         where: {
           id: 1,
@@ -136,7 +136,7 @@ describe('BoardService', () => {
       } as BoardFullData
 
       prisma.board.findUnique = jest.fn().mockReturnValueOnce(board)
-      const response = await service.getFull('1')
+      const response = await service.getFull(1)
       expect(response).toBe(board)
     })
   })
