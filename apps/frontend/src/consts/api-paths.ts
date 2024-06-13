@@ -1,8 +1,12 @@
 const API_PATHS = {
-  login: 'login',
-  register: 'register',
-  logout: 'logout',
-  createBoard: 'create',
+  getAuth: 'auth',
+  login: 'auth/login',
+  register: 'auth/register',
+  logout: 'auth/logout',
+  board: 'board',
+  createBoard: 'board/create',
+  list: 'list',
+  card: 'card',
 }
 
 export default API_PATHS

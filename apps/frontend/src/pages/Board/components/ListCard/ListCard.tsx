@@ -1,22 +1,33 @@
 import { Stack, Text } from '@mantine/core'
 import ListCardBase from 'components/ListCardBase/ListCardBase'
-import { ListFullData } from 'shared-types'
 import TaskCard from '../TaskCard/TaskCard'
 import AddCardButton from './AddCardButton'
+import { useParams } from 'react-router-dom'
+import { useBoardDataQuery } from 'store/slices/api/board-api-slice'
+import { sortAndMapToIds } from 'utils/queryHelper'
 
 interface ListCardProps {
-  list: ListFullData
+  listId: number
 }
 
-function ListCard({ list }: Readonly<ListCardProps>) {
+function ListCard({ listId }: Readonly<ListCardProps>) {
+  const { boardId } = useParams()
+  const { title, cardIds } = useBoardDataQuery(boardId ?? '', {
+    selectFromResult: ({ data }) => {
+      const list = data?.lists.find(list => list.id === listId)
+      const cardIds = sortAndMapToIds(list?.cards || [])
+      return { title: list?.title, cardIds }
+    },
+  })
+
   return (
     <ListCardBase>
-      <Text>{list.title}</Text>
+      <Text>{title}</Text>
       <Stack data-testid='list-stack' mt='md'>
-        {list.cards.map(card => (
-          <TaskCard card={card} key={card.id} />
+        {cardIds.map(cardId => (
+          <TaskCard listId={listId} cardId={cardId} key={cardId} />
         ))}
-        <AddCardButton listId={list.id} />
+        <AddCardButton listId={listId} />
       </Stack>
     </ListCardBase>
   )

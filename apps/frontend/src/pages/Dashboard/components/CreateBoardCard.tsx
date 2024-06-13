@@ -4,11 +4,11 @@ import { FormProvider, SubmitHandler, useForm } from 'react-hook-form'
 import schema from './schema'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { TextInput } from 'react-hook-form-mantine'
-import { useCreateBoardMutation } from '../../../store/slices/board-api-slice'
 import { useState } from 'react'
 import { notifications } from '@mantine/notifications'
 import { useTranslation } from 'react-i18next'
 import { BoardCreateData } from 'shared-types'
+import { useCreateBoardMutation } from 'store/slices/api/board-api-slice'
 
 function CreateBoardCard() {
   const { t } = useTranslation()

@@ -6,13 +6,6 @@ export const SAMPLE_LISTS: ListFullData[] = [
     title: 'list 1',
     boardId: 1,
     position: 1,
-    cards: [],
-  },
-  {
-    id: 2,
-    title: 'list 2',
-    boardId: 1,
-    position: 2,
     cards: [
       {
         id: 1,
@@ -22,6 +15,13 @@ export const SAMPLE_LISTS: ListFullData[] = [
         position: 1,
       },
     ],
+  },
+  {
+    id: 2,
+    title: 'list 2',
+    boardId: 1,
+    position: 2,
+    cards: [],
   },
   {
     id: 3,

@@ -1,16 +1,13 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import { CardCreateData, ListFullData } from 'shared-types'
 import { boardApiSlice } from './board-api-slice'
+import { apiSlice } from './api-slice'
+import API_PATHS from 'consts/api-paths'
 
-export const cardApiSlice = createApi({
-  reducerPath: 'cardApi',
-  baseQuery: fetchBaseQuery({
-    baseUrl: new URL('/api/card/', location.origin).href,
-  }),
+export const cardApiSlice = apiSlice.injectEndpoints({
   endpoints: builder => ({
     createCard: builder.mutation<ListFullData, CardCreateData>({
       query: createdCard => ({
-        url: '',
+        url: API_PATHS.card,
         method: 'POST',
         body: createdCard,
       }),

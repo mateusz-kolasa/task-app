@@ -30,7 +30,7 @@ const handlers = [
       return new HttpResponse(null, { status: 200 })
     }
   }),
-  http.get('http://localhost:3000/api/board/', async () => {
+  http.get('http://localhost:3000/api/board', async () => {
     return new HttpResponse(JSON.stringify(SAMPLE_BOARDS[0]), { status: 200 })
   }),
   http.post('http://localhost:3000/api/board/create', async () => {
@@ -40,10 +40,10 @@ const handlers = [
     const { id } = params
     return new HttpResponse(JSON.stringify(SAMPLE_BOARDS_FULL[id as string]), { status: 200 })
   }),
-  http.post('http://localhost:3000/api/list/', async () => {
+  http.post('http://localhost:3000/api/list', async () => {
     return new HttpResponse(JSON.stringify(SAMPLE_BOARDS_FULL['3']), { status: 200 })
   }),
-  http.post('http://localhost:3000/api/card/', async () => {
+  http.post('http://localhost:3000/api/card', async () => {
     return new HttpResponse(JSON.stringify(SAMPLE_LISTS[0]), { status: 200 })
   }),
 ]

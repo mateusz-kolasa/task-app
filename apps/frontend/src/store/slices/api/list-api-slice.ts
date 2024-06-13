@@ -1,16 +1,13 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import { BoardFullData, ListCreateData } from 'shared-types'
 import { boardApiSlice } from './board-api-slice'
+import { apiSlice } from './api-slice'
+import API_PATHS from 'consts/api-paths'
 
-export const listApiSlice = createApi({
-  reducerPath: 'listApi',
-  baseQuery: fetchBaseQuery({
-    baseUrl: new URL('/api/list/', location.origin).href,
-  }),
+export const listApiSlice = apiSlice.injectEndpoints({
   endpoints: builder => ({
     createList: builder.mutation<BoardFullData, ListCreateData>({
       query: createdList => ({
-        url: '',
+        url: API_PATHS.list,
         method: 'POST',
         body: createdList,
       }),

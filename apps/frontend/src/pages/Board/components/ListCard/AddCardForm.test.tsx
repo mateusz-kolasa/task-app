@@ -33,7 +33,7 @@ describe('AddCardForm', () => {
 
   it('Shows error notification on error', async () => {
     server.use(
-      http.post('http://localhost:3000/api/card/', async () => {
+      http.post('http://localhost:3000/api/card', async () => {
         return new HttpResponse(null, { status: 400 })
       })
     )

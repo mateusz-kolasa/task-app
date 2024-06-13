@@ -1,4 +1,5 @@
 import { BoardFullData } from 'shared-types'
+import { SAMPLE_LISTS } from './lists'
 
 export const SAMPLE_BOARDS_FULL: Record<string, BoardFullData> = {
   '1': {
@@ -28,28 +29,6 @@ export const SAMPLE_BOARDS_FULL: Record<string, BoardFullData> = {
     description: '',
     title: 'board 3',
     users: [],
-    lists: [
-      {
-        id: 2,
-        boardId: 3,
-        cards: [],
-        position: 1,
-        title: 'list 2',
-      },
-      {
-        id: 3,
-        boardId: 3,
-        cards: [],
-        position: 2,
-        title: 'list 3',
-      },
-      {
-        id: 4,
-        boardId: 3,
-        cards: [],
-        position: 3,
-        title: 'list 3',
-      },
-    ],
+    lists: SAMPLE_LISTS,
   },
 }

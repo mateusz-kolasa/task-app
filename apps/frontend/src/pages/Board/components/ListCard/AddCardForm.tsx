@@ -6,7 +6,7 @@ import { TextInput } from 'react-hook-form-mantine'
 import { useTranslation } from 'react-i18next'
 import { notifications } from '@mantine/notifications'
 import schema from './schema'
-import { useCreateCardMutation } from 'store/slices/card-api-slice'
+import { useCreateCardMutation } from 'store/slices/api/card-api-slice'
 
 interface CardData {
   title: string

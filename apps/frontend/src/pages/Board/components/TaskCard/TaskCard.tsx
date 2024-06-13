@@ -1,14 +1,25 @@
 import { Text, Card } from '@mantine/core'
-import { CardData } from 'shared-types'
+import { useParams } from 'react-router-dom'
+import { useBoardDataQuery } from 'store/slices/api/board-api-slice'
 
 interface TaskCard {
-  card: CardData
+  listId: number
+  cardId: number
 }
 
-function TaskCard({ card }: Readonly<TaskCard>) {
+function TaskCard({ listId, cardId }: Readonly<TaskCard>) {
+  const { boardId } = useParams()
+  const { card } = useBoardDataQuery(boardId ?? '', {
+    selectFromResult: ({ data }) => {
+      const list = data?.lists.find(list => list.id === listId)
+      const card = list?.cards.find(card => card.id === cardId)
+      return { card }
+    },
+  })
+
   return (
     <Card radius={'md'} shadow='md' p='xs'>
-      <Text size='sm'>{card.title}</Text>
+      <Text size='sm'>{card?.title}</Text>
     </Card>
   )
 }

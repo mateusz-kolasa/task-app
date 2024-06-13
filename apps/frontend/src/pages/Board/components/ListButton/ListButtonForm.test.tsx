@@ -33,7 +33,7 @@ describe('ListButtonForm', () => {
 
   it('Shows error notification on error', async () => {
     server.use(
-      http.post('http://localhost:3000/api/list/', async () => {
+      http.post('http://localhost:3000/api/list', async () => {
         return new HttpResponse(null, { status: 400 })
       })
     )

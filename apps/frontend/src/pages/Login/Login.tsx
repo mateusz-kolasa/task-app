@@ -4,7 +4,7 @@ import { PasswordInput, TextInput } from 'react-hook-form-mantine'
 import { useNavigate } from 'react-router-dom'
 import { zodResolver } from '@hookform/resolvers/zod'
 import schema from './schema'
-import { useLoginMutation } from '../../store/slices/auth-api-slice'
+import { useLoginMutation } from '../../store/slices/api/auth-api-slice'
 import { useTranslation } from 'react-i18next'
 
 export interface UserLogin {

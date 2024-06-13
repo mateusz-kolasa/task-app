@@ -1,16 +1,12 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import { UserInfoData } from 'shared-types'
-import API_PATHS from '../../consts/api-paths'
-import { UserLogin } from '../../pages/Login/Login'
+import API_PATHS from '../../../consts/api-paths'
+import { UserLogin } from '../../../pages/Login/Login'
+import { apiSlice } from './api-slice'
 
-export const authApiSlice = createApi({
-  reducerPath: 'authApi',
-  baseQuery: fetchBaseQuery({
-    baseUrl: new URL('/api/auth', location.origin).href,
-  }),
+export const authApiSlice = apiSlice.injectEndpoints({
   endpoints: builder => ({
     getUserStatus: builder.query<UserInfoData, void>({
-      query: () => '',
+      query: () => API_PATHS.getAuth,
     }),
     login: builder.mutation<void, UserLogin>({
       query: userData => ({

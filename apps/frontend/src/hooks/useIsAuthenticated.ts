@@ -1,4 +1,4 @@
-import { useGetUserStatusQuery } from '../store/slices/auth-api-slice'
+import { useGetUserStatusQuery } from '../store/slices/api/auth-api-slice'
 
 const useIsAuthenticated = () => {
   const { data: user } = useGetUserStatusQuery()

@@ -6,7 +6,7 @@ import { TextInput } from 'react-hook-form-mantine'
 import schema from './schema'
 import { useParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { useCreateListMutation } from 'store/slices/list-api-slice'
+import { useCreateListMutation } from 'store/slices/api/list-api-slice'
 import { notifications } from '@mantine/notifications'
 import ListCardBase from 'components/ListCardBase/ListCardBase'
 

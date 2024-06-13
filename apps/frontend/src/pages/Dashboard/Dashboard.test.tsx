@@ -14,7 +14,7 @@ describe('Dashboard', () => {
   SAMPLE_BOARDS.forEach(boards =>
     it(`Renders correctly with ${boards.length} boards`, async () => {
       server.use(
-        http.get('http://localhost:3000/api/board/', async () => {
+        http.get('http://localhost:3000/api/board', async () => {
           return new HttpResponse(JSON.stringify(boards), { status: 200 })
         })
       )
