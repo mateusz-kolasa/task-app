@@ -34,10 +34,10 @@ export class BoardService {
     })
   }
 
-  async getFull(boardId: string): Promise<BoardFullData> {
+  async getFull(boardId: number): Promise<BoardFullData> {
     return this.prisma.board.findUnique({
       where: {
-        id: parseInt(boardId),
+        id: boardId,
       },
       include: {
         users: true,

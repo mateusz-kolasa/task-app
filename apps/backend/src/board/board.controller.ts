@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Req, UseGuards } from '@nestjs/common'
+import { Body, Controller, Get, Param, ParseIntPipe, Post, Req, UseGuards } from '@nestjs/common'
 import { BoardService } from './board.service'
 import { ApiTags } from '@nestjs/swagger'
 import BoardCreateData from 'src/dtos/board-create-data.dto'
@@ -19,7 +19,7 @@ export class BoardController {
   }
 
   @Get(':id')
-  async getFull(@Param('id') id: string): Promise<BoardFullData> {
+  async getFull(@Param('id', ParseIntPipe) id: number): Promise<BoardFullData> {
     return this.boardService.getFull(id)
   }
 

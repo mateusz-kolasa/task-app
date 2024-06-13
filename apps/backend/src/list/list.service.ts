@@ -39,6 +39,6 @@ export class ListService {
       },
     })
 
-    return this.boardService.getFull(listData.boardId.toString())
+    return this.boardService.getFull(listData.boardId)
   }
 }
