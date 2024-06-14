@@ -1,4 +1,4 @@
-import { Stack, Text } from '@mantine/core'
+import { ScrollArea, Stack, Text } from '@mantine/core'
 import ListCardBase from 'components/ListCardBase/ListCardBase'
 import TaskCard from '../TaskCard/TaskCard'
 import AddCardButton from './AddCardButton'
@@ -22,13 +22,18 @@ function ListCard({ listId }: Readonly<ListCardProps>) {
 
   return (
     <ListCardBase>
-      <Text>{title}</Text>
-      <Stack data-testid='list-stack' mt='md'>
-        {cardIds.map(cardId => (
-          <TaskCard listId={listId} cardId={cardId} key={cardId} />
-        ))}
-        <AddCardButton listId={listId} />
-      </Stack>
+      <Text size='sm' fw={500}>
+        {title}
+      </Text>
+
+      <ScrollArea.Autosize scrollbars='y' type='auto' mt='md' mb='md' flex={1}>
+        <Stack data-testid='list-stack'>
+          {cardIds.map(cardId => (
+            <TaskCard listId={listId} cardId={cardId} key={cardId} />
+          ))}
+        </Stack>
+      </ScrollArea.Autosize>
+      <AddCardButton listId={listId} />
     </ListCardBase>
   )
 }

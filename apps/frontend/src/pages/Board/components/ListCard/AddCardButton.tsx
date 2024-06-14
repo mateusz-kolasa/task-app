@@ -25,7 +25,7 @@ function AddCardButton({ listId }: Readonly<AddCardButtonProps>) {
       ) : (
         <Button
           leftSection={<IconPlus size={12} />}
-          variant='transparent'
+          variant='subtle'
           justify='left'
           radius='md'
           onClick={handleOpenClick}

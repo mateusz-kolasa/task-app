@@ -1,0 +1,7 @@
+.root {
+  --switch-color: var(--mantine-color-dark-4);
+}
+
+.cursor {
+  cursor: pointer;
+}

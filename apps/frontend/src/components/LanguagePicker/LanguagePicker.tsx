@@ -2,6 +2,7 @@ import { Combobox, InputBase, useCombobox } from '@mantine/core'
 import i18next from 'i18next'
 import { GBFlag, PLFlag } from 'mantine-flagpack'
 import { useState } from 'react'
+import classes from './LanguagePicker.module.css'
 
 const languages = [
   {
@@ -41,14 +42,17 @@ function LanguagePicker() {
           rightSection={<Combobox.Chevron />}
           rightSectionPointerEvents='none'
           onClick={() => combobox.toggleDropdown()}
+          classNames={{
+            input: classes.input,
+          }}
         >
           <SelectedIcon w={30} display='flex' />
         </InputBase>
       </Combobox.Target>
-      <Combobox.Dropdown>
+      <Combobox.Dropdown classNames={{ dropdown: classes.dropdown }}>
         <Combobox.Options>
           {languages.map(language => (
-            <Combobox.Option value={language.value} key={language.value}>
+            <Combobox.Option value={language.value} key={language.value} className={classes.option}>
               {<language.Icon w={30} display='flex' />}
             </Combobox.Option>
           ))}

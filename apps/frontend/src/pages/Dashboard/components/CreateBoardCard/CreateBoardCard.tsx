@@ -1,7 +1,7 @@
-import { Button, Popover, Stack, UnstyledButton } from '@mantine/core'
-import classes from './Card.module.css'
+import { Button, Popover, Stack, Text, UnstyledButton } from '@mantine/core'
+import classes from './CreateBoardCard.module.css'
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form'
-import schema from './schema'
+import schema from '../schema'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { TextInput } from 'react-hook-form-mantine'
 import { useState } from 'react'
@@ -53,8 +53,8 @@ function CreateBoardCard() {
       onChange={setIsOpened}
     >
       <Popover.Target>
-        <UnstyledButton className={classes.card} w={200} h={80} onClick={togglePopover}>
-          {t('board.create.new')}
+        <UnstyledButton className={classes.card} ta='center' onClick={togglePopover}>
+          <Text>{t('board.create.new')}</Text>
         </UnstyledButton>
       </Popover.Target>
       <Popover.Dropdown>

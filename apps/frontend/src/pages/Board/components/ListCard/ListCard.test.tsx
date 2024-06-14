@@ -24,9 +24,8 @@ describe('ListCard', () => {
       const grid = getByTestId('list-stack')
       expect(grid).toBeTruthy()
 
-      // Cards and create card button
       await waitFor(() =>
-        expect(getByTestId('list-stack').childNodes.length).toBe(list.cards.length + 1)
+        expect(getByTestId('list-stack').childNodes.length).toBe(list.cards.length)
       )
     })
   )

@@ -1,0 +1,14 @@
+.card {
+  width: rem(200px);
+  height: rem(80px);
+  border-radius: var(--mantine-radius-md);
+  transition: transform 100ms ease;
+  padding: var(--mantine-spacing-sm);
+  background-color: var(--mantine-primary-color-filled);
+  color: light-dark(var(--mantine-color-gray-1), var(--mantine-color-text));
+
+  @mixin hover {
+    box-shadow: var(--mantine-shadow-md);
+    background-color: var(--mantine-primary-color-filled-hover);
+  }
+}

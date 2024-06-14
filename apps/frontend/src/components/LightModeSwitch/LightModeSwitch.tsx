@@ -1,6 +1,7 @@
 import { Switch, rem, useMantineColorScheme, useMantineTheme } from '@mantine/core'
 import { IconSun, IconMoonStars } from '@tabler/icons-react'
 import { ChangeEvent } from 'react'
+import classes from './LightModeSwitch.module.css'
 
 function LightModeSwitch() {
   const theme = useMantineTheme()
@@ -14,9 +15,12 @@ function LightModeSwitch() {
   return (
     <Switch
       size='lg'
-      color='dark.4'
       checked={colorScheme === 'dark'}
       onChange={handleChange}
+      classNames={{
+        root: classes.root,
+        track: classes.cursor,
+      }}
       onLabel={
         <IconSun
           style={{ width: rem(24), height: rem(24) }}

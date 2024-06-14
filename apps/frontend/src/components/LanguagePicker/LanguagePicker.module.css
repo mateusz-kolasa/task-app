@@ -1,0 +1,14 @@
+.input {
+  background-color: light-dark(var(--mantine-color-gray-2), var(--mantine-color-dark-6));
+}
+
+.dropdown {
+  background-color: light-dark(var(--mantine-color-gray-2), var(--mantine-color-dark-6));
+}
+
+.option {
+  @mixin hover {
+    box-shadow: var(--mantine-shadow-md);
+    background-color: light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-5));
+  }
+}
