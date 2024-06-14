@@ -4,18 +4,13 @@ import { useBoardDataQuery } from '../../store/slices/api/board-api-slice'
 import ListButton from './components/ListButton/ListButton'
 import ListCard from './components/ListCard/ListCard'
 import { APP_SHELL_MAIN_HEIGHT } from 'consts/style-consts'
-import { sortAndMapToIds } from 'utils/queryHelper'
 
 function Board() {
   const { boardId } = useParams()
 
   const { listIds = [] } = useBoardDataQuery(boardId ?? '', {
     selectFromResult: ({ data }) => {
-      if (data) {
-        const listIds = sortAndMapToIds(data.lists)
-        return { listIds }
-      }
-      return {}
+      return { listIds: data?.lists.ids }
     },
   })
 

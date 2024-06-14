@@ -50,6 +50,9 @@ describe('ListService', () => {
           ...listData,
           position: 2,
         },
+        include: {
+          cards: true,
+        },
       })
     })
 
@@ -66,35 +69,30 @@ describe('ListService', () => {
           ...listData,
           position: 1,
         },
+        include: {
+          cards: true,
+        },
       })
     })
 
-    it('Returns board with created list', async () => {
+    it('Returns created list', async () => {
       boardService.getWithLists = jest.fn().mockReturnValueOnce({
         id: 1,
         title: 'board',
         lists: [],
       })
 
-      const board = {
+      const list = {
         id: 1,
-        title: 'board',
-        lists: [
-          {
-            id: 1,
-            title: 'list',
-            position: 1,
-            boardId: 1,
-            cards: [],
-          },
-        ],
-        users: [{ id: 1, userId: 1, boardId: 1 }],
+        title: 'list',
+        position: 1,
+        boardId: 1,
+        cards: [],
       }
-      boardService.getFull = jest.fn().mockReturnValueOnce(board)
-      prisma.list.create = jest.fn().mockReturnValueOnce(board)
+      prisma.list.create = jest.fn().mockReturnValueOnce(list)
 
       const response = await service.create(listData)
-      expect(response).toBe(board)
+      expect(response).toBe(list)
     })
   })
 })

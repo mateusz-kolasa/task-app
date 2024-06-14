@@ -3,6 +3,7 @@ import CardCreateData from 'src/dtos/card-create-data.dto'
 import { CardService } from './card.service'
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard'
 import { ApiTags } from '@nestjs/swagger'
+import { Card } from 'prisma/prisma-client'
 
 @ApiTags('card')
 @Controller('card')
@@ -11,7 +12,7 @@ export class CardController {
   constructor(private cardService: CardService) {}
 
   @Post()
-  create(@Body() cardData: CardCreateData) {
+  create(@Body() cardData: CardCreateData): Promise<Card> {
     return this.cardService.create(cardData)
   }
 }

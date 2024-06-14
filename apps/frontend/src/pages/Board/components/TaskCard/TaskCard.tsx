@@ -11,8 +11,8 @@ function TaskCard({ listId, cardId }: Readonly<TaskCard>) {
   const { boardId } = useParams()
   const { card } = useBoardDataQuery(boardId ?? '', {
     selectFromResult: ({ data }) => {
-      const list = data?.lists.find(list => list.id === listId)
-      const card = list?.cards.find(card => card.id === cardId)
+      const list = data?.lists.entities[listId]
+      const card = list?.cards.entities[cardId]
       return { card }
     },
   })

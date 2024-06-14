@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable } from '@nestjs/common'
-import { BoardFullData, ListFullData } from 'shared-types'
+import { ListFullData } from 'shared-types'
 import { BoardService } from 'src/board/board.service'
 import ListCreateData from 'src/dtos/list-create-data.dto'
 import { PrismaService } from 'src/prisma/prisma.service'
@@ -22,7 +22,7 @@ export class ListService {
     })
   }
 
-  async create(listData: ListCreateData): Promise<BoardFullData> {
+  async create(listData: ListCreateData): Promise<ListFullData> {
     const board = await this.boardService.getWithLists(listData.boardId)
 
     if (!board) {
@@ -31,14 +31,15 @@ export class ListService {
 
     const lastListPosition = Math.max(...board.lists.map(list => list.position), 0)
 
-    await this.prisma.list.create({
+    return this.prisma.list.create({
       data: {
         title: listData.title,
         boardId: listData.boardId,
         position: lastListPosition + 1,
       },
+      include: {
+        cards: true,
+      },
     })
-
-    return this.boardService.getFull(listData.boardId)
   }
 }

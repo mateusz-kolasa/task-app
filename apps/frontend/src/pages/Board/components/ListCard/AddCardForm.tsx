@@ -7,6 +7,7 @@ import { useTranslation } from 'react-i18next'
 import { notifications } from '@mantine/notifications'
 import schema from './schema'
 import { useCreateCardMutation } from 'store/slices/api/card-api-slice'
+import { useParams } from 'react-router-dom'
 
 interface CardData {
   title: string
@@ -18,6 +19,7 @@ interface AddCardFormProps {
 }
 
 function AddCardForm({ listId, handleCloseForm }: Readonly<AddCardFormProps>) {
+  const { boardId = '' } = useParams()
   const { t } = useTranslation()
 
   const [createCard, { isLoading }] = useCreateCardMutation()
@@ -38,6 +40,7 @@ function AddCardForm({ listId, handleCloseForm }: Readonly<AddCardFormProps>) {
     createCard({
       title: cardData.title,
       listId,
+      boardId,
     })
       .unwrap()
       .then(() => {

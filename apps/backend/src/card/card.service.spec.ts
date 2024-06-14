@@ -74,28 +74,20 @@ describe('CardService', () => {
     })
 
     it('Returns list with created card', async () => {
-      listService.getFull = jest.fn()
-      const list = {
-        id: 1,
-        title: 'list',
-        position: 1,
-        boardId: 1,
-        cards: [
-          {
-            id: 1,
-            title: 'card',
-            position: 1,
-          },
-        ],
-      }
       listService.getFull = jest
         .fn()
         .mockReturnValueOnce({ id: 1, title: 'list', position: 1, boardId: 1, cards: [] })
-        .mockReturnValueOnce(list)
-      prisma.card.create = jest.fn().mockReturnValueOnce(list)
+
+      const card = {
+        id: 1,
+        title: 'card',
+        position: 1,
+      }
+
+      prisma.card.create = jest.fn().mockReturnValueOnce(card)
 
       const response = await service.create(cardData)
-      expect(response).toBe(list)
+      expect(response).toBe(card)
     })
   })
 })
