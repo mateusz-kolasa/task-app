@@ -7,7 +7,7 @@ import { APP_SHELL_MAIN_HEIGHT } from 'consts/style-consts'
 import BaseLayout from '../../components/BaseLayout/BaseLayout'
 import BoardHeader from './components/BoardHeader/BoardHeader'
 import { useDisclosure } from '@mantine/hooks'
-import BoardMenu from './components/BoardSettings/BoardMenu'
+import BoardMenu from './components/BoardMenu/BoardMenu'
 
 function Board() {
   const { boardId } = useParams()

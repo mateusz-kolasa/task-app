@@ -40,7 +40,15 @@ export class BoardService {
         id: boardId,
       },
       include: {
-        users: true,
+        users: {
+          include: {
+            user: {
+              select: {
+                username: true,
+              },
+            },
+          },
+        },
         lists: {
           include: {
             cards: true,

@@ -1,4 +1,24 @@
 {
+  "board": {
+    "permission": {
+      "view": "Oglądanie",
+      "edit": "Edycja",
+      "admin": "Administrator",
+      "owner": "Właściciel"
+    },
+    "users": {
+      "list": "Użytkownicy"
+    },
+    "create": {
+      "error": {
+        "title": "Nie udało się stworzyć tablicy",
+        "message": "Wystąpił błąd przy tworzeniu tablicy, spóbuj ponownie później."
+      },
+      "new": "Dodaj nową tablicę",
+      "label": "Nazwa tablicy",
+      "button": "Dodaj tablicę"
+    }
+  },
   "list": {
     "create": {
       "new": "Dodaj nową listę",
@@ -21,15 +41,9 @@
       "button": "Dodaj kartę"
     }
   },
-  "board": {
-    "create": {
-      "error": {
-        "title": "Nie udało się stworzyć tablicy",
-        "message": "Wystąpił błąd przy tworzeniu tablicy, spóbuj ponownie później."
-      },
-      "new": "Dodaj nową tablicę",
-      "label": "Nazwa tablicy",
-      "button": "Dodaj tablicę"
+  "dashboard": {
+    "boards": {
+      "title": "Twoje tablice"
     }
   },
   "username": {

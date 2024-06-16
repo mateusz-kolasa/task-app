@@ -1,4 +1,24 @@
 {
+  "board": {
+    "permission": {
+      "view": "View",
+      "edit": "Edit",
+      "admin": "Administrator",
+      "owner": "Owner"
+    },
+    "users": {
+      "list": "Users"
+    },
+    "create": {
+      "error": {
+        "title": "Could not create board",
+        "message": "An error has occured during board creation, try later."
+      },
+      "new": "Create new board",
+      "label": "Board title",
+      "button": "Create board"
+    }
+  },
   "list": {
     "create": {
       "new": "Create new list",
@@ -21,15 +41,9 @@
       "button": "Create card"
     }
   },
-  "board": {
-    "create": {
-      "error": {
-        "title": "Could not create board",
-        "message": "An error has occured during board creation, try later."
-      },
-      "new": "Create new board",
-      "label": "Board title",
-      "button": "Create board"
+  "dashboard": {
+    "boards": {
+      "title": "Your boards"
     }
   },
   "username": {

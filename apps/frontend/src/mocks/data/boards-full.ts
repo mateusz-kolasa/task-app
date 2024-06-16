@@ -4,16 +4,45 @@ import { SAMPLE_LISTS } from './lists'
 export const SAMPLE_BOARDS_FULL: Record<string, BoardFullData> = {
   '1': {
     id: 1,
-    description: '',
+    description: 'description',
     title: 'board 1',
-    users: [],
+    users: [
+      {
+        boardId: 1,
+        permissions: 3,
+        id: 1,
+        user: {
+          username: 'name',
+        },
+        userId: 1,
+      },
+    ],
     lists: [],
   },
   '2': {
     id: 2,
     description: '',
     title: 'board 2',
-    users: [],
+    users: [
+      {
+        boardId: 1,
+        permissions: 3,
+        id: 1,
+        user: {
+          username: 'name',
+        },
+        userId: 1,
+      },
+      {
+        boardId: 1,
+        permissions: 0,
+        id: 2,
+        user: {
+          username: 'username',
+        },
+        userId: 2,
+      },
+    ],
     lists: [
       {
         id: 1,
@@ -28,7 +57,44 @@ export const SAMPLE_BOARDS_FULL: Record<string, BoardFullData> = {
     id: 3,
     description: '',
     title: 'board 3',
-    users: [],
+    users: [
+      {
+        boardId: 1,
+        permissions: 3,
+        id: 1,
+        user: {
+          username: 'name',
+        },
+        userId: 1,
+      },
+      {
+        boardId: 1,
+        permissions: 0,
+        id: 2,
+        user: {
+          username: 'username',
+        },
+        userId: 2,
+      },
+      {
+        boardId: 1,
+        permissions: 1,
+        id: 3,
+        user: {
+          username: 'user 3',
+        },
+        userId: 3,
+      },
+      {
+        boardId: 1,
+        permissions: 2,
+        id: 4,
+        user: {
+          username: 'admin',
+        },
+        userId: 4,
+      },
+    ],
     lists: SAMPLE_LISTS,
   },
 }

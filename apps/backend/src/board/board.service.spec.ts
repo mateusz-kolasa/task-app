@@ -109,7 +109,15 @@ describe('BoardService', () => {
           id: 1,
         },
         include: {
-          users: true,
+          users: {
+            include: {
+              user: {
+                select: {
+                  username: true,
+                },
+              },
+            },
+          },
           lists: {
             include: {
               cards: true,
@@ -132,7 +140,7 @@ describe('BoardService', () => {
             cards: [],
           },
         ],
-        users: [{ id: 1, userId: 1, boardId: 1 }],
+        users: [{ id: 1, userId: 1, boardId: 1, user: { username: 'name' } }],
       } as BoardFullData
 
       prisma.board.findUnique = jest.fn().mockReturnValueOnce(board)

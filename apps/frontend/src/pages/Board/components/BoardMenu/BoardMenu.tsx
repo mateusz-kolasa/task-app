@@ -1,6 +1,7 @@
-import { Stack, Text } from '@mantine/core'
+import { Divider, Stack, Text } from '@mantine/core'
 import { useParams } from 'react-router-dom'
 import { useBoardDataQuery } from 'store/slices/api/board-api-slice'
+import BoardUsers from '../BoardUsers/BoardUsers'
 
 function BoardMenu() {
   const { boardId } = useParams()
@@ -17,6 +18,8 @@ function BoardMenu() {
         {title}
       </Text>
       <Text ta='center'>{description}</Text>
+      <Divider m='md' />
+      <BoardUsers />
     </Stack>
   )
 }
