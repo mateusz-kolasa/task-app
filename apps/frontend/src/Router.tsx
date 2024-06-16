@@ -7,6 +7,7 @@ import { Center, Loader } from '@mantine/core'
 import ProtectedRoutes from './pages/ProtectedRoutes/ProtectedRoutes'
 import AuthenticationRoutes from './pages/AuthenticationRoutes/AuthenticationRoutes'
 import Board from './pages/Board/Board'
+import BaseLayout from 'components/BaseLayout/BaseLayout'
 
 const router = createBrowserRouter([
   {
@@ -48,9 +49,11 @@ export function Router() {
 
   if (isLoading) {
     return (
-      <Center>
-        <Loader />
-      </Center>
+      <BaseLayout>
+        <Center>
+          <Loader />
+        </Center>
+      </BaseLayout>
     )
   }
 

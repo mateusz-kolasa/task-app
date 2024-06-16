@@ -1,6 +1,6 @@
 import '@mantine/core/styles.css'
 import '@mantine/notifications/styles.css'
-import { AppShell, MantineProvider } from '@mantine/core'
+import { MantineProvider } from '@mantine/core'
 import { theme } from './theme'
 import { Router } from './Router'
 import { Provider } from 'react-redux'
@@ -10,7 +10,6 @@ import { initReactI18next } from 'react-i18next'
 import en from '../locales/en/translation.json'
 import pl from '../locales/pl/translation.json'
 import LanguageDetector from 'i18next-browser-languagedetector'
-import Header from './components/Header/Header'
 import { setupStore } from 'store/store'
 
 i18next
@@ -38,14 +37,7 @@ function App() {
     <MantineProvider theme={theme} defaultColorScheme='light'>
       <Notifications />
       <Provider store={store}>
-        <AppShell header={{ height: 60 }} padding='md'>
-          <AppShell.Header style={{ alignContent: 'center' }}>
-            <Header />
-          </AppShell.Header>
-          <AppShell.Main style={{ alignContent: 'center' }}>
-            <Router />
-          </AppShell.Main>
-        </AppShell>
+        <Router />
       </Provider>
     </MantineProvider>
   )
