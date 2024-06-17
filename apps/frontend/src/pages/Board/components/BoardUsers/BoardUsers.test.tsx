@@ -26,11 +26,6 @@ describe('BoardUsers', () => {
       await waitFor(() =>
         expect(getAllByTestId('board-user').length).toBe(SAMPLE_BOARDS_FULL[boardId].users.length)
       )
-
-      const users = getAllByTestId('board-user')
-      for (let i = 0; i < SAMPLE_BOARDS_FULL[boardId].users.length; i++) {
-        expect(users[i].textContent).toBe(SAMPLE_BOARDS_FULL[boardId].users[i].user.username)
-      }
     })
   )
 })

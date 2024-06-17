@@ -5,7 +5,8 @@ import BoardCreateData from 'src/dtos/board-create-data.dto'
 import { AuthRequest } from 'src/types/user-jwt-payload'
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard'
 import { Board } from '@prisma/client'
-import { BoardFullData } from 'shared-types'
+import { BoardFullData, UsersInBoardsWithUsername } from 'shared-types'
+import BoardAddUserData from 'src/dtos/board-add-user-data.dto'
 
 @ApiTags('board')
 @Controller('board')
@@ -26,5 +27,10 @@ export class BoardController {
   @Post('create')
   async create(@Req() request: AuthRequest, @Body() boardData: BoardCreateData): Promise<Board> {
     return this.boardService.create(request, boardData)
+  }
+
+  @Post('users/add')
+  async addUser(@Body() userData: BoardAddUserData): Promise<UsersInBoardsWithUsername> {
+    return this.boardService.addUser(userData)
   }
 }

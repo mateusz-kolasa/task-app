@@ -46,5 +46,19 @@ const handlers = [
   http.post('http://localhost:3000/api/card', async () => {
     return new HttpResponse(JSON.stringify(SAMPLE_LISTS[0]), { status: 200 })
   }),
+  http.post('http://localhost:3000/api/board/users/add', async () => {
+    return new HttpResponse(
+      JSON.stringify({
+        id: 1,
+        userId: 1,
+        boardId: 1,
+        permissions: 0,
+        user: {
+          username: 'user',
+        },
+      }),
+      { status: 200 }
+    )
+  }),
 ]
 export const server = setupServer(...handlers)

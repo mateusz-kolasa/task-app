@@ -5,6 +5,7 @@ const API_PATHS = {
   logout: 'auth/logout',
   board: 'board',
   createBoard: 'board/create',
+  addBoardUser: 'board/users/add',
   list: 'list',
   card: 'card',
 }

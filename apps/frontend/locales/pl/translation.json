@@ -7,7 +7,20 @@
       "owner": "Właściciel"
     },
     "users": {
-      "list": "Użytkownicy"
+      "add": {
+        "button": "Dodaj użytkownika",
+        "error": {
+          "title": "Nie udało się dodać użytkownika",
+          "noUser": "Podany użytkownik nie istnieje",
+          "userInBoard": "Użytkownik jest już dodany do tej tablicy",
+          "other": "Wystąpił błąd przy dodawaniu użytkownika, spóbuj ponownie później"
+        },
+        "username": "Nazwa użytkownika",
+        "confirm": "Dodaj"
+      },
+      "list": {
+        "title": "Użytkownicy"
+      }
     },
     "create": {
       "error": {

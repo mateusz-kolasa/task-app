@@ -7,7 +7,20 @@
       "owner": "Owner"
     },
     "users": {
-      "list": "Users"
+      "add": {
+        "button": "Add user",
+        "error": {
+          "title": "Could not add user",
+          "noUser": "User does not exist",
+          "userInBoard": "User is already added to the board",
+          "other": "An error has occured during adding user, try later"
+        },
+        "username": "Username",
+        "confirm": "Add user"
+      },
+      "list": {
+        "title": "Users"
+      }
     },
     "create": {
       "error": {

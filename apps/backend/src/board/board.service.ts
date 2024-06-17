@@ -1,15 +1,20 @@
-import { Injectable } from '@nestjs/common'
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common'
 import { Board } from '@prisma/client'
 import { BOARD_PERMISSIONS } from 'src/consts/user.consts'
 import BoardCreateData from 'src/dtos/board-create-data.dto'
 import { BoardWithListsData } from 'src/dtos/board-lists-data.dto'
 import { PrismaService } from 'src/prisma/prisma.service'
 import { AuthRequest } from 'src/types/user-jwt-payload'
-import { BoardFullData } from 'shared-types'
+import { BoardFullData, UsersInBoardsWithUsername } from 'shared-types'
+import BoardAddUserData from 'src/dtos/board-add-user-data.dto'
+import { UsersService } from 'src/users/users.service'
 
 @Injectable()
 export class BoardService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private usersService: UsersService
+  ) {}
 
   async getForUser(request: AuthRequest): Promise<Board[]> {
     return this.prisma.board.findMany({
@@ -73,6 +78,40 @@ export class BoardService {
               },
             },
           ],
+        },
+      },
+    })
+  }
+
+  async addUser(userData: BoardAddUserData): Promise<UsersInBoardsWithUsername> {
+    const user = await this.usersService.findByUsername(userData.username)
+
+    if (!user) {
+      throw new NotFoundException()
+    }
+
+    const userInBoard = await this.prisma.usersInBoards.findFirst({
+      where: {
+        boardId: userData.boardId,
+        userId: user.id,
+      },
+    })
+
+    if (userInBoard) {
+      throw new BadRequestException('user already in board')
+    }
+
+    return this.prisma.usersInBoards.create({
+      data: {
+        permissions: userData.permissions,
+        boardId: userData.boardId,
+        userId: user.id,
+      },
+      include: {
+        user: {
+          select: {
+            username: true,
+          },
         },
       },
     })

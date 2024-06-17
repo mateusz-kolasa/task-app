@@ -1,6 +1,6 @@
 import { createEntityAdapter } from '@reduxjs/toolkit'
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
-import { CardData } from 'shared-types'
+import { CardData, UsersInBoardsWithUsername } from 'shared-types'
 import { ListNormalized } from 'types/list-normalized'
 
 interface SortableByPosition {
@@ -16,6 +16,8 @@ export const cardsAdapter = createEntityAdapter<CardData>({
 export const listsAdapter = createEntityAdapter<ListNormalized>({
   sortComparer: sortByPosition,
 })
+
+export const userInBoardAdapter = createEntityAdapter<UsersInBoardsWithUsername>({})
 
 export const apiSlice = createApi({
   reducerPath: 'api',

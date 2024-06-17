@@ -1,8 +1,14 @@
-import { BoardCreateData, BoardData, BoardFullData } from 'shared-types'
-import API_PATHS from '../../../consts/api-paths'
-import { apiSlice, cardsAdapter, listsAdapter } from './api-slice'
+import {
+  BoardAddUserData,
+  BoardCreateData,
+  BoardData,
+  BoardFullData,
+  UsersInBoardsWithUsername,
+} from 'shared-types'
+import { apiSlice, cardsAdapter, listsAdapter, userInBoardAdapter } from './api-slice'
 import { ListNormalized } from 'types/list-normalized'
 import { BoardNormalized } from 'types/board-normalized'
+import API_PATHS from 'consts/api-paths'
 
 export const boardApiSlice = apiSlice.injectEndpoints({
   endpoints: builder => ({
@@ -24,6 +30,7 @@ export const boardApiSlice = apiSlice.injectEndpoints({
         return {
           ...response,
           lists: listsAdapter.addMany(listsAdapter.getInitialState(), lists),
+          users: userInBoardAdapter.addMany(userInBoardAdapter.getInitialState(), response.users),
         }
       },
     }),
@@ -35,7 +42,36 @@ export const boardApiSlice = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ['Boards'],
     }),
+    addBoardUser: builder.mutation<UsersInBoardsWithUsername, BoardAddUserData>({
+      query: userData => ({
+        url: API_PATHS.addBoardUser,
+        method: 'POST',
+        body: userData,
+      }),
+      async onQueryStarted(_, { dispatch, queryFulfilled }) {
+        try {
+          const { data: userInBoard } = await queryFulfilled
+
+          dispatch(
+            boardApiSlice.util.updateQueryData(
+              'boardData',
+              userInBoard.boardId.toString(),
+              boardData => {
+                boardData.users = userInBoardAdapter.addOne(boardData.users, userInBoard)
+              }
+            )
+          )
+        } catch (error) {
+          /* empty */
+        }
+      },
+    }),
   }),
 })
 
-export const { useUserBoardsQuery, useBoardDataQuery, useCreateBoardMutation } = boardApiSlice
+export const {
+  useUserBoardsQuery,
+  useBoardDataQuery,
+  useCreateBoardMutation,
+  useAddBoardUserMutation,
+} = boardApiSlice

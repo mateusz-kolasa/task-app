@@ -1,13 +1,6 @@
-import { Board, UsersInBoards } from './prisma-import'
+import { Board } from './prisma-import'
 import { ListFullData } from './list-full-data.dto'
-
-interface UserUsername {
-  username: string
-}
-
-interface UsersInBoardsWithUsername extends UsersInBoards {
-  user: UserUsername
-}
+import { UsersInBoardsWithUsername } from './board-user-username-data.dto'
 
 export interface BoardFullData extends Board {
   users: UsersInBoardsWithUsername[]

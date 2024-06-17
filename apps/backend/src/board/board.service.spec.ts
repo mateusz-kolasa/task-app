@@ -2,15 +2,19 @@ import { Test, TestingModule } from '@nestjs/testing'
 import { BoardService } from './board.service'
 import { PrismaService } from 'src/prisma/prisma.service'
 import { AuthRequest } from 'src/types/user-jwt-payload'
-import { Board } from '@prisma/client'
+import { Board, UsersInBoards } from '@prisma/client'
 import { BoardWithListsData } from 'src/dtos/board-lists-data.dto'
 import { BoardFullData } from 'shared-types'
 import { BOARD_PERMISSIONS } from 'src/consts/user.consts'
 import { PrismaModule } from 'src/prisma/prisma.module'
+import { UsersModule } from 'src/users/users.module'
+import { UsersService } from 'src/users/users.service'
+import { BadRequestException, NotFoundException } from '@nestjs/common'
 
 describe('BoardService', () => {
   let service: BoardService
   let prisma: PrismaService
+  let usersService: UsersService
 
   const request = {
     user: {
@@ -21,11 +25,12 @@ describe('BoardService', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [BoardService],
-      imports: [PrismaModule],
+      imports: [PrismaModule, UsersModule],
     }).compile()
 
     service = module.get<BoardService>(BoardService)
     prisma = module.get<PrismaService>(PrismaService)
+    usersService = module.get<UsersService>(UsersService)
   })
 
   it('should be defined', () => {
@@ -180,6 +185,88 @@ describe('BoardService', () => {
       prisma.board.create = jest.fn().mockReturnValueOnce(board)
       const response = await service.create(request, { title: 'new board' })
       expect(response).toBe(board)
+    })
+  })
+
+  describe('addUser', () => {
+    it('adds user to board', async () => {
+      prisma.usersInBoards.findFirst = jest.fn().mockResolvedValueOnce(null)
+      prisma.usersInBoards.create = jest.fn()
+      usersService.findByUsername = jest.fn().mockResolvedValue({
+        id: 1,
+      })
+
+      await service.addUser({
+        boardId: 1,
+        username: 'user',
+        permissions: 0,
+      })
+
+      expect(prisma.usersInBoards.create).toHaveBeenCalledWith({
+        data: {
+          permissions: 0,
+          boardId: 1,
+          userId: 1,
+        },
+      })
+    })
+
+    it('returns add user in board', async () => {
+      const userInBoard: UsersInBoards = {
+        boardId: 1,
+        userId: 1,
+        id: 1,
+        permissions: 0,
+      }
+
+      prisma.usersInBoards.findFirst = jest.fn().mockResolvedValueOnce(null)
+      prisma.usersInBoards.create = jest.fn().mockResolvedValueOnce(userInBoard)
+      usersService.findByUsername = jest.fn().mockResolvedValue({
+        id: 1,
+      })
+
+      const response = await service.addUser({
+        boardId: 1,
+        username: 'user',
+        permissions: 0,
+      })
+
+      expect(response).toBe(userInBoard)
+    })
+
+    it('throws not found if user doesnt exists', async () => {
+      prisma.usersInBoards.findFirst = jest.fn().mockResolvedValueOnce(null)
+      prisma.usersInBoards.create = jest.fn()
+      usersService.findByUsername = jest.fn().mockResolvedValue(null)
+
+      expect(
+        service.addUser({
+          boardId: 1,
+          username: 'user',
+          permissions: 0,
+        })
+      ).rejects.toThrow(NotFoundException)
+    })
+
+    it('throws bad request if user is already in board', async () => {
+      prisma.usersInBoards.findFirst = jest.fn().mockResolvedValueOnce({
+        id: 1,
+        userId: 1,
+        boardId: 1,
+        permissions: 0,
+      })
+      prisma.usersInBoards.create = jest.fn()
+      usersService.findByUsername = jest.fn().mockResolvedValue({
+        id: 1,
+      })
+
+      expect(
+        service.addUser({
+          boardId: 1,
+          username: 'user',
+          permissions: 0,
+        })
+      ).rejects.toThrow(BadRequestException)
     })
   })
 })
