@@ -1,4 +1,9 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common'
+import {
+  BadRequestException,
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common'
 import { Board } from '@prisma/client'
 import { BOARD_PERMISSIONS } from 'src/consts/user.consts'
 import BoardCreateData from 'src/dtos/board-create-data.dto'
@@ -39,7 +44,16 @@ export class BoardService {
     })
   }
 
-  async getFull(boardId: number): Promise<BoardFullData> {
+  async getFull(request: AuthRequest, boardId: number): Promise<BoardFullData> {
+    const isAuthorized = await this.usersService.isUserAuthorized(
+      request.user.id,
+      boardId,
+      BOARD_PERMISSIONS.view
+    )
+    if (!isAuthorized) {
+      throw new ForbiddenException()
+    }
+
     return this.prisma.board.findUnique({
       where: {
         id: boardId,
@@ -83,7 +97,19 @@ export class BoardService {
     })
   }
 
-  async addUser(userData: BoardAddUserData): Promise<UsersInBoardsWithUsername> {
+  async addUser(
+    request: AuthRequest,
+    userData: BoardAddUserData
+  ): Promise<UsersInBoardsWithUsername> {
+    const isAuthorized = await this.usersService.isUserAuthorized(
+      request.user.id,
+      userData.boardId,
+      BOARD_PERMISSIONS.admin
+    )
+    if (!isAuthorized) {
+      throw new ForbiddenException()
+    }
+
     const user = await this.usersService.findByUsername(userData.username)
 
     if (!user) {

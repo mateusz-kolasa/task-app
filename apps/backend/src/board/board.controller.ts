@@ -20,8 +20,11 @@ export class BoardController {
   }
 
   @Get(':id')
-  async getFull(@Param('id', ParseIntPipe) id: number): Promise<BoardFullData> {
-    return this.boardService.getFull(id)
+  async getFull(
+    @Req() request: AuthRequest,
+    @Param('id', ParseIntPipe) id: number
+  ): Promise<BoardFullData> {
+    return this.boardService.getFull(request, id)
   }
 
   @Post('create')
@@ -30,7 +33,10 @@ export class BoardController {
   }
 
   @Post('users/add')
-  async addUser(@Body() userData: BoardAddUserData): Promise<UsersInBoardsWithUsername> {
-    return this.boardService.addUser(userData)
+  async addUser(
+    @Req() request: AuthRequest,
+    @Body() userData: BoardAddUserData
+  ): Promise<UsersInBoardsWithUsername> {
+    return this.boardService.addUser(request, userData)
   }
 }

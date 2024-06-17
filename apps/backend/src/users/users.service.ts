@@ -27,4 +27,22 @@ export class UsersService {
       data: userData,
     })
   }
+
+  async isUserAuthorized(
+    userId: number,
+    boardId: number,
+    requiredPermission: number
+  ): Promise<boolean> {
+    const userInBoard = await this.prisma.usersInBoards.findFirst({
+      where: {
+        userId,
+        boardId,
+      },
+      select: {
+        permissions: true,
+      },
+    })
+
+    return userInBoard && userInBoard.permissions >= requiredPermission
+  }
 }

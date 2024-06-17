@@ -150,7 +150,7 @@ describe('AuthService', () => {
     it('returns user', async () => {
       usersService.findById = jest.fn().mockReturnValueOnce(user)
       const response = await service.getAuthStatus(request as unknown as AuthRequest)
-      expect(response).toStrictEqual({ username: user.username })
+      expect(response).toStrictEqual({ username: user.username, id: user.id })
     })
   })
 })

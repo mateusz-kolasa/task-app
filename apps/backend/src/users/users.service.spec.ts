@@ -89,4 +89,31 @@ describe('UsersService', () => {
       expect(response).toBe(userData)
     })
   })
+
+  describe('isUserAuthorized', () => {
+    it('returns user permissions', async () => {
+      prisma.usersInBoards.findFirst = jest.fn().mockReturnValueOnce({
+        permissions: 2,
+      })
+
+      const response = await service.isUserAuthorized(1, 1, 1)
+      expect(response).toBeTruthy()
+    })
+
+    it('returns false for user with not high enough permissions', async () => {
+      prisma.usersInBoards.findFirst = jest.fn().mockReturnValueOnce({
+        permissions: 1,
+      })
+
+      const response = await service.isUserAuthorized(1, 1, 2)
+      expect(response).toBeFalsy()
+    })
+
+    it('returns null if user doesnt belong to board', async () => {
+      prisma.usersInBoards.findFirst = jest.fn().mockReturnValueOnce(null)
+
+      const response = await service.isUserAuthorized(1, 1, 1)
+      expect(response).toBeFalsy()
+    })
+  })
 })

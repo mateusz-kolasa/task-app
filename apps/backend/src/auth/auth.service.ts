@@ -62,6 +62,6 @@ export class AuthService {
 
   async getAuthStatus(request: AuthRequest): Promise<UserInfoData> {
     const user = await this.userService.findById(request.user.id)
-    return { username: user.username }
+    return { username: user.username, id: user.id }
   }
 }
