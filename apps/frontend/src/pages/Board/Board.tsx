@@ -1,5 +1,5 @@
 import { Group, ScrollArea } from '@mantine/core'
-import { useParams } from 'react-router-dom'
+import { Outlet, useParams } from 'react-router-dom'
 import { useBoardDataQuery } from '../../store/slices/api/board-api-slice'
 import ListButton from './components/ListButton/ListButton'
 import ListCard from './components/ListCard/ListCard'
@@ -34,6 +34,7 @@ function Board() {
           <ListButton />
         </Group>
       </ScrollArea>
+      <Outlet />
     </BaseLayout>
   )
 }

@@ -23,7 +23,6 @@ function ListCard({ listId }: Readonly<ListCardProps>) {
       <Text size='sm' fw={500}>
         {title}
       </Text>
-
       <ScrollArea.Autosize scrollbars='y' type='auto' mt='md' mb='md' flex={1}>
         <Stack data-testid='list-stack'>
           {cardIds?.map(cardId => <TaskCard listId={listId} cardId={cardId} key={cardId} />)}

@@ -8,6 +8,7 @@ import ProtectedRoutes from './pages/ProtectedRoutes/ProtectedRoutes'
 import AuthenticationRoutes from './pages/AuthenticationRoutes/AuthenticationRoutes'
 import Board from './pages/Board/Board'
 import BaseLayout from 'components/BaseLayout/BaseLayout'
+import CardDialog from 'pages/CardDialog/CardDialog'
 
 const router = createBrowserRouter([
   {
@@ -20,6 +21,12 @@ const router = createBrowserRouter([
       {
         path: '/board/:boardId',
         element: <Board />,
+        children: [
+          {
+            path: 'card/:cardId',
+            element: <CardDialog />,
+          },
+        ],
       },
     ],
   },

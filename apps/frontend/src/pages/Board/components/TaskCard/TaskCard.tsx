@@ -1,5 +1,5 @@
-import { Text, Card } from '@mantine/core'
-import { useParams } from 'react-router-dom'
+import { Text, Button } from '@mantine/core'
+import { useNavigate, useParams } from 'react-router-dom'
 import { useBoardDataQuery } from 'store/slices/api/board-api-slice'
 
 interface TaskCard {
@@ -17,10 +17,13 @@ function TaskCard({ listId, cardId }: Readonly<TaskCard>) {
     },
   })
 
+  const navigate = useNavigate()
+  const handleCardClick = () => navigate(`card/${cardId}`)
+
   return (
-    <Card radius={'md'} shadow='md' p='xs'>
+    <Button variant='default' radius='md' p='xs' onClick={handleCardClick}>
       <Text size='sm'>{card?.title}</Text>
-    </Card>
+    </Button>
   )
 }
 
