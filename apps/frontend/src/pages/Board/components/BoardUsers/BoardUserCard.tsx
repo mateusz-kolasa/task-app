@@ -17,7 +17,7 @@ function BoardUserCard({ userId }: Readonly<BoardUserCardProps>) {
       return { user: data?.users.entities[userId] }
     },
   })
-  console.log(user)
+
   const { t } = useTranslation()
   const boardPermissionText = useBoardPermissionsText()
 

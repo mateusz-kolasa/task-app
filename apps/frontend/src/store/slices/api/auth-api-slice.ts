@@ -7,19 +7,21 @@ export const authApiSlice = apiSlice.injectEndpoints({
   endpoints: builder => ({
     getUserStatus: builder.query<UserInfoData, void>({
       query: () => API_PATHS.getAuth,
+      providesTags: ['User'],
     }),
-    login: builder.mutation<void, UserLogin>({
+    login: builder.mutation<UserInfoData, UserLogin>({
       query: userData => ({
         url: API_PATHS.login,
         method: 'POST',
         body: userData,
       }),
-      async onQueryStarted(userData, { dispatch, queryFulfilled }) {
+      async onQueryStarted(_, { dispatch, queryFulfilled }) {
         try {
-          await queryFulfilled
+          const { data } = await queryFulfilled
           dispatch(
             authApiSlice.util.upsertQueryData('getUserStatus', undefined, {
-              username: userData.username,
+              username: data.username,
+              id: data.id,
             })
           )
         } catch {
@@ -27,18 +29,19 @@ export const authApiSlice = apiSlice.injectEndpoints({
         }
       },
     }),
-    register: builder.mutation<void, UserLogin>({
+    register: builder.mutation<UserInfoData, UserLogin>({
       query: userData => ({
         url: API_PATHS.register,
         method: 'POST',
         body: userData,
       }),
-      async onQueryStarted(userData, { dispatch, queryFulfilled }) {
+      async onQueryStarted(_, { dispatch, queryFulfilled }) {
         try {
-          await queryFulfilled
+          const { data } = await queryFulfilled
           dispatch(
             authApiSlice.util.upsertQueryData('getUserStatus', undefined, {
-              username: userData.username,
+              username: data.username,
+              id: data.id,
             })
           )
         } catch {
@@ -51,14 +54,7 @@ export const authApiSlice = apiSlice.injectEndpoints({
         url: API_PATHS.logout,
         method: 'DELETE',
       }),
-      async onQueryStarted(_, { dispatch, queryFulfilled }) {
-        try {
-          await queryFulfilled
-          dispatch(authApiSlice.util.upsertQueryData('getUserStatus', undefined, {}))
-        } catch {
-          /* empty */
-        }
-      },
+      invalidatesTags: ['User'],
     }),
   }),
 })

@@ -7,6 +7,7 @@ import UserLoginData from 'src/dtos/user-login-data.dto'
 import { Response } from 'express'
 import { JwtAuthGuard } from './jwt-auth.guard'
 import { AuthRequest } from 'src/types/user-jwt-payload'
+import { UserInfoData } from 'shared-types'
 
 @Controller('auth')
 export class AuthController {
@@ -17,14 +18,17 @@ export class AuthController {
   async register(
     @Body() userData: UserRegisterData,
     @Res({ passthrough: true }) response: Response
-  ) {
+  ): Promise<UserInfoData> {
     return this.authService.register(userData, response)
   }
 
   @UseGuards(LocalAuthGuard)
   @Post('login')
   @ApiBody({ type: UserLoginData })
-  async logIn(@Request() request, @Res({ passthrough: true }) response: Response) {
+  async logIn(
+    @Request() request,
+    @Res({ passthrough: true }) response: Response
+  ): Promise<UserInfoData> {
     return this.authService.login(request.user, response)
   }
 
@@ -35,7 +39,7 @@ export class AuthController {
 
   @UseGuards(JwtAuthGuard)
   @Get()
-  async getAuthStatus(@Req() request: AuthRequest) {
+  async getAuthStatus(@Req() request: AuthRequest): Promise<UserInfoData> {
     return this.authService.getAuthStatus(request)
   }
 }

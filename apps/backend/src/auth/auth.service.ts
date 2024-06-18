@@ -29,7 +29,7 @@ export class AuthService {
     return null
   }
 
-  async register(userData: UserRegisterData, response: Response): Promise<Record<string, never>> {
+  async register(userData: UserRegisterData, response: Response): Promise<UserInfoData> {
     const existingUser = await this.userService.findByUsername(userData.username)
 
     if (existingUser) {
@@ -46,13 +46,13 @@ export class AuthService {
     return this.login(addedUser, response)
   }
 
-  async login(user: User, response: Response): Promise<Record<string, never>> {
+  async login(user: User, response: Response): Promise<UserInfoData> {
     const payload = { username: user.username, sub: user.id }
     response.cookie('access_token', this.jwtService.sign(payload), {
       expires: new Date(Date.now() + 3600_000),
     })
 
-    return {}
+    return { username: user.username, id: user.id }
   }
 
   async logout(response: Response): Promise<Record<string, never>> {
