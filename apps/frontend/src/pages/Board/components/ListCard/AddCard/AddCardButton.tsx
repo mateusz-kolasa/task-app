@@ -2,10 +2,15 @@ import { Button } from '@mantine/core'
 import { IconPlus } from '@tabler/icons-react'
 import { useCallback, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { LIST_WIDTH } from 'consts/style-consts'
-import ListButtonForm from './ListButtonForm'
+import AddCardForm from './AddCardForm'
+import { BOARD_PERMISSIONS } from 'consts/user-permissions'
+import useIsAuthorized from 'hooks/useIsAuthorized'
 
-function ListButton() {
+interface AddCardButtonProps {
+  listId: number
+}
+
+function AddCardButton({ listId }: Readonly<AddCardButtonProps>) {
   const { t } = useTranslation()
 
   const [isOpened, setIsOpened] = useState(false)
@@ -15,24 +20,28 @@ function ListButton() {
     setIsOpened(false)
   }, [])
 
+  const isAuthorized = useIsAuthorized()
+  if (!isAuthorized(BOARD_PERMISSIONS.edit)) {
+    return null
+  }
+
   return (
     <>
       {isOpened ? (
-        <ListButtonForm handleCloseForm={handleCloseForm} />
+        <AddCardForm listId={listId} handleCloseForm={handleCloseForm} />
       ) : (
         <Button
           leftSection={<IconPlus size={12} />}
-          variant='light'
-          ta='left'
+          variant='subtle'
+          justify='left'
           radius='md'
           onClick={handleOpenClick}
-          w={LIST_WIDTH}
         >
-          {t('list.create.new')}
+          {t('card.create.new')}
         </Button>
       )}
     </>
   )
 }
 
-export default ListButton
+export default AddCardButton

@@ -2,6 +2,8 @@ import { Button } from '@mantine/core'
 import { useCallback, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import AddUserForm from './AddUserForm'
+import useIsAuthorized from 'hooks/useIsAuthorized'
+import { BOARD_PERMISSIONS } from 'consts/user-permissions'
 
 function AddUserButton() {
   const { t } = useTranslation()
@@ -12,6 +14,11 @@ function AddUserButton() {
   const handleCloseForm = useCallback(() => {
     setIsOpened(false)
   }, [])
+
+  const isAuthorized = useIsAuthorized()
+  if (!isAuthorized(BOARD_PERMISSIONS.admin)) {
+    return null
+  }
 
   return (
     <>

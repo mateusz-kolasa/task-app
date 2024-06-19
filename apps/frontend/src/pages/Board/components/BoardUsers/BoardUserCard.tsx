@@ -27,7 +27,7 @@ function BoardUserCard({ userId }: Readonly<BoardUserCardProps>) {
         <Text>{user?.user.username}</Text>
       </GridCol>
       <GridCol span={4}>
-        <Text>{t(boardPermissionText[user?.permissions || 0])}</Text>
+        <Text>{t(boardPermissionText[user?.permissions ?? 0])}</Text>
       </GridCol>
 
       <GridCol span={12}>

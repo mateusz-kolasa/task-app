@@ -106,6 +106,10 @@ export class BoardService {
       userData.boardId,
       BOARD_PERMISSIONS.admin
     )
+    if (userData.permissions > BOARD_PERMISSIONS.admin) {
+      throw new ForbiddenException()
+    }
+
     if (!isAuthorized) {
       throw new ForbiddenException()
     }

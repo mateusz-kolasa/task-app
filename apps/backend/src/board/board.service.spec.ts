@@ -288,7 +288,7 @@ describe('BoardService', () => {
       ).rejects.toThrow(BadRequestException)
     })
 
-    it('throws forbidden is request is not from admin', async () => {
+    it('throws forbidden if request is not from admin', async () => {
       usersService.isUserAuthorized = jest.fn().mockResolvedValueOnce(false)
 
       expect(
@@ -296,6 +296,16 @@ describe('BoardService', () => {
           boardId: 1,
           username: 'user',
           permissions: 0,
+        })
+      ).rejects.toThrow(ForbiddenException)
+    })
+
+    it('throws forbidden if trying to set owners permissions', async () => {
+      expect(
+        service.addUser(request, {
+          boardId: 1,
+          username: 'user',
+          permissions: 3,
         })
       ).rejects.toThrow(ForbiddenException)
     })

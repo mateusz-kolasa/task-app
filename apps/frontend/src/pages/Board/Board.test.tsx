@@ -14,6 +14,10 @@ vi.mock(`react-router-dom`, async (): Promise<unknown> => {
   }
 })
 
+vi.mock(`hooks/useIsAuthorized`, () => ({
+  default: () => () => true,
+}))
+
 describe('Board', () => {
   it('renders Board component', () => {
     customRender(<Board />)

@@ -17,7 +17,9 @@ export const listsAdapter = createEntityAdapter<ListNormalized>({
   sortComparer: sortByPosition,
 })
 
-export const userInBoardAdapter = createEntityAdapter<UsersInBoardsWithUsername>({})
+export const userInBoardAdapter = createEntityAdapter({
+  selectId: (userInBoard: UsersInBoardsWithUsername) => userInBoard.userId,
+})
 
 export const apiSlice = createApi({
   reducerPath: 'api',

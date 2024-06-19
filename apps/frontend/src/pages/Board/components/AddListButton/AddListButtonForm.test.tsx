@@ -1,26 +1,26 @@
 import { customRender } from 'utils/testHelper'
 import { describe, it, expect, vi } from 'vitest'
 import { fireEvent, waitFor } from '@testing-library/react'
-import ListButtonForm from './ListButtonForm'
+import AddListButtonForm from './AddListButtonForm'
 import { server } from 'mocks/api/server'
 import { HttpResponse, http } from 'msw'
 
 const handleCloseForm = vi.fn()
 
-describe('ListButtonForm', () => {
-  it('renders ListButtonForm component', () => {
-    customRender(<ListButtonForm handleCloseForm={handleCloseForm} />)
+describe('AddListButtonForm', () => {
+  it('renders AddListButtonForm component', () => {
+    customRender(<AddListButtonForm handleCloseForm={handleCloseForm} />)
   })
 
   it('Closes form on X click', async () => {
-    const { getByRole } = customRender(<ListButtonForm handleCloseForm={handleCloseForm} />)
+    const { getByRole } = customRender(<AddListButtonForm handleCloseForm={handleCloseForm} />)
     fireEvent.click(getByRole('button', { name: '' }))
     expect(handleCloseForm).toHaveBeenCalled()
   })
 
   it('Creates list and closes form', async () => {
     const { getByPlaceholderText, getByText } = customRender(
-      <ListButtonForm handleCloseForm={handleCloseForm} />
+      <AddListButtonForm handleCloseForm={handleCloseForm} />
     )
 
     fireEvent.change(getByPlaceholderText('list.create.placeholder'), {
@@ -39,7 +39,7 @@ describe('ListButtonForm', () => {
     )
 
     const { getByPlaceholderText, getByText } = customRender(
-      <ListButtonForm handleCloseForm={handleCloseForm} />
+      <AddListButtonForm handleCloseForm={handleCloseForm} />
     )
 
     fireEvent.change(getByPlaceholderText('list.create.placeholder'), {

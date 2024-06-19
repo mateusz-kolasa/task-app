@@ -14,11 +14,11 @@ interface ListData {
   title: string
 }
 
-interface ListButtonFormProps {
+interface AddListButtonFormProps {
   handleCloseForm: () => void
 }
 
-function ListButtonForm({ handleCloseForm }: Readonly<ListButtonFormProps>) {
+function AddListButtonForm({ handleCloseForm }: Readonly<AddListButtonFormProps>) {
   const { boardId = '' } = useParams()
   const { t } = useTranslation()
 
@@ -71,4 +71,4 @@ function ListButtonForm({ handleCloseForm }: Readonly<ListButtonFormProps>) {
   )
 }
 
-export default ListButtonForm
+export default AddListButtonForm

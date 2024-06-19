@@ -1,7 +1,7 @@
 import { ScrollArea, Stack, Text } from '@mantine/core'
 import ListCardBase from 'components/ListCardBase/ListCardBase'
 import TaskCard from '../TaskCard/TaskCard'
-import AddCardButton from './AddCardButton'
+import AddCardButton from './AddCard/AddCardButton'
 import { useParams } from 'react-router-dom'
 import { useBoardDataQuery } from 'store/slices/api/board-api-slice'
 
