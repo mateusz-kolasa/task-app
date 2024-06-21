@@ -116,20 +116,26 @@ describe('AuthService', () => {
 
   describe('login', () => {
     it('Sets access_token cookie', async () => {
+      const now = Date.now()
+      Date.now = jest.fn().mockReturnValue(now)
+
       jwtService.sign = jest.fn().mockReturnValueOnce('token_content')
       service.login(user, response)
       expect(response.cookie).toHaveBeenCalledWith('access_token', 'token_content', {
-        expires: new Date(Date.now() + 3600_000),
+        expires: new Date(now + 3600_000),
       })
     })
   })
 
   describe('logout', () => {
     it('expires access_token', async () => {
+      const now = Date.now()
+      Date.now = jest.fn().mockReturnValue(now)
+
       jwtService.sign = jest.fn().mockReturnValueOnce('token_content')
       service.logout(response)
       expect(response.cookie).toHaveBeenCalledWith('access_token', {
-        expires: new Date(Date.now()),
+        expires: now,
       })
     })
   })

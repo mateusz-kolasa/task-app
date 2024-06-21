@@ -56,7 +56,7 @@ export class AuthService {
   }
 
   async logout(response: Response): Promise<Record<string, never>> {
-    response.cookie('access_token', { expires: new Date(Date.now()) })
+    response.cookie('access_token', { expires: Date.now() })
     return {}
   }
 
