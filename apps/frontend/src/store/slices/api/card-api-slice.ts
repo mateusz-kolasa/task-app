@@ -1,10 +1,17 @@
-import { Card, CardCreateData } from 'shared-types'
+import { Card, CardCreateData, ChangeCardPositionData } from 'shared-types'
 import { boardApiSlice } from './board-api-slice'
 import { apiSlice, cardsAdapter } from './api-slice'
 import API_PATHS from 'consts/api-paths'
+import { movePosition } from 'utils/dndHelper'
+import { Update } from '@reduxjs/toolkit'
 
 interface CardCreateDataWithBoardId extends CardCreateData {
   boardId: string
+}
+
+interface ChangeCardPositionDataContainerIds extends ChangeCardPositionData {
+  boardId: string
+  listId: number
 }
 
 export const cardApiSlice = apiSlice.injectEndpoints({
@@ -35,7 +42,85 @@ export const cardApiSlice = apiSlice.injectEndpoints({
         }
       },
     }),
+    changeCardPosition: builder.mutation<Card[], ChangeCardPositionDataContainerIds>({
+      query: cardPosition => ({
+        url: API_PATHS.changeCardPosition,
+        method: 'POST',
+        body: {
+          cardId: cardPosition.cardId,
+          position: cardPosition.position,
+          ...(cardPosition.newListId !== cardPosition.listId && {
+            newListId: cardPosition.newListId,
+          }),
+        },
+      }),
+      async onQueryStarted(
+        { cardId, listId, newListId, boardId, position },
+        { dispatch, queryFulfilled }
+      ) {
+        const patchResult = dispatch(
+          boardApiSlice.util.updateQueryData('boardData', boardId.toString(), previousBoard => {
+            const sourceList = previousBoard.lists.entities[listId]
+            const card = sourceList.cards.entities[cardId]
+
+            if (listId === newListId) {
+              const updatedCards = movePosition(
+                sourceList.cards.ids,
+                sourceList.cards.entities,
+                card.position,
+                position,
+                cardId
+              )
+
+              sourceList.cards = cardsAdapter.updateMany(sourceList.cards, updatedCards)
+            } else if (newListId) {
+              const destinationList = previousBoard.lists.entities[newListId]
+
+              const sourceListUpdate: Update<Card, number>[] = Object.entries(
+                sourceList.cards.entities
+              )
+                .filter(([, value]) => value.position > card.position)
+                .map(([id, value]) => ({
+                  id: parseInt(id),
+                  changes: {
+                    position: value.position - 1,
+                  },
+                }))
+
+              const destinationListUpdate: Update<Card, number>[] = Object.entries(
+                destinationList.cards.entities
+              )
+                .filter(([, value]) => value.position >= position)
+                .map(([id, value]) => ({
+                  id: parseInt(id),
+                  changes: {
+                    position: value.position + 1,
+                  },
+                }))
+
+              sourceList.cards = cardsAdapter.updateMany(sourceList.cards, sourceListUpdate)
+              sourceList.cards = cardsAdapter.removeOne(sourceList.cards, cardId)
+
+              destinationList.cards = cardsAdapter.updateMany(
+                destinationList.cards,
+                destinationListUpdate
+              )
+              destinationList.cards = cardsAdapter.addOne(destinationList.cards, {
+                ...card,
+                position,
+              })
+            }
+          })
+        )
+
+        try {
+          await queryFulfilled
+        } catch {
+          patchResult.undo()
+        }
+      },
+    }),
   }),
 })
 
-export const { useCreateCardMutation } = cardApiSlice
+export const { useCreateCardMutation, useChangeCardPositionMutation } = cardApiSlice

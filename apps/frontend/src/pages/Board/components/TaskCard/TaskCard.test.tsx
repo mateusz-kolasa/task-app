@@ -1,4 +1,4 @@
-import { customRender } from 'utils/testHelper'
+import { TestDragAndDropContext, customRender } from 'utils/testHelper'
 import { SAMPLE_LISTS } from 'mocks/data/lists'
 import { fireEvent, waitFor } from '@testing-library/dom'
 import { describe, it, expect, vi, Mock } from 'vitest'
@@ -19,16 +19,28 @@ const list = SAMPLE_LISTS[0]
 
 describe('TaskCard', () => {
   it('renders TaskCard component', () => {
-    customRender(<TaskCard listId={list.id} cardId={list.cards[0].id} />)
+    customRender(
+      <TestDragAndDropContext>
+        <TaskCard listId={list.id} cardId={list.cards[0].id} />
+      </TestDragAndDropContext>
+    )
   })
 
   it(`renders with title`, async () => {
-    const { getByText } = customRender(<TaskCard listId={list.id} cardId={list.cards[0].id} />)
+    const { getByText } = customRender(
+      <TestDragAndDropContext>
+        <TaskCard listId={list.id} cardId={list.cards[0].id} />
+      </TestDragAndDropContext>
+    )
     await waitFor(() => expect(getByText(list.cards[0].title)).toBeTruthy())
   })
 
   it('navigates to card page on click', async () => {
-    const { getByText } = customRender(<TaskCard listId={list.id} cardId={list.cards[0].id} />)
+    const { getByText } = customRender(
+      <TestDragAndDropContext>
+        <TaskCard listId={list.id} cardId={list.cards[0].id} />
+      </TestDragAndDropContext>
+    )
     await waitFor(() => expect(getByText(list.cards[0].title)).toBeTruthy())
 
     fireEvent.click(getByText(list.cards[0].title))

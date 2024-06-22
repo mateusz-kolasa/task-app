@@ -5,6 +5,8 @@ import { Notifications } from '@mantine/notifications'
 import { Provider } from 'react-redux'
 import { AppStore, RootState, setupStore } from 'store/store'
 import { BrowserRouter } from 'react-router-dom'
+import { DragDropContext, Droppable } from '@hello-pangea/dnd'
+import { vi } from 'vitest'
 
 interface ExtendedRenderOptions extends Omit<RenderOptions, 'queries'> {
   preloadedState?: Partial<RootState>
@@ -36,4 +38,21 @@ export function customRender(
     store,
     ...render(ui, { wrapper: Wrapper, ...renderOptions }),
   }
+}
+
+export function TestDragAndDropContext({ children }: Readonly<PropsWithChildren>) {
+  const onDragEnd = vi.fn()
+
+  return (
+    <DragDropContext onDragEnd={onDragEnd}>
+      <Droppable droppableId='droppable'>
+        {provided => (
+          <>
+            {children}
+            {provided.placeholder}
+          </>
+        )}
+      </Droppable>
+    </DragDropContext>
+  )
 }

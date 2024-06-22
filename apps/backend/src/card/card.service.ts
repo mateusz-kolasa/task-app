@@ -207,7 +207,11 @@ export class CardService {
 
     // Make sure new position is within current bounds
     const cards = changePositionData.newListId ? newList.cards : list.cards
-    const maxPosition = Math.max(...cards.map(card => card.position))
+    let maxPosition = Math.max(...cards.map(card => card.position), 0)
+    if (changePositionData.newListId) {
+      maxPosition += 1
+    }
+
     if (changePositionData.position > maxPosition) {
       throw new BadRequestException()
     }

@@ -1,4 +1,38 @@
 {
+  "card": {
+    "move": {
+      "error": {
+        "title": "Could not move card",
+        "message": "An error has occured, try later."
+      }
+    },
+    "create": {
+      "new": "Create new card",
+      "error": {
+        "title": "Could not create card",
+        "message": "An error occured during card creation, try later."
+      },
+      "placeholder": "Enter the card name",
+      "button": "Create card"
+    }
+  },
+  "list": {
+    "move": {
+      "error": {
+        "title": "Could not move list",
+        "message": "An error has occured, try later."
+      }
+    },
+    "create": {
+      "new": "Create new list",
+      "error": {
+        "title": "Could not create list",
+        "message": "An error occured during list creation, try later."
+      },
+      "placeholder": "Enter the list name",
+      "button": "Create list"
+    }
+  },
   "board": {
     "permission": {
       "view": "View",
@@ -30,28 +64,6 @@
       "new": "Create new board",
       "label": "Board title",
       "button": "Create board"
-    }
-  },
-  "list": {
-    "create": {
-      "new": "Create new list",
-      "error": {
-        "title": "Could not create list",
-        "message": "An error occured during list creation, try later."
-      },
-      "placeholder": "Enter the list name",
-      "button": "Create list"
-    }
-  },
-  "card": {
-    "create": {
-      "new": "Create new card",
-      "error": {
-        "title": "Could not create card",
-        "message": "An error occured during card creation, try later."
-      },
-      "placeholder": "Enter the card name",
-      "button": "Create card"
     }
   },
   "dashboard": {

@@ -1,6 +1,10 @@
-import { Text, Button } from '@mantine/core'
+import { Draggable } from '@hello-pangea/dnd'
+import { Text, Card } from '@mantine/core'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useBoardDataQuery } from 'store/slices/api/board-api-slice'
+import classes from './TaskCard.module.css'
+import { BOARD_PERMISSIONS } from 'consts/user-permissions'
+import useIsAuthorized from 'hooks/useIsAuthorized'
 
 interface TaskCard {
   listId: number
@@ -20,10 +24,30 @@ function TaskCard({ listId, cardId }: Readonly<TaskCard>) {
   const navigate = useNavigate()
   const handleCardClick = () => navigate(`card/${cardId}`)
 
+  const isAuthorized = useIsAuthorized()
+
   return (
-    <Button variant='default' radius='md' p='xs' onClick={handleCardClick}>
-      <Text size='sm'>{card?.title}</Text>
-    </Button>
+    <Draggable
+      draggableId={`card_${cardId}`}
+      index={card?.position ?? 0}
+      isDragDisabled={!isAuthorized(BOARD_PERMISSIONS.edit)}
+    >
+      {provided => (
+        <Card
+          className={classes.card}
+          radius='md'
+          p='xs'
+          withBorder
+          shadow='sm'
+          onClick={handleCardClick}
+          {...provided.draggableProps}
+          {...provided.dragHandleProps}
+          ref={provided.innerRef}
+        >
+          <Text size='sm'>{card?.title}</Text>
+        </Card>
+      )}
+    </Draggable>
   )
 }
 

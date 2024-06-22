@@ -153,7 +153,6 @@ export class ListService {
     if (changePositionData.position > maxPosition) {
       throw new BadRequestException()
     }
-    console.log(changePositionData, list)
     await this.movePositionInList(changePositionData, list)
 
     return this.prisma.list.findMany({

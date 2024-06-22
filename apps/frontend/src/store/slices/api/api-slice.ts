@@ -3,7 +3,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import { CardData, UsersInBoardsWithUsername } from 'shared-types'
 import { ListNormalized } from 'types/list-normalized'
 
-interface SortableByPosition {
+export interface SortableByPosition {
   position: number
 }
 const sortByPosition = (elementA: SortableByPosition, elementB: SortableByPosition) =>

@@ -1,7 +1,12 @@
-import { ListCreateData, ListFullData } from 'shared-types'
+import { ChangeListPositionData, ListCreateData, ListFullData } from 'shared-types'
 import { boardApiSlice } from './board-api-slice'
 import { apiSlice, cardsAdapter, listsAdapter } from './api-slice'
 import API_PATHS from 'consts/api-paths'
+import { movePosition } from 'utils/dndHelper'
+
+interface ChangeListPositionDataWithBoardId extends ChangeListPositionData {
+  boardId: string
+}
 
 export const listApiSlice = apiSlice.injectEndpoints({
   endpoints: builder => ({
@@ -28,7 +33,37 @@ export const listApiSlice = apiSlice.injectEndpoints({
         }
       },
     }),
+    changeListPosition: builder.mutation<ListFullData[], ChangeListPositionDataWithBoardId>({
+      query: listPosition => ({
+        url: API_PATHS.changeListPosition,
+        method: 'POST',
+        body: listPosition,
+      }),
+      async onQueryStarted({ position, listId, boardId }, { dispatch, queryFulfilled }) {
+        const patchResult = dispatch(
+          boardApiSlice.util.updateQueryData('boardData', boardId.toString(), previousBoard => {
+            const list = previousBoard.lists.entities[listId]
+
+            const updatedLists = movePosition(
+              previousBoard.lists.ids,
+              previousBoard.lists.entities,
+              list.position,
+              position,
+              listId
+            )
+
+            previousBoard.lists = listsAdapter.updateMany(previousBoard.lists, updatedLists)
+          })
+        )
+
+        try {
+          await queryFulfilled
+        } catch {
+          patchResult.undo()
+        }
+      },
+    }),
   }),
 })
 
-export const { useCreateListMutation } = listApiSlice
+export const { useCreateListMutation, useChangeListPositionMutation } = listApiSlice

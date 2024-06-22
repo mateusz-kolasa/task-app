@@ -1,4 +1,38 @@
 {
+  "card": {
+    "move": {
+      "error": {
+        "title": "Nie udało się przesunąć karty",
+        "message": "Wystąpił błąd, spóbuj ponownie później."
+      }
+    },
+    "create": {
+      "new": "Dodaj nową kartę",
+      "error": {
+        "title": "Nie udało się stworzyć karty",
+        "message": "Wystąpił błąd przy tworzeniu karty, spóbuj ponownie później."
+      },
+      "placeholder": "Wprowadź nazwę karty",
+      "button": "Dodaj kartę"
+    }
+  },
+  "list": {
+    "move": {
+      "error": {
+        "title": "Nie udało się przesunąć listy",
+        "message": "Wystąpił błąd, spóbuj ponownie później."
+      }
+    },
+    "create": {
+      "new": "Dodaj nową listę",
+      "error": {
+        "title": "Nie udało się stworzyć listy",
+        "message": "Wystąpił błąd przy tworzeniu listy, spóbuj ponownie później."
+      },
+      "placeholder": "Wprowadź nazwę listy",
+      "button": "Dodaj listę"
+    }
+  },
   "board": {
     "permission": {
       "view": "Oglądanie",
@@ -30,28 +64,6 @@
       "new": "Dodaj nową tablicę",
       "label": "Nazwa tablicy",
       "button": "Dodaj tablicę"
-    }
-  },
-  "list": {
-    "create": {
-      "new": "Dodaj nową listę",
-      "error": {
-        "title": "Nie udało się stworzyć listy",
-        "message": "Wystąpił błąd przy tworzeniu listy, spóbuj ponownie później."
-      },
-      "placeholder": "Wprowadź nazwę listy",
-      "button": "Dodaj listę"
-    }
-  },
-  "card": {
-    "create": {
-      "new": "Dodaj nową kartę",
-      "error": {
-        "title": "Nie udało się stworzyć karty",
-        "message": "Wystąpił błąd przy tworzeniu karty, spóbuj ponownie później."
-      },
-      "placeholder": "Wprowadź nazwę karty",
-      "button": "Dodaj kartę"
     }
   },
   "dashboard": {

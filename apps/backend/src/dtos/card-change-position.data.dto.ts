@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger'
-import { IsNumber, Min } from 'class-validator'
+import { IsNumber, IsOptional, Min } from 'class-validator'
 
 export default class ChangeCardPositionData {
   @IsNumber()
@@ -7,6 +7,7 @@ export default class ChangeCardPositionData {
   cardId: number
 
   @IsNumber()
+  @IsOptional()
   @ApiProperty()
   newListId?: number
 
