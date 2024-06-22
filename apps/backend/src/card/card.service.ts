@@ -49,15 +49,6 @@ export class CardService {
 
   async moveBetweenLists(changePositionData: ChangeCardPositionData, currentCardData: Card) {
     return this.prisma.$transaction([
-      this.prisma.card.update({
-        data: {
-          position: changePositionData.position,
-          listId: changePositionData.newListId,
-        },
-        where: {
-          id: changePositionData.cardId,
-        },
-      }),
       // Increase position of cards in new list
       this.prisma.card.updateMany({
         data: {
@@ -86,20 +77,21 @@ export class CardService {
           listId: currentCardData.listId,
         },
       }),
+      this.prisma.card.update({
+        data: {
+          position: changePositionData.position,
+          listId: changePositionData.newListId,
+        },
+        where: {
+          id: changePositionData.cardId,
+        },
+      }),
     ])
   }
 
   async movePositionInList(changePositionData: ChangeCardPositionData, currentCardData: Card) {
     if (changePositionData.position < currentCardData.position) {
       return this.prisma.$transaction([
-        this.prisma.card.update({
-          data: {
-            position: changePositionData.position,
-          },
-          where: {
-            id: changePositionData.cardId,
-          },
-        }),
         // If moving card towards front, shift cards between one step to back
         this.prisma.card.updateMany({
           data: {
@@ -115,9 +107,6 @@ export class CardService {
             listId: currentCardData.listId,
           },
         }),
-      ])
-    } else {
-      return this.prisma.$transaction([
         this.prisma.card.update({
           data: {
             position: changePositionData.position,
@@ -126,6 +115,9 @@ export class CardService {
             id: changePositionData.cardId,
           },
         }),
+      ])
+    } else {
+      return this.prisma.$transaction([
         // If moving card towards end, shift cards between one step to front
         this.prisma.card.updateMany({
           data: {
@@ -139,6 +131,14 @@ export class CardService {
               lte: changePositionData.position,
             },
             listId: currentCardData.listId,
+          },
+        }),
+        this.prisma.card.update({
+          data: {
+            position: changePositionData.position,
+          },
+          where: {
+            id: changePositionData.cardId,
           },
         }),
       ])

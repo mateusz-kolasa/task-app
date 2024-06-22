@@ -62,14 +62,6 @@ export class ListService {
   async movePositionInList(changePositionData: ChangeListPositionData, currentListData: List) {
     if (changePositionData.position < currentListData.position) {
       return this.prisma.$transaction([
-        this.prisma.list.update({
-          data: {
-            position: changePositionData.position,
-          },
-          where: {
-            id: changePositionData.listId,
-          },
-        }),
         // If moving list towards front, shift lists between one step to back
         this.prisma.list.updateMany({
           data: {
@@ -85,9 +77,6 @@ export class ListService {
             boardId: currentListData.boardId,
           },
         }),
-      ])
-    } else {
-      return this.prisma.$transaction([
         this.prisma.list.update({
           data: {
             position: changePositionData.position,
@@ -96,6 +85,9 @@ export class ListService {
             id: changePositionData.listId,
           },
         }),
+      ])
+    } else {
+      return this.prisma.$transaction([
         // If moving list towards end, shift lists between one step to front
         this.prisma.list.updateMany({
           data: {
@@ -109,6 +101,14 @@ export class ListService {
               lte: changePositionData.position,
             },
             boardId: currentListData.boardId,
+          },
+        }),
+        this.prisma.list.update({
+          data: {
+            position: changePositionData.position,
+          },
+          where: {
+            id: changePositionData.listId,
           },
         }),
       ])
@@ -153,7 +153,7 @@ export class ListService {
     if (changePositionData.position > maxPosition) {
       throw new BadRequestException()
     }
-
+    console.log(changePositionData, list)
     await this.movePositionInList(changePositionData, list)
 
     return this.prisma.list.findMany({
