@@ -1,15 +1,14 @@
 import { Card } from '@mantine/core'
 import { useClickOutside, useMergedRef } from '@mantine/hooks'
 import { LIST_MAX_HEIGHT, LIST_WIDTH } from 'consts/style-consts'
-import { ReactNode } from 'react'
+import { PropsWithChildren } from 'react'
 import classes from './ListCardBase.module.css'
 import { DraggableProvidedDraggableProps } from '@hello-pangea/dnd'
 
 interface ListCardProps {
   handleOutsideClick?: () => void
   innerRef?: (a?: HTMLElement | null) => void
-  draggableProps: DraggableProvidedDraggableProps
-  children: ReactNode
+  draggableProps?: DraggableProvidedDraggableProps
 }
 
 function ListCardBase({
@@ -17,7 +16,7 @@ function ListCardBase({
   innerRef,
   draggableProps,
   children,
-}: Readonly<ListCardProps>) {
+}: Readonly<PropsWithChildren<ListCardProps>>) {
   const outsideClickRef = useClickOutside(handleOutsideClick || (() => {}))
   const mergedRef = useMergedRef(outsideClickRef, innerRef)
 
