@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Req, UseGuards } from '@nestjs/common'
+import { Body, Controller, Patch, Post, Req, UseGuards } from '@nestjs/common'
 import CardCreateData from 'src/dtos/card-create-data.dto'
 import { CardService } from './card.service'
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard'
@@ -6,6 +6,7 @@ import { ApiTags } from '@nestjs/swagger'
 import { Card } from 'prisma/prisma-client'
 import { AuthRequest } from 'src/types/user-jwt-payload'
 import ChangeCardPositionData from 'src/dtos/card-change-position.data.dto'
+import ChangeCardTitleData from 'src/dtos/card-change-title-data.dto'
 
 @ApiTags('card')
 @Controller('card')
@@ -24,5 +25,13 @@ export class CardController {
     @Body() changePositionData: ChangeCardPositionData
   ): Promise<Card[]> {
     return this.cardService.changePosition(request, changePositionData)
+  }
+
+  @Patch('change-title')
+  changeTitle(
+    @Req() request: AuthRequest,
+    @Body() changeTitleData: ChangeCardTitleData
+  ): Promise<Card> {
+    return this.cardService.changeTitle(request, changeTitleData)
   }
 }

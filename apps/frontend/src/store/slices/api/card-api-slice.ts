@@ -1,4 +1,4 @@
-import { Card, CardCreateData, ChangeCardPositionData } from 'shared-types'
+import { Card, CardCreateData, ChangeCardPositionData, ChangeCardTitleData } from 'shared-types'
 import { boardApiSlice } from './board-api-slice'
 import { apiSlice, cardsAdapter } from './api-slice'
 import API_PATHS from 'consts/api-paths'
@@ -10,6 +10,11 @@ interface CardCreateDataWithBoardId extends CardCreateData {
 }
 
 interface ChangeCardPositionDataContainerIds extends ChangeCardPositionData {
+  boardId: string
+  listId: number
+}
+
+interface ChangeCardTitleWithContainerIds extends ChangeCardTitleData {
   boardId: string
   listId: number
 }
@@ -120,7 +125,28 @@ export const cardApiSlice = apiSlice.injectEndpoints({
         }
       },
     }),
+    changeCardTitle: builder.mutation<Card, ChangeCardTitleWithContainerIds>({
+      query: cardTitle => ({
+        url: API_PATHS.changeCardTitle,
+        method: 'PATCH',
+        body: cardTitle,
+      }),
+      async onQueryStarted({ title, cardId, listId, boardId }, { dispatch, queryFulfilled }) {
+        const patchResult = dispatch(
+          boardApiSlice.util.updateQueryData('boardData', boardId.toString(), previousBoard => {
+            previousBoard.lists.entities[listId].cards.entities[cardId].title = title
+          })
+        )
+
+        try {
+          await queryFulfilled
+        } catch {
+          patchResult.undo()
+        }
+      },
+    }),
   }),
 })
 
-export const { useCreateCardMutation, useChangeCardPositionMutation } = cardApiSlice
+export const { useCreateCardMutation, useChangeCardPositionMutation, useChangeCardTitleMutation } =
+  cardApiSlice

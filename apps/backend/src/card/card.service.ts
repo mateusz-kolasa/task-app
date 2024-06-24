@@ -8,6 +8,7 @@ import { Card } from 'prisma/prisma-client'
 import { ListFullData } from 'shared-types'
 import { BOARD_PERMISSIONS } from 'src/consts/user.consts'
 import ChangeCardPositionData from 'src/dtos/card-change-position.data.dto'
+import ChangeCardTitleData from 'src/dtos/card-change-title-data.dto'
 import CardCreateData from 'src/dtos/card-create-data.dto'
 import { ListService } from 'src/list/list.service'
 import { PrismaService } from 'src/prisma/prisma.service'
@@ -233,5 +234,42 @@ export class CardService {
         },
       })
     }
+  }
+
+  async changeTitle(request: AuthRequest, changeTitleData: ChangeCardTitleData): Promise<Card> {
+    const card = await this.prisma.card.findUnique({
+      where: {
+        id: changeTitleData.cardId,
+      },
+    })
+
+    if (!card) {
+      throw new NotFoundException()
+    }
+
+    const list = await this.prisma.list.findUnique({
+      where: {
+        id: card.listId,
+      },
+    })
+
+    const isAuthorized = await this.usersService.isUserAuthorized(
+      request.user.id,
+      list.boardId,
+      BOARD_PERMISSIONS.edit
+    )
+
+    if (!isAuthorized) {
+      throw new ForbiddenException()
+    }
+
+    return this.prisma.card.update({
+      data: {
+        title: changeTitleData.title,
+      },
+      where: {
+        id: changeTitleData.cardId,
+      },
+    })
   }
 }

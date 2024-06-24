@@ -31,7 +31,7 @@ function BoardDndContext({ children }: Readonly<PropsWithChildren>) {
         .catch(() => {
           notifications.show({
             title: t('card.move.error.title'),
-            message: t('card.move.error.message'),
+            message: t('error.general.message'),
             color: 'red',
           })
         })
@@ -49,7 +49,7 @@ function BoardDndContext({ children }: Readonly<PropsWithChildren>) {
         .catch(() => {
           notifications.show({
             title: t('list.move.error.title'),
-            message: t('list.move.error.message'),
+            message: t('error.general.message'),
             color: 'red',
           })
         })

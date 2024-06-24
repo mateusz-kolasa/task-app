@@ -8,8 +8,10 @@ const API_PATHS = {
   addBoardUser: 'board/users/add',
   list: 'list',
   changeListPosition: 'list/change-position',
+  changeListTitle: 'list/change-title',
   card: 'card',
   changeCardPosition: 'card/change-position',
+  changeCardTitle: 'card/change-title',
 }
 
 export default API_PATHS

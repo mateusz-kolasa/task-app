@@ -9,8 +9,9 @@ import { AuthRequest } from 'src/types/user-jwt-payload'
 import { BadRequestException, ForbiddenException, NotFoundException } from '@nestjs/common'
 import { UsersModule } from 'src/users/users.module'
 import { ListFullData } from 'shared-types'
-import { Card } from 'prisma/prisma-client'
+import { Card, List } from 'prisma/prisma-client'
 import ChangeCardPositionData from 'src/dtos/card-change-position.data.dto'
+import ChangeCardTitleData from 'src/dtos/card-change-title-data.dto'
 
 describe('CardService', () => {
   let service: CardService
@@ -416,6 +417,70 @@ describe('CardService', () => {
       expect(service.changePosition(request, changePositionData)).rejects.toThrow(
         BadRequestException
       )
+    })
+  })
+
+  describe('changeTitle', () => {
+    const originaCard: Card = {
+      title: 'old title',
+      id: 1,
+      listId: 1,
+      position: 1,
+      description: '',
+    }
+
+    const originalList: List = {
+      title: '',
+      id: 1,
+      boardId: 1,
+      position: 1,
+    }
+
+    const changeTitleData: ChangeCardTitleData = {
+      cardId: 1,
+      title: 'new title',
+    }
+
+    it('updates card with new title', async () => {
+      usersService.isUserAuthorized = jest.fn().mockResolvedValueOnce(true)
+      prisma.card.findUnique = jest.fn().mockResolvedValueOnce(originaCard)
+      prisma.list.findUnique = jest.fn().mockResolvedValueOnce(originalList)
+      prisma.card.update = jest.fn()
+
+      await service.changeTitle(request, changeTitleData)
+      expect(prisma.card.update).toHaveBeenCalledWith({
+        data: {
+          title: changeTitleData.title,
+        },
+        where: {
+          id: changeTitleData.cardId,
+        },
+      })
+    })
+
+    it('returns updated card', async () => {
+      usersService.isUserAuthorized = jest.fn().mockResolvedValueOnce(true)
+      prisma.card.findUnique = jest.fn().mockResolvedValueOnce(originaCard)
+      prisma.list.findUnique = jest.fn().mockResolvedValueOnce(originalList)
+      prisma.card.update = jest.fn().mockResolvedValueOnce({
+        ...originaCard,
+        title: changeTitleData.title,
+      })
+
+      const response = await service.changeTitle(request, changeTitleData)
+      expect(response).toStrictEqual({
+        ...originaCard,
+        title: changeTitleData.title,
+      })
+    })
+
+    it('throws forbidden for unauthorized user', async () => {
+      usersService.isUserAuthorized = jest.fn().mockResolvedValueOnce(false)
+      prisma.card.findUnique = jest.fn().mockResolvedValueOnce(originaCard)
+      prisma.list.findUnique = jest.fn().mockResolvedValueOnce(originalList)
+      prisma.card.update = jest.fn()
+
+      expect(service.changeTitle(request, changeTitleData)).rejects.toThrow(ForbiddenException)
     })
   })
 })

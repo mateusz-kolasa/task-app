@@ -2,8 +2,7 @@
   "card": {
     "move": {
       "error": {
-        "title": "Could not move card",
-        "message": "An error has occured, try later."
+        "title": "Could not move card"
       }
     },
     "create": {
@@ -14,13 +13,22 @@
       },
       "placeholder": "Enter the card name",
       "button": "Create card"
+    },
+    "title": {
+      "error": {
+        "title": ""
+      }
+    }
+  },
+  "error": {
+    "general": {
+      "message": ""
     }
   },
   "list": {
     "move": {
       "error": {
-        "title": "Could not move list",
-        "message": "An error has occured, try later."
+        "title": "Could not move list"
       }
     },
     "create": {
@@ -31,6 +39,11 @@
       },
       "placeholder": "Enter the list name",
       "button": "Create list"
+    },
+    "title": {
+      "error": {
+        "title": ""
+      }
     }
   },
   "board": {

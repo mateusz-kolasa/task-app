@@ -2,8 +2,7 @@
   "card": {
     "move": {
       "error": {
-        "title": "Nie udało się przesunąć karty",
-        "message": "Wystąpił błąd, spóbuj ponownie później."
+        "title": "Nie udało się przesunąć karty"
       }
     },
     "create": {
@@ -14,13 +13,22 @@
       },
       "placeholder": "Wprowadź nazwę karty",
       "button": "Dodaj kartę"
+    },
+    "title": {
+      "error": {
+        "title": ""
+      }
+    }
+  },
+  "error": {
+    "general": {
+      "message": ""
     }
   },
   "list": {
     "move": {
       "error": {
-        "title": "Nie udało się przesunąć listy",
-        "message": "Wystąpił błąd, spóbuj ponownie później."
+        "title": "Nie udało się przesunąć listy"
       }
     },
     "create": {
@@ -31,6 +39,11 @@
       },
       "placeholder": "Wprowadź nazwę listy",
       "button": "Dodaj listę"
+    },
+    "title": {
+      "error": {
+        "title": ""
+      }
     }
   },
   "board": {

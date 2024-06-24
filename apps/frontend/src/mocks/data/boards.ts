@@ -11,11 +11,6 @@ export const SAMPLE_BOARDS: BoardData[][] = [
   ],
   [
     {
-      id: 1,
-      title: 'board1',
-      description: '',
-    },
-    {
       id: 2,
       title: 'board2',
       description: '',
@@ -23,6 +18,11 @@ export const SAMPLE_BOARDS: BoardData[][] = [
     {
       id: 3,
       title: 'board3',
+      description: '',
+    },
+    {
+      id: 4,
+      title: 'board4',
       description: '',
     },
   ],

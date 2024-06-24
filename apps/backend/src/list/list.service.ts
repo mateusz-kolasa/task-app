@@ -9,6 +9,7 @@ import { ListFullData } from 'shared-types'
 import { BoardService } from 'src/board/board.service'
 import { BOARD_PERMISSIONS } from 'src/consts/user.consts'
 import ChangeListPositionData from 'src/dtos/list-change-position.data.dto'
+import ChangeListTitleData from 'src/dtos/list-change-title-data.dto'
 import ListCreateData from 'src/dtos/list-create-data.dto'
 import { PrismaService } from 'src/prisma/prisma.service'
 import { AuthRequest } from 'src/types/user-jwt-payload'
@@ -158,6 +159,37 @@ export class ListService {
     return this.prisma.list.findMany({
       where: {
         boardId: list.boardId,
+      },
+    })
+  }
+
+  async changeTitle(request: AuthRequest, changeTitleData: ChangeListTitleData): Promise<List> {
+    const list = await this.prisma.list.findUnique({
+      where: {
+        id: changeTitleData.listId,
+      },
+    })
+
+    if (!list) {
+      throw new NotFoundException()
+    }
+
+    const isAuthorized = await this.usersService.isUserAuthorized(
+      request.user.id,
+      list.boardId,
+      BOARD_PERMISSIONS.edit
+    )
+
+    if (!isAuthorized) {
+      throw new ForbiddenException()
+    }
+
+    return this.prisma.list.update({
+      data: {
+        title: changeTitleData.title,
+      },
+      where: {
+        id: changeTitleData.listId,
       },
     })
   }

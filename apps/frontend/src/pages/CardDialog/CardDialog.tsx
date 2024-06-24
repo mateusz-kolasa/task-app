@@ -1,6 +1,7 @@
 import { Modal } from '@mantine/core'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useBoardDataQuery } from 'store/slices/api/board-api-slice'
+import CardDialogTitleText from './components/CardDialogTitleText/CardDialogTitleText'
 
 function CardDialog() {
   const navigate = useNavigate()
@@ -28,7 +29,14 @@ function CardDialog() {
   const handleClose = () => {
     navigate(`/board/${boardId}`)
   }
-  return <Modal opened={true} onClose={handleClose} title={card?.title} centered></Modal>
+  return (
+    <Modal
+      opened={true}
+      onClose={handleClose}
+      centered
+      title={card && <CardDialogTitleText listId={card?.listId} />}
+    ></Modal>
+  )
 }
 
 export default CardDialog

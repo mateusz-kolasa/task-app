@@ -10,6 +10,7 @@ import { AuthRequest } from 'src/types/user-jwt-payload'
 import { BadRequestException, ForbiddenException, NotFoundException } from '@nestjs/common'
 import ChangeListPositionData from 'src/dtos/list-change-position.data.dto'
 import { List } from '@prisma/client'
+import { ChangeListTitleData } from 'shared-types'
 
 const request = {
   user: {
@@ -22,11 +23,6 @@ describe('ListService', () => {
   let prisma: PrismaService
   let boardService: BoardService
   let usersService: UsersService
-
-  const listData = {
-    title: 'list',
-    boardId: 1,
-  }
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -45,6 +41,11 @@ describe('ListService', () => {
   })
 
   describe('create', () => {
+    const listData = {
+      title: 'list',
+      boardId: 1,
+    }
+
     it('creates list at end of board', async () => {
       usersService.isUserAuthorized = jest.fn().mockResolvedValueOnce(true)
       prisma.list.create = jest.fn()
@@ -352,6 +353,59 @@ describe('ListService', () => {
       expect(service.changePosition(request, changePositionData)).rejects.toThrow(
         BadRequestException
       )
+    })
+  })
+
+  describe('changeTitle', () => {
+    const originaList: List = {
+      title: 'old title',
+      id: 1,
+      boardId: 1,
+      position: 1,
+    }
+
+    const changeTitleData: ChangeListTitleData = {
+      listId: 1,
+      title: 'new title',
+    }
+
+    it('updates list with new title', async () => {
+      usersService.isUserAuthorized = jest.fn().mockResolvedValueOnce(true)
+      prisma.list.findUnique = jest.fn().mockResolvedValueOnce(originaList)
+      prisma.list.update = jest.fn()
+
+      await service.changeTitle(request, changeTitleData)
+      expect(prisma.list.update).toHaveBeenCalledWith({
+        data: {
+          title: changeTitleData.title,
+        },
+        where: {
+          id: changeTitleData.listId,
+        },
+      })
+    })
+
+    it('returns updated list', async () => {
+      usersService.isUserAuthorized = jest.fn().mockResolvedValueOnce(true)
+      prisma.list.findUnique = jest.fn().mockResolvedValueOnce(originaList)
+      prisma.list.update = jest.fn().mockResolvedValueOnce({
+        ...originaList,
+        title: changeTitleData.title,
+      })
+
+      const response = await service.changeTitle(request, changeTitleData)
+      expect(response).toStrictEqual({
+        ...originaList,
+        title: changeTitleData.title,
+      })
+    })
+
+    it('throws forbidden for unauthorized user', async () => {
+      usersService.isUserAuthorized = jest.fn().mockResolvedValueOnce(false)
+      prisma.list.findUnique = jest.fn().mockResolvedValueOnce(originaList)
+      prisma.list.update = jest.fn()
+
+      expect(service.changeTitle(request, changeTitleData)).rejects.toThrow(ForbiddenException)
     })
   })
 })

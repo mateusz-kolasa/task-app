@@ -1,0 +1,16 @@
+{
+  "card": {
+    "move": {
+      "error": {
+        "message": "An error has occured, try later."
+      }
+    }
+  },
+  "list": {
+    "move": {
+      "error": {
+        "message": "An error has occured, try later."
+      }
+    }
+  }
+}

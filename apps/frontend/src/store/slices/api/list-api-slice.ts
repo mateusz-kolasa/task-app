@@ -1,10 +1,20 @@
-import { ChangeListPositionData, ListCreateData, ListFullData } from 'shared-types'
+import {
+  ChangeListPositionData,
+  ChangeListTitleData,
+  List,
+  ListCreateData,
+  ListFullData,
+} from 'shared-types'
 import { boardApiSlice } from './board-api-slice'
 import { apiSlice, cardsAdapter, listsAdapter } from './api-slice'
 import API_PATHS from 'consts/api-paths'
 import { movePosition } from 'utils/dndHelper'
 
 interface ChangeListPositionDataWithBoardId extends ChangeListPositionData {
+  boardId: string
+}
+
+interface ChangeListTitleWithBoardId extends ChangeListTitleData {
   boardId: string
 }
 
@@ -63,7 +73,28 @@ export const listApiSlice = apiSlice.injectEndpoints({
         }
       },
     }),
+    changeListTitle: builder.mutation<List, ChangeListTitleWithBoardId>({
+      query: listTitle => ({
+        url: API_PATHS.changeListTitle,
+        method: 'PATCH',
+        body: listTitle,
+      }),
+      async onQueryStarted({ title, listId, boardId }, { dispatch, queryFulfilled }) {
+        const patchResult = dispatch(
+          boardApiSlice.util.updateQueryData('boardData', boardId.toString(), previousBoard => {
+            previousBoard.lists.entities[listId].title = title
+          })
+        )
+
+        try {
+          await queryFulfilled
+        } catch {
+          patchResult.undo()
+        }
+      },
+    }),
   }),
 })
 
-export const { useCreateListMutation, useChangeListPositionMutation } = listApiSlice
+export const { useCreateListMutation, useChangeListPositionMutation, useChangeListTitleMutation } =
+  listApiSlice

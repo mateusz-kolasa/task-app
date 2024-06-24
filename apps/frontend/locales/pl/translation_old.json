@@ -1,0 +1,16 @@
+{
+  "card": {
+    "move": {
+      "error": {
+        "message": "Wystąpił błąd, spóbuj ponownie później."
+      }
+    }
+  },
+  "list": {
+    "move": {
+      "error": {
+        "message": "Wystąpił błąd, spóbuj ponownie później."
+      }
+    }
+  }
+}
