@@ -16,13 +16,13 @@
     },
     "title": {
       "error": {
-        "title": ""
+        "title": "Nie udalo się zmienić nazwy karty"
       }
     }
   },
   "error": {
     "general": {
-      "message": ""
+      "message": "Wystąpił błąd, spóbuj ponownie później."
     }
   },
   "list": {
@@ -42,7 +42,7 @@
     },
     "title": {
       "error": {
-        "title": ""
+        "title": "Nie udalo się zmienić nazwy listy"
       }
     }
   },

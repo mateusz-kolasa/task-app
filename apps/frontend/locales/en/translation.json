@@ -16,13 +16,13 @@
     },
     "title": {
       "error": {
-        "title": ""
+        "title": "Could not rename card"
       }
     }
   },
   "error": {
     "general": {
-      "message": ""
+      "message": "An error has occured, try later."
     }
   },
   "list": {
@@ -42,7 +42,7 @@
     },
     "title": {
       "error": {
-        "title": ""
+        "title": "Could not rename list"
       }
     }
   },
