@@ -35,10 +35,11 @@ function ListCard({ listId }: Readonly<ListCardProps>) {
           <ListTitleText listId={listId} dragHandleProps={provided.dragHandleProps} />
           <Droppable droppableId={listId.toString()} type='card'>
             {provided => (
-              <ScrollArea.Autosize scrollbars='y' type='auto' mt='md' mb='md' flex={1}>
+              <ScrollArea.Autosize scrollbars='y' type='auto' mt='md' mb='md' flex={1} w='100%'>
                 <Stack
                   data-testid='list-stack'
                   mih={20}
+                  w='100%'
                   ref={provided.innerRef}
                   {...provided.droppableProps}
                 >

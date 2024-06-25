@@ -33,7 +33,7 @@ function CardDialogTitleText({ listId }: Readonly<CardDialogTitleTextProps>) {
   return isEditing ? (
     <CardDialogTitleTextForm title={title} listId={listId} handleClose={handleClose} />
   ) : (
-    <Text size='sm' onClick={handleTitleClick}>
+    <Text size='sm' style={{ wordBreak: 'break-all' }} onClick={handleTitleClick}>
       {title}
     </Text>
   )

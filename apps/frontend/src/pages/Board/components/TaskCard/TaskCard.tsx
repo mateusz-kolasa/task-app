@@ -5,6 +5,7 @@ import { useBoardDataQuery } from 'store/slices/api/board-api-slice'
 import classes from './TaskCard.module.css'
 import { BOARD_PERMISSIONS } from 'consts/user-permissions'
 import useIsAuthorized from 'hooks/useIsAuthorized'
+import { CARD_TEXT_WIDTH } from 'consts/style-consts'
 
 interface TaskCard {
   listId: number
@@ -44,7 +45,9 @@ function TaskCard({ listId, cardId }: Readonly<TaskCard>) {
           {...provided.dragHandleProps}
           ref={provided.innerRef}
         >
-          <Text size='sm'>{card?.title}</Text>
+          <Text w={CARD_TEXT_WIDTH} truncate size='sm'>
+            {card?.title}
+          </Text>
         </Card>
       )}
     </Draggable>

@@ -35,6 +35,14 @@ function CardDialog() {
       onClose={handleClose}
       centered
       title={card && <CardDialogTitleText listId={card?.listId} />}
+      styles={{
+        header: {
+          alignItems: 'flex-start',
+        },
+        title: {
+          flex: 1,
+        },
+      }}
     ></Modal>
   )
 }
