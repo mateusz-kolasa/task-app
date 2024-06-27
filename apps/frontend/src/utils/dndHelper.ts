@@ -48,5 +48,3 @@ export const movePosition = (
 
     return updated
   }, [])
-
-export const moveBetweenLists = () => {}

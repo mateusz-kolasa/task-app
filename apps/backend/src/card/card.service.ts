@@ -5,7 +5,9 @@ import {
   NotFoundException,
 } from '@nestjs/common'
 import { Card } from 'prisma/prisma-client'
+import { BOARD_SOCKET_MESSAGES } from 'shared-consts'
 import { ListFullData } from 'shared-types'
+import { BoardGateway } from 'src/board/board.gateway'
 import { BOARD_PERMISSIONS } from 'src/consts/user.consts'
 import ChangeCardPositionData from 'src/dtos/card-change-position.data.dto'
 import ChangeCardTitleData from 'src/dtos/card-change-title-data.dto'
@@ -20,7 +22,8 @@ export class CardService {
   constructor(
     private prisma: PrismaService,
     private listService: ListService,
-    private usersService: UsersService
+    private usersService: UsersService,
+    private boardGateway: BoardGateway
   ) {}
 
   async create(request: AuthRequest, cardData: CardCreateData): Promise<Card> {
@@ -39,13 +42,19 @@ export class CardService {
     }
 
     const lastListPosition = Math.max(...list.cards.map(card => card.position), 0)
-    return this.prisma.card.create({
+    const createdCard = await this.prisma.card.create({
       data: {
         title: cardData.title,
         listId: cardData.listId,
         position: lastListPosition + 1,
       },
     })
+
+    this.boardGateway.sendMessage(list.boardId, BOARD_SOCKET_MESSAGES.AddCard, {
+      boardId: list.boardId,
+      payload: createdCard,
+    })
+    return createdCard
   }
 
   async moveBetweenLists(changePositionData: ChangeCardPositionData, currentCardData: Card) {
@@ -217,9 +226,10 @@ export class CardService {
       throw new BadRequestException()
     }
 
+    let updatedCards: Card[]
     if (changePositionData.newListId) {
       await this.moveBetweenLists(changePositionData, card)
-      return this.prisma.card.findMany({
+      updatedCards = await this.prisma.card.findMany({
         where: {
           listId: {
             in: [card.listId, changePositionData.newListId],
@@ -228,12 +238,18 @@ export class CardService {
       })
     } else {
       await this.movePositionInList(changePositionData, card)
-      return this.prisma.card.findMany({
+      updatedCards = await this.prisma.card.findMany({
         where: {
           listId: card.listId,
         },
       })
     }
+
+    this.boardGateway.sendMessage(list.boardId, BOARD_SOCKET_MESSAGES.ChangeCardPosition, {
+      boardId: list.boardId,
+      payload: updatedCards,
+    })
+    return updatedCards
   }
 
   async changeTitle(request: AuthRequest, changeTitleData: ChangeCardTitleData): Promise<Card> {
@@ -263,7 +279,7 @@ export class CardService {
       throw new ForbiddenException()
     }
 
-    return this.prisma.card.update({
+    const updatedCard = await this.prisma.card.update({
       data: {
         title: changeTitleData.title,
       },
@@ -271,5 +287,10 @@ export class CardService {
         id: changeTitleData.cardId,
       },
     })
+    this.boardGateway.sendMessage(list.boardId, BOARD_SOCKET_MESSAGES.ChangeCardTitle, {
+      boardId: list.boardId,
+      payload: updatedCard,
+    })
+    return updatedCard
   }
 }

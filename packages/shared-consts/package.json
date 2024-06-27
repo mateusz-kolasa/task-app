@@ -1,0 +1,18 @@
+{
+  "name": "shared-consts",
+  "version": "1.0.0",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "dev": "tsup src/index.ts --format cjs,esm --dts --watch",
+    "build": "tsup src/index.ts --format cjs,esm --dts"
+  },
+  "files": [
+    "dist/**"
+  ],
+  "devDependencies": {
+    "tsup": "^8.1.0",
+    "typescript": "latest"
+  }
+}

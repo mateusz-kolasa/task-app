@@ -1,32 +1,30 @@
 import { Test, TestingModule } from '@nestjs/testing'
-import { ListController } from './list.controller'
-import { ListService } from './list.service'
+import { BoardGateway } from './board.gateway'
 import { PrismaModule } from 'src/prisma/prisma.module'
-import { BoardModule } from 'src/board/board.module'
 import { UsersModule } from 'src/users/users.module'
+import { CoreModule } from 'src/core/core.module'
 import { ConfigModule } from '@nestjs/config'
 
-describe('ListController', () => {
-  let controller: ListController
+describe('BoardGateway', () => {
+  let gateway: BoardGateway
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      controllers: [ListController],
-      providers: [ListService],
+      providers: [BoardGateway],
       imports: [
         ConfigModule.forRoot({
           isGlobal: true,
         }),
         PrismaModule,
-        BoardModule,
         UsersModule,
+        CoreModule,
       ],
     }).compile()
 
-    controller = module.get<ListController>(ListController)
+    gateway = module.get<BoardGateway>(BoardGateway)
   })
 
   it('should be defined', () => {
-    expect(controller).toBeDefined()
+    expect(gateway).toBeDefined()
   })
 })

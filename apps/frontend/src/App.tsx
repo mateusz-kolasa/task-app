@@ -10,7 +10,7 @@ import { initReactI18next } from 'react-i18next'
 import en from '../locales/en/translation.json'
 import pl from '../locales/pl/translation.json'
 import LanguageDetector from 'i18next-browser-languagedetector'
-import { setupStore } from 'store/store'
+import { store } from 'store/store'
 
 i18next
   .use(LanguageDetector)
@@ -29,8 +29,6 @@ i18next
       escapeValue: false,
     },
   })
-
-const store = setupStore()
 
 function App() {
   return (

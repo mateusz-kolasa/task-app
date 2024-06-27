@@ -10,6 +10,9 @@ import { PrismaModule } from 'src/prisma/prisma.module'
 import { UsersModule } from 'src/users/users.module'
 import { UsersService } from 'src/users/users.service'
 import { BadRequestException, ForbiddenException, NotFoundException } from '@nestjs/common'
+import { BoardGateway } from './board.gateway'
+import { CoreModule } from 'src/core/core.module'
+import { ConfigModule } from '@nestjs/config'
 
 describe('BoardService', () => {
   let service: BoardService
@@ -24,8 +27,15 @@ describe('BoardService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [BoardService],
-      imports: [PrismaModule, UsersModule],
+      providers: [BoardService, BoardGateway],
+      imports: [
+        ConfigModule.forRoot({
+          isGlobal: true,
+        }),
+        PrismaModule,
+        UsersModule,
+        CoreModule,
+      ],
     }).compile()
 
     service = module.get<BoardService>(BoardService)

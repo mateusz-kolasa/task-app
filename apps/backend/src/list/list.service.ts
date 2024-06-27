@@ -5,7 +5,9 @@ import {
   NotFoundException,
 } from '@nestjs/common'
 import { List } from '@prisma/client'
+import { BOARD_SOCKET_MESSAGES } from 'shared-consts'
 import { ListFullData } from 'shared-types'
+import { BoardGateway } from 'src/board/board.gateway'
 import { BoardService } from 'src/board/board.service'
 import { BOARD_PERMISSIONS } from 'src/consts/user.consts'
 import ChangeListPositionData from 'src/dtos/list-change-position.data.dto'
@@ -20,6 +22,7 @@ export class ListService {
   constructor(
     private prisma: PrismaService,
     private boardService: BoardService,
+    private boardGateway: BoardGateway,
     private usersService: UsersService
   ) {}
 
@@ -48,7 +51,7 @@ export class ListService {
     const board = await this.boardService.getWithLists(listData.boardId)
     const lastListPosition = Math.max(...board.lists.map(list => list.position), 0)
 
-    return this.prisma.list.create({
+    const createdList = await this.prisma.list.create({
       data: {
         title: listData.title,
         boardId: listData.boardId,
@@ -58,6 +61,12 @@ export class ListService {
         cards: true,
       },
     })
+
+    this.boardGateway.sendMessage(createdList.boardId, BOARD_SOCKET_MESSAGES.AddList, {
+      boardId: createdList.boardId,
+      payload: createdList,
+    })
+    return createdList
   }
 
   async movePositionInList(changePositionData: ChangeListPositionData, currentListData: List) {
@@ -156,11 +165,18 @@ export class ListService {
     }
     await this.movePositionInList(changePositionData, list)
 
-    return this.prisma.list.findMany({
+    const updatedLists = await this.prisma.list.findMany({
       where: {
         boardId: list.boardId,
       },
     })
+
+    this.boardGateway.sendMessage(list.boardId, BOARD_SOCKET_MESSAGES.ChangeListPosition, {
+      boardId: list.boardId,
+      payload: updatedLists,
+    })
+
+    return updatedLists
   }
 
   async changeTitle(request: AuthRequest, changeTitleData: ChangeListTitleData): Promise<List> {
@@ -184,7 +200,7 @@ export class ListService {
       throw new ForbiddenException()
     }
 
-    return this.prisma.list.update({
+    const updatedList = await this.prisma.list.update({
       data: {
         title: changeTitleData.title,
       },
@@ -192,5 +208,11 @@ export class ListService {
         id: changeTitleData.listId,
       },
     })
+
+    this.boardGateway.sendMessage(list.boardId, BOARD_SOCKET_MESSAGES.ChangeListTitle, {
+      boardId: updatedList.boardId,
+      payload: updatedList,
+    })
+    return updatedList
   }
 }

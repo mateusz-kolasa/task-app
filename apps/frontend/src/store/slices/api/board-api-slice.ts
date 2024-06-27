@@ -9,6 +9,7 @@ import { apiSlice, cardsAdapter, listsAdapter, userInBoardAdapter } from './api-
 import { ListNormalized } from 'types/list-normalized'
 import { BoardNormalized } from 'types/board-normalized'
 import API_PATHS from 'consts/api-paths'
+import BoardSocket from 'sockets/BoardSocket'
 
 export const boardApiSlice = apiSlice.injectEndpoints({
   endpoints: builder => ({
@@ -32,6 +33,18 @@ export const boardApiSlice = apiSlice.injectEndpoints({
           lists: listsAdapter.addMany(listsAdapter.getInitialState(), lists),
           users: userInBoardAdapter.addMany(userInBoardAdapter.getInitialState(), response.users),
         }
+      },
+      async onCacheEntryAdded(boardId, { cacheDataLoaded, cacheEntryRemoved }) {
+        try {
+          // wait for the initial query to resolve before proceeding
+          await cacheDataLoaded
+          BoardSocket.joinBoard(parseInt(boardId))
+        } catch {
+          /* empty */
+        }
+
+        // cacheEntryRemoved will resolve when the cache subscription is no longer active
+        await cacheEntryRemoved
       },
     }),
     createBoard: builder.mutation<BoardData, BoardCreateData>({

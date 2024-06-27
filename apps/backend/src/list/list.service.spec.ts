@@ -11,6 +11,8 @@ import { BadRequestException, ForbiddenException, NotFoundException } from '@nes
 import ChangeListPositionData from 'src/dtos/list-change-position.data.dto'
 import { List } from '@prisma/client'
 import { ChangeListTitleData } from 'shared-types'
+import { ConfigModule } from '@nestjs/config'
+import { BoardGateway } from 'src/board/board.gateway'
 
 const request = {
   user: {
@@ -22,18 +24,29 @@ describe('ListService', () => {
   let service: ListService
   let prisma: PrismaService
   let boardService: BoardService
+  let boardGateway: BoardGateway
   let usersService: UsersService
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [ListService],
-      imports: [BoardModule, PrismaModule, UsersModule],
+      imports: [
+        ConfigModule.forRoot({
+          isGlobal: true,
+        }),
+        BoardModule,
+        PrismaModule,
+        UsersModule,
+      ],
     }).compile()
 
     service = module.get<ListService>(ListService)
     prisma = module.get<PrismaService>(PrismaService)
     boardService = module.get<BoardService>(BoardService)
+    boardGateway = module.get<BoardGateway>(BoardGateway)
     usersService = module.get<UsersService>(UsersService)
+
+    boardGateway.sendMessage = jest.fn()
   })
 
   it('should be defined', () => {
@@ -46,10 +59,18 @@ describe('ListService', () => {
       boardId: 1,
     }
 
+    const list = {
+      id: 1,
+      title: 'list',
+      position: 1,
+      boardId: 1,
+      cards: [],
+    }
+
     it('creates list at end of board', async () => {
       usersService.isUserAuthorized = jest.fn().mockResolvedValueOnce(true)
-      prisma.list.create = jest.fn()
-      boardService.getWithLists = jest.fn().mockReturnValueOnce({
+      prisma.list.create = jest.fn().mockResolvedValueOnce(list)
+      boardService.getWithLists = jest.fn().mockResolvedValueOnce({
         id: 1,
         title: 'board',
         lists: [
@@ -74,12 +95,13 @@ describe('ListService', () => {
 
     it('creates list at start of board with no existing lists', async () => {
       usersService.isUserAuthorized = jest.fn().mockResolvedValueOnce(true)
-      prisma.list.create = jest.fn()
+      prisma.list.create = jest.fn().mockReturnValueOnce(list)
       boardService.getWithLists = jest.fn().mockReturnValueOnce({
         id: 1,
         title: 'board',
         lists: [],
       })
+
       await service.create(request, listData)
       expect(prisma.list.create).toHaveBeenCalledWith({
         data: {
@@ -100,13 +122,6 @@ describe('ListService', () => {
         lists: [],
       })
 
-      const list = {
-        id: 1,
-        title: 'list',
-        position: 1,
-        boardId: 1,
-        cards: [],
-      }
       prisma.list.create = jest.fn().mockReturnValueOnce(list)
 
       const response = await service.create(request, listData)
@@ -372,7 +387,10 @@ describe('ListService', () => {
     it('updates list with new title', async () => {
       usersService.isUserAuthorized = jest.fn().mockResolvedValueOnce(true)
       prisma.list.findUnique = jest.fn().mockResolvedValueOnce(originaList)
-      prisma.list.update = jest.fn()
+      prisma.list.update = jest.fn().mockResolvedValueOnce({
+        ...originaList,
+        title: changeTitleData.title,
+      })
 
       await service.changeTitle(request, changeTitleData)
       expect(prisma.list.update).toHaveBeenCalledWith({

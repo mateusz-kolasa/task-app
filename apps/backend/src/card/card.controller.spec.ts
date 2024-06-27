@@ -4,6 +4,8 @@ import { PrismaModule } from 'src/prisma/prisma.module'
 import { CardService } from './card.service'
 import { ListModule } from 'src/list/list.module'
 import { UsersModule } from 'src/users/users.module'
+import { ConfigModule } from '@nestjs/config'
+import { BoardModule } from 'src/board/board.module'
 
 describe('CardController', () => {
   let controller: CardController
@@ -12,7 +14,15 @@ describe('CardController', () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [CardController],
       providers: [CardService],
-      imports: [ListModule, PrismaModule, UsersModule],
+      imports: [
+        ConfigModule.forRoot({
+          isGlobal: true,
+        }),
+        ListModule,
+        PrismaModule,
+        UsersModule,
+        BoardModule,
+      ],
     }).compile()
 
     controller = module.get<CardController>(CardController)
