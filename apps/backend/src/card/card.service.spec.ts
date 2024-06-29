@@ -498,4 +498,133 @@ describe('CardService', () => {
       expect(service.changeTitle(request, changeTitleData)).rejects.toThrow(ForbiddenException)
     })
   })
+
+  describe('delete', () => {
+    const cardId = 1
+    const originalCard: Card = {
+      id: 1,
+      position: 3,
+      title: '',
+      listId: 1,
+      description: '',
+    }
+
+    const originalList: List = {
+      id: 1,
+      boardId: 1,
+      position: 3,
+      title: '',
+    }
+
+    it('deletes card', async () => {
+      usersService.isUserAuthorized = jest.fn().mockResolvedValueOnce(true)
+      prisma.card.findUnique = jest.fn().mockResolvedValueOnce(originalCard)
+      prisma.list.findUnique = jest.fn().mockResolvedValueOnce(originalList)
+      prisma.card.findMany = jest
+        .fn()
+        .mockResolvedValueOnce(
+          [1, 2, 3, 4, 5].map(position => ({
+            position,
+          }))
+        )
+        .mockResolvedValueOnce([])
+      prisma.card.delete = jest.fn()
+      prisma.card.updateMany = jest.fn()
+      prisma.$transaction = jest.fn()
+
+      await service.delete(request, cardId)
+
+      expect(prisma.card.delete).toHaveBeenCalledWith({
+        where: {
+          id: cardId,
+        },
+      })
+      expect(prisma.card.updateMany).toHaveBeenCalledWith({
+        data: {
+          position: {
+            decrement: 1,
+          },
+        },
+        where: {
+          position: {
+            gt: originalCard.position,
+          },
+          listId: originalCard.listId,
+        },
+      })
+    })
+
+    it('returns delete data', async () => {
+      const updatedPositions = [
+        {
+          id: 3,
+          position: 1,
+        },
+        {
+          id: 2,
+          position: 2,
+        },
+        {
+          id: 4,
+          position: 3,
+        },
+        {
+          id: 5,
+          position: 4,
+        },
+      ]
+
+      usersService.isUserAuthorized = jest.fn().mockResolvedValueOnce(true)
+      prisma.card.findUnique = jest.fn().mockResolvedValueOnce(originalCard)
+      prisma.list.findUnique = jest.fn().mockResolvedValueOnce(originalList)
+      prisma.card.findMany = jest.fn().mockResolvedValueOnce(updatedPositions)
+      prisma.card.delete = jest.fn()
+      prisma.card.updateMany = jest.fn()
+      prisma.$transaction = jest.fn()
+
+      const result = await service.delete(request, cardId)
+      expect(result).toStrictEqual({
+        deleted: originalCard,
+        remaining: updatedPositions,
+      })
+    })
+
+    it('throws not found if card doesnt exist', async () => {
+      usersService.isUserAuthorized = jest.fn().mockResolvedValueOnce(true)
+      prisma.card.findUnique = jest.fn().mockResolvedValueOnce(null)
+      prisma.list.findUnique = jest.fn().mockResolvedValueOnce(originalList)
+      prisma.card.findMany = jest
+        .fn()
+        .mockResolvedValueOnce(
+          [1, 2, 3, 4, 5].map(position => ({
+            position,
+          }))
+        )
+        .mockResolvedValueOnce([])
+      prisma.card.delete = jest.fn()
+      prisma.card.updateMany = jest.fn()
+      prisma.$transaction = jest.fn()
+
+      expect(service.delete(request, cardId)).rejects.toThrow(NotFoundException)
+    })
+
+    it('throws forbidden for user without permissions', async () => {
+      usersService.isUserAuthorized = jest.fn().mockResolvedValueOnce(false)
+      prisma.card.findUnique = jest.fn().mockResolvedValueOnce(originalCard)
+      prisma.list.findUnique = jest.fn().mockResolvedValueOnce(originalList)
+      prisma.card.findMany = jest
+        .fn()
+        .mockResolvedValueOnce(
+          [1, 2, 3, 4, 5].map(position => ({
+            position,
+          }))
+        )
+        .mockResolvedValueOnce([])
+      prisma.card.delete = jest.fn()
+      prisma.card.updateMany = jest.fn()
+      prisma.$transaction = jest.fn()
+
+      expect(service.delete(request, cardId)).rejects.toThrow(ForbiddenException)
+    })
+  })
 })

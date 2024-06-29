@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common'
 import { List } from '@prisma/client'
 import { BOARD_SOCKET_MESSAGES } from 'shared-consts'
-import { ListFullData } from 'shared-types'
+import { DeleteListData, ListFullData } from 'shared-types'
 import { BoardGateway } from 'src/board/board.gateway'
 import { BoardService } from 'src/board/board.service'
 import { BOARD_PERMISSIONS } from 'src/consts/user.consts'
@@ -214,5 +214,71 @@ export class ListService {
       payload: updatedList,
     })
     return updatedList
+  }
+
+  async delete(request: AuthRequest, listId: number): Promise<DeleteListData> {
+    const list = await this.prisma.list.findUnique({
+      where: {
+        id: listId,
+      },
+    })
+
+    if (!list) {
+      throw new NotFoundException()
+    }
+
+    const isAuthorized = await this.usersService.isUserAuthorized(
+      request.user.id,
+      list.boardId,
+      BOARD_PERMISSIONS.edit
+    )
+
+    if (!isAuthorized) {
+      throw new ForbiddenException()
+    }
+
+    await this.prisma.$transaction([
+      this.prisma.list.delete({
+        where: {
+          id: listId,
+        },
+      }),
+      this.prisma.list.updateMany({
+        data: {
+          position: {
+            decrement: 1,
+          },
+        },
+        where: {
+          position: {
+            gt: list.position,
+          },
+          boardId: list.boardId,
+        },
+      }),
+      this.prisma.card.deleteMany({
+        where: {
+          listId: listId,
+        },
+      }),
+    ])
+
+    const updatedLists = await this.prisma.list.findMany({
+      where: {
+        boardId: list.boardId,
+      },
+    })
+
+    const deleteListData = {
+      deleted: list,
+      remaining: updatedLists,
+    }
+
+    this.boardGateway.sendMessage(list.boardId, BOARD_SOCKET_MESSAGES.DeleteList, {
+      boardId: list.boardId,
+      payload: deleteListData,
+    })
+
+    return deleteListData
   }
 }

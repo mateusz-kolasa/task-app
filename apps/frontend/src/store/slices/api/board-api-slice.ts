@@ -15,7 +15,6 @@ export const boardApiSlice = apiSlice.injectEndpoints({
   endpoints: builder => ({
     userBoards: builder.query<BoardData[], void>({
       query: () => API_PATHS.board,
-
       providesTags: ['Boards'],
     }),
     boardData: builder.query<BoardNormalized, string>({

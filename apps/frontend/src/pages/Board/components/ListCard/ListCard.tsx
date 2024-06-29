@@ -1,4 +1,4 @@
-import { ScrollArea, Stack } from '@mantine/core'
+import { Group, ScrollArea, Stack } from '@mantine/core'
 import ListCardBase from 'components/ListCardBase/ListCardBase'
 import TaskCard from '../TaskCard/TaskCard'
 import AddCardButton from './AddCard/AddCardButton'
@@ -8,6 +8,7 @@ import { Draggable, Droppable } from '@hello-pangea/dnd'
 import useIsAuthorized from 'hooks/useIsAuthorized'
 import { BOARD_PERMISSIONS } from 'consts/user-permissions'
 import ListTitleText from './ListTitleText/ListTitleText'
+import ListDeleteButton from './ListDeleteButton/ListDeleteButton'
 
 interface ListCardProps {
   listId: number
@@ -32,7 +33,10 @@ function ListCard({ listId }: Readonly<ListCardProps>) {
     >
       {provided => (
         <ListCardBase draggableProps={provided.draggableProps} innerRef={provided.innerRef}>
-          <ListTitleText listId={listId} dragHandleProps={provided.dragHandleProps} />
+          <Group>
+            <ListTitleText listId={listId} dragHandleProps={provided.dragHandleProps} />
+            <ListDeleteButton listId={listId} />
+          </Group>
           <Droppable droppableId={listId.toString()} type='card'>
             {provided => (
               <ScrollArea.Autosize scrollbars='y' type='auto' mt='md' mb='md' flex={1} w='100%'>

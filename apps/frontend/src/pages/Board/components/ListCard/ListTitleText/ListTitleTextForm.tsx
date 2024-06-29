@@ -56,6 +56,7 @@ function ListTitleTextForm({ title, listId, handleClose }: Readonly<ListTitleTex
   return (
     <FormProvider {...methods}>
       <Textarea
+        flex={1}
         name='title'
         control={methods.control}
         onFocus={selectOnFocus}

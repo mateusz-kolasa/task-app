@@ -1,5 +1,12 @@
 import { Update } from '@reduxjs/toolkit'
-import { Card, List, ListFullData, SockedBoardUpdateData } from 'shared-types'
+import {
+  Card,
+  DeleteCardData,
+  DeleteListData,
+  List,
+  ListFullData,
+  SockedBoardUpdateData,
+} from 'shared-types'
 import { cardsAdapter, listsAdapter } from 'store/slices/api/api-slice'
 import { boardApiSlice } from 'store/slices/api/board-api-slice'
 import { store } from 'store/store'
@@ -37,6 +44,23 @@ export const changeListPosition = ({ boardId, payload }: SockedBoardUpdateData<L
   )
 }
 
+export const deleteList = ({ boardId, payload }: SockedBoardUpdateData<DeleteListData>) => {
+  store.dispatch(
+    boardApiSlice.util.updateQueryData('boardData', boardId.toString(), previousBoard => {
+      const { id: listId } = payload.deleted
+      const listPositionUpdate: Update<List, number>[] = payload.remaining.map(card => ({
+        id: listId,
+        changes: {
+          position: card.position,
+        },
+      }))
+
+      previousBoard.lists = listsAdapter.removeOne(previousBoard.lists, listId)
+      previousBoard.lists = listsAdapter.updateMany(previousBoard.lists, listPositionUpdate)
+    })
+  )
+}
+
 export const addCard = ({ boardId, payload }: SockedBoardUpdateData<Card>) => {
   store.dispatch(
     boardApiSlice.util.updateQueryData('boardData', boardId.toString(), previousBoard => {
@@ -67,6 +91,24 @@ export const changeCardPosition = ({ boardId, payload }: SockedBoardUpdateData<C
           payload.filter(card => card.listId === listId)
         )
       }
+    })
+  )
+}
+
+export const deleteCard = ({ boardId, payload }: SockedBoardUpdateData<DeleteCardData>) => {
+  store.dispatch(
+    boardApiSlice.util.updateQueryData('boardData', boardId.toString(), previousBoard => {
+      const { listId, id: cardId } = payload.deleted
+      const cardPositionUpdate: Update<Card, number>[] = payload.remaining.map(card => ({
+        id: cardId,
+        changes: {
+          position: card.position,
+        },
+      }))
+
+      const list = previousBoard.lists.entities[listId]
+      list.cards = cardsAdapter.removeOne(list.cards, cardId)
+      list.cards = cardsAdapter.updateMany(list.cards, cardPositionUpdate)
     })
   )
 }

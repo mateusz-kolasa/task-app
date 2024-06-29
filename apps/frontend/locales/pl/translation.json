@@ -14,6 +14,14 @@
       "placeholder": "Wprowadź nazwę karty",
       "button": "Dodaj kartę"
     },
+    "delete": {
+      "error": {
+        "title": "Nie udalo się usunąć karty"
+      },
+      "confirmation": {
+        "text": "Czy na pewno chcesz usunąć tę kartę"
+      }
+    },
     "title": {
       "error": {
         "title": "Nie udalo się zmienić nazwy karty"
@@ -40,11 +48,23 @@
       "placeholder": "Wprowadź nazwę listy",
       "button": "Dodaj listę"
     },
+    "delete": {
+      "error": {
+        "title": "Nie udalo się usunąć listy"
+      },
+      "confirmation": {
+        "text": "Czy na pewno chcesz usunąć tę listę"
+      }
+    },
     "title": {
       "error": {
         "title": "Nie udalo się zmienić nazwy listy"
       }
     }
+  },
+  "button": {
+    "confirm": "Potwierdź",
+    "cancel": "Anuluj"
   },
   "board": {
     "permission": {

@@ -1,4 +1,14 @@
-import { Body, Controller, Patch, Post, Req, UseGuards } from '@nestjs/common'
+import {
+  Body,
+  Controller,
+  Delete,
+  Param,
+  ParseIntPipe,
+  Patch,
+  Post,
+  Req,
+  UseGuards,
+} from '@nestjs/common'
 import CardCreateData from 'src/dtos/card-create-data.dto'
 import { CardService } from './card.service'
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard'
@@ -7,6 +17,7 @@ import { Card } from 'prisma/prisma-client'
 import { AuthRequest } from 'src/types/user-jwt-payload'
 import ChangeCardPositionData from 'src/dtos/card-change-position.data.dto'
 import ChangeCardTitleData from 'src/dtos/card-change-title-data.dto'
+import { DeleteCardData } from 'shared-types'
 
 @ApiTags('card')
 @Controller('card')
@@ -33,5 +44,13 @@ export class CardController {
     @Body() changeTitleData: ChangeCardTitleData
   ): Promise<Card> {
     return this.cardService.changeTitle(request, changeTitleData)
+  }
+
+  @Delete(':id')
+  delete(
+    @Req() request: AuthRequest,
+    @Param('id', ParseIntPipe) cardId: number
+  ): Promise<DeleteCardData> {
+    return this.cardService.delete(request, cardId)
   }
 }

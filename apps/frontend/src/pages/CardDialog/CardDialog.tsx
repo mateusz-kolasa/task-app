@@ -1,7 +1,8 @@
-import { Modal } from '@mantine/core'
+import { Group, Modal } from '@mantine/core'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useBoardDataQuery } from 'store/slices/api/board-api-slice'
 import CardDialogTitleText from './components/CardDialogTitleText/CardDialogTitleText'
+import CardDeleteButton from './components/CardDeleteButton/CardDeleteButton'
 
 function CardDialog() {
   const navigate = useNavigate()
@@ -43,7 +44,13 @@ function CardDialog() {
           flex: 1,
         },
       }}
-    ></Modal>
+    >
+      {card && (
+        <Group justify='flex-end' mt='md'>
+          <CardDeleteButton listId={card.listId} />
+        </Group>
+      )}
+    </Modal>
   )
 }
 

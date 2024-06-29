@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common'
 import { Card } from 'prisma/prisma-client'
 import { BOARD_SOCKET_MESSAGES } from 'shared-consts'
-import { ListFullData } from 'shared-types'
+import { DeleteCardData, ListFullData } from 'shared-types'
 import { BoardGateway } from 'src/board/board.gateway'
 import { BOARD_PERMISSIONS } from 'src/consts/user.consts'
 import ChangeCardPositionData from 'src/dtos/card-change-position.data.dto'
@@ -292,5 +292,72 @@ export class CardService {
       payload: updatedCard,
     })
     return updatedCard
+  }
+
+  async delete(request: AuthRequest, cardId: number): Promise<DeleteCardData> {
+    const card = await this.prisma.card.findUnique({
+      where: {
+        id: cardId,
+      },
+    })
+
+    if (!card) {
+      throw new NotFoundException()
+    }
+
+    const list = await this.prisma.list.findUnique({
+      where: {
+        id: card.listId,
+      },
+    })
+
+    const isAuthorized = await this.usersService.isUserAuthorized(
+      request.user.id,
+      list.boardId,
+      BOARD_PERMISSIONS.edit
+    )
+
+    if (!isAuthorized) {
+      throw new ForbiddenException()
+    }
+
+    await this.prisma.$transaction([
+      this.prisma.card.delete({
+        where: {
+          id: cardId,
+        },
+      }),
+      this.prisma.card.updateMany({
+        data: {
+          position: {
+            decrement: 1,
+          },
+        },
+        where: {
+          position: {
+            gt: card.position,
+          },
+          listId: card.listId,
+        },
+      }),
+    ])
+
+    const updatedCards = await this.prisma.card.findMany({
+      where: {
+        listId: card.listId,
+      },
+    })
+
+    const deleteCardData = {
+      deleted: card,
+      remaining: updatedCards,
+    }
+
+    this.boardGateway.sendMessage(list.boardId, BOARD_SOCKET_MESSAGES.DeleteCard, {
+      boardId: list.boardId,
+      payload: deleteCardData,
+    })
+
+    return deleteCardData
   }
 }

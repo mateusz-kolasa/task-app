@@ -35,7 +35,7 @@ function ListTitleText({ listId, dragHandleProps }: Readonly<ListTitleTextProps>
   return isEditing ? (
     <ListTitleTextForm title={title} listId={listId} handleClose={handleClose} />
   ) : (
-    <Text size='sm' fw={500} onClick={handleTitleClick} {...dragHandleProps}>
+    <Text flex={1} size='sm' fw={500} onClick={handleTitleClick} {...dragHandleProps}>
       {title}
     </Text>
   )

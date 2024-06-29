@@ -1,6 +1,7 @@
 import {
   ChangeListPositionData,
   ChangeListTitleData,
+  DeleteListData,
   List,
   ListCreateData,
   ListFullData,
@@ -9,13 +10,16 @@ import { boardApiSlice } from './board-api-slice'
 import { apiSlice, cardsAdapter, listsAdapter } from './api-slice'
 import API_PATHS from 'consts/api-paths'
 import { movePosition } from 'utils/dndHelper'
+import { Update } from '@reduxjs/toolkit'
 
-interface ChangeListPositionDataWithBoardId extends ChangeListPositionData {
+interface WithBoardId {
   boardId: string
 }
 
-interface ChangeListTitleWithBoardId extends ChangeListTitleData {
-  boardId: string
+interface ChangeListPositionDataWithBoardId extends ChangeListPositionData, WithBoardId {}
+interface ChangeListTitleWithBoardId extends ChangeListTitleData, WithBoardId {}
+interface ListIdWithBoardId extends WithBoardId {
+  listId: number
 }
 
 export const listApiSlice = apiSlice.injectEndpoints({
@@ -93,8 +97,40 @@ export const listApiSlice = apiSlice.injectEndpoints({
         }
       },
     }),
+    deleteList: builder.mutation<DeleteListData, ListIdWithBoardId>({
+      query: deleteListData => ({
+        url: `${API_PATHS.list}/${deleteListData.listId}`,
+        method: 'DELETE',
+      }),
+      async onQueryStarted({ boardId, listId }, { dispatch, queryFulfilled }) {
+        try {
+          await queryFulfilled
+
+          dispatch(
+            boardApiSlice.util.updateQueryData('boardData', boardId, boardData => {
+              const removedList = boardData.lists.entities[listId]
+              const listPositionsUpdate: Update<List, number>[] = Object.values(boardData.lists)
+                .filter(list => removedList.position < list.position)
+                .map(list => ({
+                  id: list.id,
+                  changes: { position: list.position - 1 },
+                }))
+
+              boardData.lists = listsAdapter.removeOne(boardData.lists, listId)
+              boardData.lists = listsAdapter.updateMany(boardData.lists, listPositionsUpdate)
+            })
+          )
+        } catch (error) {
+          /* empty */
+        }
+      },
+    }),
   }),
 })
 
-export const { useCreateListMutation, useChangeListPositionMutation, useChangeListTitleMutation } =
-  listApiSlice
+export const {
+  useCreateListMutation,
+  useChangeListPositionMutation,
+  useChangeListTitleMutation,
+  useDeleteListMutation,
+} = listApiSlice

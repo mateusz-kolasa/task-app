@@ -1,22 +1,29 @@
-import { Card, CardCreateData, ChangeCardPositionData, ChangeCardTitleData } from 'shared-types'
+import {
+  Card,
+  CardCreateData,
+  ChangeCardPositionData,
+  ChangeCardTitleData,
+  DeleteCardData,
+} from 'shared-types'
 import { boardApiSlice } from './board-api-slice'
 import { apiSlice, cardsAdapter } from './api-slice'
 import API_PATHS from 'consts/api-paths'
 import { movePosition } from 'utils/dndHelper'
 import { Update } from '@reduxjs/toolkit'
 
+interface WithContainerIds {
+  boardId: string
+  listId: number
+}
+
 interface CardCreateDataWithBoardId extends CardCreateData {
   boardId: string
 }
 
-interface ChangeCardPositionDataContainerIds extends ChangeCardPositionData {
-  boardId: string
-  listId: number
-}
-
-interface ChangeCardTitleWithContainerIds extends ChangeCardTitleData {
-  boardId: string
-  listId: number
+interface ChangeCardPositionDataContainerIds extends ChangeCardPositionData, WithContainerIds {}
+interface ChangeCardTitleWithContainerIds extends ChangeCardTitleData, WithContainerIds {}
+interface CardIdWithContainerIds extends WithContainerIds {
+  cardId: number
 }
 
 export const cardApiSlice = apiSlice.injectEndpoints({
@@ -145,8 +152,41 @@ export const cardApiSlice = apiSlice.injectEndpoints({
         }
       },
     }),
+    deleteCard: builder.mutation<DeleteCardData, CardIdWithContainerIds>({
+      query: deleteCardData => ({
+        url: `${API_PATHS.card}/${deleteCardData.cardId}`,
+        method: 'DELETE',
+      }),
+      async onQueryStarted({ cardId, boardId, listId }, { dispatch, queryFulfilled }) {
+        try {
+          await queryFulfilled
+
+          dispatch(
+            boardApiSlice.util.updateQueryData('boardData', boardId, boardData => {
+              const list = boardData.lists.entities[listId]
+              const removedCard = list.cards.entities[cardId]
+              const cardPositionsUpdate: Update<Card, number>[] = Object.values(list.cards.entities)
+                .filter(card => removedCard.position < card.position)
+                .map(card => ({
+                  id: card.id,
+                  changes: { position: card.position - 1 },
+                }))
+
+              list.cards = cardsAdapter.removeOne(list.cards, cardId)
+              list.cards = cardsAdapter.updateMany(list.cards, cardPositionsUpdate)
+            })
+          )
+        } catch (error) {
+          /* empty */
+        }
+      },
+    }),
   }),
 })
 
-export const { useCreateCardMutation, useChangeCardPositionMutation, useChangeCardTitleMutation } =
-  cardApiSlice
+export const {
+  useCreateCardMutation,
+  useChangeCardPositionMutation,
+  useChangeCardTitleMutation,
+  useDeleteCardMutation,
+} = cardApiSlice

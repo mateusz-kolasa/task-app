@@ -14,6 +14,14 @@
       "placeholder": "Enter the card name",
       "button": "Create card"
     },
+    "delete": {
+      "error": {
+        "title": "Could not delete card"
+      },
+      "confirmation": {
+        "text": "Are you sure you want to delete this card"
+      }
+    },
     "title": {
       "error": {
         "title": "Could not rename card"
@@ -40,11 +48,23 @@
       "placeholder": "Enter the list name",
       "button": "Create list"
     },
+    "delete": {
+      "error": {
+        "title": "Could not delete list"
+      },
+      "confirmation": {
+        "text": "Are you sure you want to delete this list"
+      }
+    },
     "title": {
       "error": {
         "title": "Could not rename list"
       }
     }
+  },
+  "button": {
+    "confirm": "Confirm",
+    "cancel": "cancel"
   },
   "board": {
     "permission": {
