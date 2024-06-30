@@ -17,7 +17,7 @@ import { Card } from 'prisma/prisma-client'
 import { AuthRequest } from 'src/types/user-jwt-payload'
 import ChangeCardPositionData from 'src/dtos/card-change-position.data.dto'
 import ChangeCardTitleData from 'src/dtos/card-change-title-data.dto'
-import { DeleteCardData } from 'shared-types'
+import { ChangeCardPositionResultData, DeleteCardData } from 'shared-types'
 
 @ApiTags('card')
 @Controller('card')
@@ -34,7 +34,7 @@ export class CardController {
   changePosition(
     @Req() request: AuthRequest,
     @Body() changePositionData: ChangeCardPositionData
-  ): Promise<Card[]> {
+  ): Promise<ChangeCardPositionResultData> {
     return this.cardService.changePosition(request, changePositionData)
   }
 

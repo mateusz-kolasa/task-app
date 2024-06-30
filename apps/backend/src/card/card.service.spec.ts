@@ -188,7 +188,7 @@ describe('CardService', () => {
       prisma.list.findUnique = jest.fn().mockResolvedValueOnce(originalList)
       prisma.card.update = jest.fn()
       prisma.card.updateMany = jest.fn()
-      prisma.$transaction = jest.fn()
+      prisma.$transaction = jest.fn().mockResolvedValueOnce([null, null, null])
 
       await service.changePosition(request, changePositionFrontData)
 
@@ -226,7 +226,7 @@ describe('CardService', () => {
       prisma.list.findUnique = jest.fn().mockResolvedValueOnce(originalList)
       prisma.card.update = jest.fn()
       prisma.card.updateMany = jest.fn()
-      prisma.$transaction = jest.fn()
+      prisma.$transaction = jest.fn().mockResolvedValueOnce([null, null, null])
 
       await service.changePosition(request, changePositionData)
 
@@ -263,7 +263,7 @@ describe('CardService', () => {
         .mockResolvedValueOnce(otherList)
       prisma.card.update = jest.fn()
       prisma.card.updateMany = jest.fn()
-      prisma.$transaction = jest.fn()
+      prisma.$transaction = jest.fn().mockResolvedValueOnce([null, null, null])
 
       await service.changePosition(request, changedPositionListData)
 
@@ -328,16 +328,22 @@ describe('CardService', () => {
         },
       ]
 
+      const updatedCard = { ...originalCard, position: 5 }
+
       usersService.isUserAuthorized = jest.fn().mockResolvedValueOnce(true)
       prisma.card.findUnique = jest.fn().mockResolvedValueOnce(originalCard)
       prisma.list.findUnique = jest.fn().mockResolvedValueOnce(originalList)
       prisma.card.update = jest.fn()
       prisma.card.updateMany = jest.fn()
       prisma.card.findMany = jest.fn().mockResolvedValueOnce(updatedPositions)
-      prisma.$transaction = jest.fn()
+      prisma.$transaction = jest.fn().mockResolvedValueOnce([null, updatedCard])
 
       const result = await service.changePosition(request, changePositionFrontData)
-      expect(result).toBe(updatedPositions)
+      expect(result).toStrictEqual({
+        sourceCard: originalCard,
+        targetCard: updatedCard,
+        updatedCards: updatedPositions,
+      })
     })
 
     it('throws not found if card doesnt exist', async () => {

@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common'
 import { Card } from 'prisma/prisma-client'
 import { BOARD_SOCKET_MESSAGES } from 'shared-consts'
-import { DeleteCardData, ListFullData } from 'shared-types'
+import { ChangeCardPositionResultData, DeleteCardData, ListFullData } from 'shared-types'
 import { BoardGateway } from 'src/board/board.gateway'
 import { BOARD_PERMISSIONS } from 'src/consts/user.consts'
 import ChangeCardPositionData from 'src/dtos/card-change-position.data.dto'
@@ -57,8 +57,11 @@ export class CardService {
     return createdCard
   }
 
-  async moveBetweenLists(changePositionData: ChangeCardPositionData, currentCardData: Card) {
-    return this.prisma.$transaction([
+  async moveBetweenLists(
+    changePositionData: ChangeCardPositionData,
+    currentCardData: Card
+  ): Promise<Card> {
+    const [, , updatedCard] = await this.prisma.$transaction([
       // Increase position of cards in new list
       this.prisma.card.updateMany({
         data: {
@@ -97,11 +100,16 @@ export class CardService {
         },
       }),
     ])
+
+    return updatedCard
   }
 
-  async movePositionInList(changePositionData: ChangeCardPositionData, currentCardData: Card) {
+  async movePositionInList(
+    changePositionData: ChangeCardPositionData,
+    currentCardData: Card
+  ): Promise<Card> {
     if (changePositionData.position < currentCardData.position) {
-      return this.prisma.$transaction([
+      const [, updatedCard] = await this.prisma.$transaction([
         // If moving card towards front, shift cards between one step to back
         this.prisma.card.updateMany({
           data: {
@@ -126,8 +134,10 @@ export class CardService {
           },
         }),
       ])
+
+      return updatedCard
     } else {
-      return this.prisma.$transaction([
+      const [, updatedCard] = await this.prisma.$transaction([
         // If moving card towards end, shift cards between one step to front
         this.prisma.card.updateMany({
           data: {
@@ -152,13 +162,15 @@ export class CardService {
           },
         }),
       ])
+
+      return updatedCard
     }
   }
 
   async changePosition(
     request: AuthRequest,
     changePositionData: ChangeCardPositionData
-  ): Promise<Card[]> {
+  ): Promise<ChangeCardPositionResultData> {
     const card = await this.prisma.card.findUnique({
       where: {
         id: changePositionData.cardId,
@@ -227,8 +239,9 @@ export class CardService {
     }
 
     let updatedCards: Card[]
+    let targetCard: Card
     if (changePositionData.newListId) {
-      await this.moveBetweenLists(changePositionData, card)
+      targetCard = await this.moveBetweenLists(changePositionData, card)
       updatedCards = await this.prisma.card.findMany({
         where: {
           listId: {
@@ -237,7 +250,7 @@ export class CardService {
         },
       })
     } else {
-      await this.movePositionInList(changePositionData, card)
+      targetCard = await this.movePositionInList(changePositionData, card)
       updatedCards = await this.prisma.card.findMany({
         where: {
           listId: card.listId,
@@ -245,11 +258,17 @@ export class CardService {
       })
     }
 
+    const positionUpdate: ChangeCardPositionResultData = {
+      sourceCard: card,
+      targetCard,
+      updatedCards,
+    }
     this.boardGateway.sendMessage(list.boardId, BOARD_SOCKET_MESSAGES.ChangeCardPosition, {
       boardId: list.boardId,
-      payload: updatedCards,
+      payload: positionUpdate,
     })
-    return updatedCards
+
+    return positionUpdate
   }
 
   async changeTitle(request: AuthRequest, changeTitleData: ChangeCardTitleData): Promise<Card> {

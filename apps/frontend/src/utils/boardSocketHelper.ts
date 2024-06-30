@@ -1,6 +1,7 @@
 import { Update } from '@reduxjs/toolkit'
 import {
   Card,
+  ChangeCardPositionResultData,
   DeleteCardData,
   DeleteListData,
   List,
@@ -78,18 +79,35 @@ export const updateCardTitle = ({ boardId, payload }: SockedBoardUpdateData<Card
   )
 }
 
-export const changeCardPosition = ({ boardId, payload }: SockedBoardUpdateData<Card[]>) => {
+export const changeCardPosition = ({
+  boardId,
+  payload,
+}: SockedBoardUpdateData<ChangeCardPositionResultData>) => {
   store.dispatch(
     boardApiSlice.util.updateQueryData('boardData', boardId.toString(), previousBoard => {
-      const changedLists = [...new Set(payload.map(card => card.listId))]
+      const changedLists = [...new Set(payload.updatedCards.map(card => card.listId))]
+
+      // If card was moved between lists, remove from old one
+      if (payload.sourceCard.listId !== payload.targetCard.listId) {
+        const sourceList = previousBoard.lists.entities[payload.sourceCard.listId]
+        sourceList.cards = cardsAdapter.removeOne(sourceList.cards, payload.sourceCard.id)
+
+        const targetList = previousBoard.lists.entities[payload.targetCard.listId]
+        targetList.cards = cardsAdapter.addOne(targetList.cards, payload.targetCard)
+      }
 
       for (const listId of changedLists) {
         const list = previousBoard.lists.entities[listId]
+        const positionUpdate: Update<Card, number>[] = payload.updatedCards
+          .filter(card => card.listId === listId)
+          .map(card => ({
+            id: card.id,
+            changes: {
+              position: card.position,
+            },
+          }))
 
-        list.cards = cardsAdapter.setMany(
-          cardsAdapter.getInitialState(),
-          payload.filter(card => card.listId === listId)
-        )
+        list.cards = cardsAdapter.updateMany(list.cards, positionUpdate)
       }
     })
   )
