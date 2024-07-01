@@ -21,6 +21,7 @@ export const boardApiSlice = apiSlice.injectEndpoints({
       query: id => ({
         url: `${API_PATHS.board}/${id}`,
       }),
+      providesTags: (_result, _error, id) => [{ type: 'Board', id }],
       transformResponse: (response: BoardFullData) => {
         const lists: ListNormalized[] = response.lists.map(list => ({
           ...list,
@@ -78,6 +79,20 @@ export const boardApiSlice = apiSlice.injectEndpoints({
         }
       },
     }),
+    deleteBoard: builder.mutation<null, string>({
+      query: id => ({
+        url: `${API_PATHS.board}/${id}`,
+        method: 'Delete',
+      }),
+      invalidatesTags: (_result, _error, id) => [{ type: 'Board', id }, 'Boards'],
+    }),
+    leaveBoard: builder.mutation<null, string>({
+      query: id => ({
+        url: API_PATHS.leaveBoard(id),
+        method: 'Delete',
+      }),
+      invalidatesTags: (_result, _error, id) => [{ type: 'Board', id }, 'Boards'],
+    }),
   }),
 })
 
@@ -86,4 +101,6 @@ export const {
   useBoardDataQuery,
   useCreateBoardMutation,
   useAddBoardUserMutation,
+  useDeleteBoardMutation,
+  useLeaveBoardMutation,
 } = boardApiSlice

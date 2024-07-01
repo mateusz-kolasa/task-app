@@ -1,4 +1,14 @@
-import { Body, Controller, Get, Param, ParseIntPipe, Post, Req, UseGuards } from '@nestjs/common'
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  ParseIntPipe,
+  Post,
+  Req,
+  UseGuards,
+} from '@nestjs/common'
 import { BoardService } from './board.service'
 import { ApiTags } from '@nestjs/swagger'
 import BoardCreateData from 'src/dtos/board-create-data.dto'
@@ -38,5 +48,15 @@ export class BoardController {
     @Body() userData: BoardAddUserData
   ): Promise<UsersInBoardsWithUsername> {
     return this.boardService.addUser(request, userData)
+  }
+
+  @Delete(':id')
+  async delete(@Req() request: AuthRequest, @Param('id', ParseIntPipe) id: number) {
+    return this.boardService.delete(request, id)
+  }
+
+  @Delete(':id/leave')
+  async leave(@Req() request: AuthRequest, @Param('id', ParseIntPipe) id: number) {
+    return this.boardService.leave(request, id)
   }
 }

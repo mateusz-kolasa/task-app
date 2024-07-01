@@ -89,6 +89,21 @@
         "title": "Użytkownicy"
       }
     },
+    "leave": {
+      "error": {
+        "title": "Nie udalo się opuścić tablicy"
+      },
+      "button": "Opuść tablicę",
+      "confirmation": {
+        "text": "Czy na pewno chcesz opuścić tę tablicę"
+      }
+    },
+    "delete": {
+      "button": "Usuń tablicę",
+      "confirmation": {
+        "text": "Czy na pewno chcesz usunąć tę tablicę"
+      }
+    },
     "create": {
       "error": {
         "title": "Nie udało się stworzyć tablicy",

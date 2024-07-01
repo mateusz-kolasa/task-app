@@ -320,4 +320,43 @@ describe('BoardService', () => {
       ).rejects.toThrow(ForbiddenException)
     })
   })
+
+  describe('delete', () => {
+    it('deletes board by id', async () => {
+      prisma.board.delete = jest.fn()
+      usersService.isUserAuthorized = jest.fn().mockResolvedValueOnce(true)
+      await service.delete(request, 1)
+      expect(prisma.board.delete).toHaveBeenCalledWith({
+        where: {
+          id: 1,
+        },
+      })
+    })
+
+    it('throws forbidden exception if user is not owner', async () => {
+      prisma.board.delete = jest.fn()
+      usersService.isUserAuthorized = jest.fn().mockResolvedValueOnce(false)
+      expect(service.delete(request, 1)).rejects.toThrow(ForbiddenException)
+    })
+  })
+
+  describe('leave', () => {
+    it('leaves board by id', async () => {
+      prisma.usersInBoards.deleteMany = jest.fn()
+      usersService.isUserAuthorized = jest.fn().mockResolvedValueOnce(false)
+      await service.leave(request, 1)
+      expect(prisma.usersInBoards.deleteMany).toHaveBeenCalledWith({
+        where: {
+          boardId: 1,
+          userId: request.user.id,
+        },
+      })
+    })
+
+    it('throws bad request if user is owner', async () => {
+      prisma.usersInBoards.deleteMany = jest.fn()
+      usersService.isUserAuthorized = jest.fn().mockResolvedValueOnce(true)
+      expect(service.leave(request, 1)).rejects.toThrow(BadRequestException)
+    })
+  })
 })

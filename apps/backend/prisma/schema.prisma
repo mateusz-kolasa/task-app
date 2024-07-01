@@ -31,9 +31,9 @@ model Board {
 model UsersInBoards {
   id          Int   @id @default(autoincrement())
   permissions Int
-  user        User  @relation(fields: [userId], references: [id])
+  user        User  @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId      Int
-  board       Board @relation(fields: [boardId], references: [id])
+  board       Board @relation(fields: [boardId], references: [id], onDelete: Cascade)
   boardId     Int
 }
 
@@ -41,7 +41,7 @@ model List {
   id       Int    @id @default(autoincrement())
   title    String
   position Int
-  board Board @relation(fields: [boardId], references: [id])
+  board Board @relation(fields: [boardId], references: [id], onDelete: Cascade)
   boardId Int
   cards Card[]
 }
@@ -51,6 +51,6 @@ model Card {
   title       String
   description String?
   position    Int
-  list List @relation(fields: [listId], references: [id])
+  list List @relation(fields: [listId], references: [id], onDelete: Cascade)
   listId Int
 }

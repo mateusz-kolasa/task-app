@@ -4,6 +4,7 @@ const API_PATHS = {
   register: 'auth/register',
   logout: 'auth/logout',
   board: 'board',
+  leaveBoard: (id: string) => `board/${id}/leave`,
   createBoard: 'board/create',
   addBoardUser: 'board/users/add',
   list: 'list',

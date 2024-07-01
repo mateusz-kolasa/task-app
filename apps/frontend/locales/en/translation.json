@@ -89,6 +89,21 @@
         "title": "Users"
       }
     },
+    "leave": {
+      "error": {
+        "title": "Could not leave board"
+      },
+      "button": "Leave board",
+      "confirmation": {
+        "text": "Are you sure you want to leave this board"
+      }
+    },
+    "delete": {
+      "button": "Delete board",
+      "confirmation": {
+        "text": "Are you sure you want to delete this board"
+      }
+    },
     "create": {
       "error": {
         "title": "Could not create board",

@@ -5,6 +5,7 @@ import { useParams } from 'react-router-dom'
 import { useBoardDataQuery } from 'store/slices/api/board-api-slice'
 import AddUserButton from './AddUser/AddUserButton'
 import { Fragment } from 'react/jsx-runtime'
+import LeaveBoard from './LeaveBoard/LeaveBoard'
 
 function BoardUsers() {
   const { boardId } = useParams()
@@ -41,6 +42,7 @@ function BoardUsers() {
       </Grid>
 
       <AddUserButton />
+      <LeaveBoard />
     </>
   )
 }

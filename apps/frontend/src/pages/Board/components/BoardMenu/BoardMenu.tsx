@@ -13,7 +13,7 @@ function BoardMenu() {
   })
 
   return (
-    <Stack mt='md'>
+    <Stack mt='md' h='100%'>
       <Text ta='center' fw='bold' size='lg'>
         {title}
       </Text>

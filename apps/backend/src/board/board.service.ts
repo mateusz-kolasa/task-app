@@ -146,4 +146,41 @@ export class BoardService {
       },
     })
   }
+
+  async delete(request: AuthRequest, boardId: number) {
+    const isAuthorized = await this.usersService.isUserAuthorized(
+      request.user.id,
+      boardId,
+      BOARD_PERMISSIONS.admin
+    )
+    if (!isAuthorized) {
+      throw new ForbiddenException()
+    }
+
+    return this.prisma.board.delete({
+      where: {
+        id: boardId,
+      },
+    })
+  }
+
+  async leave(request: AuthRequest, boardId: number) {
+    const isAuthorized = await this.usersService.isUserAuthorized(
+      request.user.id,
+      boardId,
+      BOARD_PERMISSIONS.admin
+    )
+
+    // Owner can't leave board
+    if (isAuthorized) {
+      throw new BadRequestException()
+    }
+
+    return this.prisma.usersInBoards.deleteMany({
+      where: {
+        boardId: boardId,
+        userId: request.user.id,
+      },
+    })
+  }
 }
