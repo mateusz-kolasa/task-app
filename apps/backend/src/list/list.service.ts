@@ -62,7 +62,7 @@ export class ListService {
       },
     })
 
-    this.boardGateway.sendMessage(createdList.boardId, BOARD_SOCKET_MESSAGES.AddList, {
+    this.boardGateway.sendMessage(BOARD_SOCKET_MESSAGES.AddList, {
       boardId: createdList.boardId,
       payload: createdList,
     })
@@ -171,7 +171,7 @@ export class ListService {
       },
     })
 
-    this.boardGateway.sendMessage(list.boardId, BOARD_SOCKET_MESSAGES.ChangeListPosition, {
+    this.boardGateway.sendMessage(BOARD_SOCKET_MESSAGES.ChangeListPosition, {
       boardId: list.boardId,
       payload: updatedLists,
     })
@@ -209,8 +209,8 @@ export class ListService {
       },
     })
 
-    this.boardGateway.sendMessage(list.boardId, BOARD_SOCKET_MESSAGES.ChangeListTitle, {
-      boardId: updatedList.boardId,
+    this.boardGateway.sendMessage(BOARD_SOCKET_MESSAGES.ChangeListTitle, {
+      boardId: list.boardId,
       payload: updatedList,
     })
     return updatedList
@@ -274,7 +274,7 @@ export class ListService {
       remaining: updatedLists,
     }
 
-    this.boardGateway.sendMessage(list.boardId, BOARD_SOCKET_MESSAGES.DeleteList, {
+    this.boardGateway.sendMessage(BOARD_SOCKET_MESSAGES.DeleteList, {
       boardId: list.boardId,
       payload: deleteListData,
     })

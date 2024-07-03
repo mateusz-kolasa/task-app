@@ -49,8 +49,8 @@ export class BoardGateway implements OnGatewayConnection {
     client.join(boardId.toString())
   }
 
-  async sendMessage(boardId: number, message: string, payload: SockedBoardUpdateData<any>) {
-    this.server.to(boardId.toString()).emit(message, payload)
+  async sendMessage(message: string, payload: SockedBoardUpdateData<any>) {
+    this.server.to(payload.boardId.toString()).emit(message, payload)
   }
 
   private async extractUserIdFromCookies(client: Socket): Promise<string | undefined> {

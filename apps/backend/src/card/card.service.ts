@@ -50,7 +50,7 @@ export class CardService {
       },
     })
 
-    this.boardGateway.sendMessage(list.boardId, BOARD_SOCKET_MESSAGES.AddCard, {
+    this.boardGateway.sendMessage(BOARD_SOCKET_MESSAGES.AddCard, {
       boardId: list.boardId,
       payload: createdCard,
     })
@@ -263,7 +263,7 @@ export class CardService {
       targetCard,
       updatedCards,
     }
-    this.boardGateway.sendMessage(list.boardId, BOARD_SOCKET_MESSAGES.ChangeCardPosition, {
+    this.boardGateway.sendMessage(BOARD_SOCKET_MESSAGES.ChangeCardPosition, {
       boardId: list.boardId,
       payload: positionUpdate,
     })
@@ -306,7 +306,7 @@ export class CardService {
         id: changeTitleData.cardId,
       },
     })
-    this.boardGateway.sendMessage(list.boardId, BOARD_SOCKET_MESSAGES.ChangeCardTitle, {
+    this.boardGateway.sendMessage(BOARD_SOCKET_MESSAGES.ChangeCardTitle, {
       boardId: list.boardId,
       payload: updatedCard,
     })
@@ -372,7 +372,7 @@ export class CardService {
       remaining: updatedCards,
     }
 
-    this.boardGateway.sendMessage(list.boardId, BOARD_SOCKET_MESSAGES.DeleteCard, {
+    this.boardGateway.sendMessage(BOARD_SOCKET_MESSAGES.DeleteCard, {
       boardId: list.boardId,
       payload: deleteCardData,
     })

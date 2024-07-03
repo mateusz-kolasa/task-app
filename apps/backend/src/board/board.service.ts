@@ -149,7 +149,7 @@ export class BoardService {
       },
     })
 
-    this.boardGateway.sendMessage(userData.boardId, BOARD_SOCKET_MESSAGES.AddUser, {
+    this.boardGateway.sendMessage(BOARD_SOCKET_MESSAGES.AddUser, {
       boardId: userData.boardId,
       payload: addedUser,
     })
@@ -166,7 +166,7 @@ export class BoardService {
       throw new ForbiddenException()
     }
 
-    this.boardGateway.sendMessage(boardId, BOARD_SOCKET_MESSAGES.DeleteBoard, {
+    this.boardGateway.sendMessage(BOARD_SOCKET_MESSAGES.DeleteBoard, {
       boardId: boardId,
       payload: boardId,
     })
@@ -189,7 +189,7 @@ export class BoardService {
       throw new BadRequestException()
     }
 
-    this.boardGateway.sendMessage(boardId, BOARD_SOCKET_MESSAGES.LeaveBoard, {
+    this.boardGateway.sendMessage(BOARD_SOCKET_MESSAGES.LeaveBoard, {
       boardId: boardId,
       payload: request.user.id,
     })
