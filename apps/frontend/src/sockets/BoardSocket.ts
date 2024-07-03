@@ -3,10 +3,13 @@ import { BOARD_SOCKET_MESSAGES } from 'shared-consts'
 import {
   addCard,
   addList,
+  addUser,
   changeCardPosition,
   changeListPosition,
+  deleteBoard,
   deleteCard,
   deleteList,
+  leaveBoard,
   updateCardTitle,
   updateListTitle,
 } from 'utils/boardSocketHelper'
@@ -39,6 +42,9 @@ class BoardSocket {
   }
 
   private addListeners() {
+    this.socket.on(BOARD_SOCKET_MESSAGES.AddUser, addUser)
+    this.socket.on(BOARD_SOCKET_MESSAGES.LeaveBoard, leaveBoard)
+    this.socket.on(BOARD_SOCKET_MESSAGES.DeleteBoard, deleteBoard)
     this.socket.on(BOARD_SOCKET_MESSAGES.AddList, addList)
     this.socket.on(BOARD_SOCKET_MESSAGES.ChangeListTitle, updateListTitle)
     this.socket.on(BOARD_SOCKET_MESSAGES.ChangeListPosition, changeListPosition)

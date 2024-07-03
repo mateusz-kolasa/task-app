@@ -5,6 +5,7 @@ import { PrismaModule } from 'src/prisma/prisma.module'
 import { UsersModule } from 'src/users/users.module'
 import { CoreModule } from 'src/core/core.module'
 import { ConfigModule } from '@nestjs/config'
+import { BoardGateway } from './board.gateway'
 
 describe('BoardController', () => {
   let controller: BoardController
@@ -12,7 +13,7 @@ describe('BoardController', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [BoardController],
-      providers: [BoardService],
+      providers: [BoardService, BoardGateway],
       imports: [
         ConfigModule.forRoot({
           isGlobal: true,

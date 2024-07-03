@@ -73,6 +73,11 @@
       "admin": "Administrator",
       "owner": "Owner"
     },
+    "data": {
+      "fetch": {
+        "unauthorized": "The board does not exist or you do not have permissions to view it."
+      }
+    },
     "users": {
       "add": {
         "button": "Add user",

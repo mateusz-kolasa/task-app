@@ -7,11 +7,32 @@ import {
   List,
   ListFullData,
   SockedBoardUpdateData,
+  UsersInBoardsFullData,
 } from 'shared-types'
-import { cardsAdapter, listsAdapter } from 'store/slices/api/api-slice'
+import { cardsAdapter, listsAdapter, userInBoardAdapter } from 'store/slices/api/api-slice'
 import { boardApiSlice } from 'store/slices/api/board-api-slice'
 import { store } from 'store/store'
 import { ListNormalized } from 'types/list-normalized'
+
+export const addUser = ({ boardId, payload }: SockedBoardUpdateData<UsersInBoardsFullData>) => {
+  store.dispatch(
+    boardApiSlice.util.updateQueryData('boardData', boardId.toString(), previousBoard => {
+      previousBoard.users = userInBoardAdapter.addOne(previousBoard.users, payload)
+    })
+  )
+}
+
+export const leaveBoard = ({ boardId, payload }: SockedBoardUpdateData<number>) => {
+  store.dispatch(
+    boardApiSlice.util.updateQueryData('boardData', boardId.toString(), previousBoard => {
+      previousBoard.users = userInBoardAdapter.removeOne(previousBoard.users, payload)
+    })
+  )
+}
+
+export const deleteBoard = ({ boardId }: SockedBoardUpdateData<UsersInBoardsFullData>) => {
+  store.dispatch(boardApiSlice.util.invalidateTags([{ type: 'Board', id: boardId }]))
+}
 
 export const addList = ({ boardId, payload }: SockedBoardUpdateData<ListFullData>) => {
   store.dispatch(

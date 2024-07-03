@@ -1,4 +1,7 @@
 export enum BOARD_SOCKET_MESSAGES {
+  AddUser = 'user_add',
+  LeaveBoard = 'board_leave',
+  DeleteBoard = 'board_delete',
   AddList = 'list_add',
   ChangeListTitle = 'list_title',
   ChangeListPosition = 'list_position',

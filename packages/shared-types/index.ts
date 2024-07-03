@@ -1,4 +1,5 @@
 export type { UserInfoData } from './src/user-info-data.dto'
+export type { UsersInBoardsFullData } from './src/user-board-full-data.dto'
 export type { BoardCreateData } from './src/board-create-data.dto'
 export type { BoardData } from './src/board-data.dto'
 export type { BoardFullData } from './src/board-full-data.dto'

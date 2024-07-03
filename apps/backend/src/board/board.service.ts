@@ -13,12 +13,15 @@ import { AuthRequest } from 'src/types/user-jwt-payload'
 import { BoardFullData, UsersInBoardsWithUsername } from 'shared-types'
 import BoardAddUserData from 'src/dtos/board-add-user-data.dto'
 import { UsersService } from 'src/users/users.service'
+import { BoardGateway } from './board.gateway'
+import { BOARD_SOCKET_MESSAGES } from 'shared-consts'
 
 @Injectable()
 export class BoardService {
   constructor(
     private prisma: PrismaService,
-    private usersService: UsersService
+    private usersService: UsersService,
+    private boardGateway: BoardGateway
   ) {}
 
   async getForUser(request: AuthRequest): Promise<Board[]> {
@@ -131,7 +134,7 @@ export class BoardService {
       throw new BadRequestException('user already in board')
     }
 
-    return this.prisma.usersInBoards.create({
+    const addedUser = await this.prisma.usersInBoards.create({
       data: {
         permissions: userData.permissions,
         boardId: userData.boardId,
@@ -145,6 +148,12 @@ export class BoardService {
         },
       },
     })
+
+    this.boardGateway.sendMessage(userData.boardId, BOARD_SOCKET_MESSAGES.AddUser, {
+      boardId: userData.boardId,
+      payload: addedUser,
+    })
+    return addedUser
   }
 
   async delete(request: AuthRequest, boardId: number) {
@@ -157,6 +166,10 @@ export class BoardService {
       throw new ForbiddenException()
     }
 
+    this.boardGateway.sendMessage(boardId, BOARD_SOCKET_MESSAGES.DeleteBoard, {
+      boardId: boardId,
+      payload: boardId,
+    })
     return this.prisma.board.delete({
       where: {
         id: boardId,
@@ -176,6 +189,10 @@ export class BoardService {
       throw new BadRequestException()
     }
 
+    this.boardGateway.sendMessage(boardId, BOARD_SOCKET_MESSAGES.LeaveBoard, {
+      boardId: boardId,
+      payload: request.user.id,
+    })
     return this.prisma.usersInBoards.deleteMany({
       where: {
         boardId: boardId,

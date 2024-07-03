@@ -73,6 +73,11 @@
       "admin": "Administrator",
       "owner": "Właściciel"
     },
+    "data": {
+      "fetch": {
+        "unauthorized": "Tablica nie istnieje lub nie masz uprawnień do jej oglądania."
+      }
+    },
     "users": {
       "add": {
         "button": "Dodaj użytkownika",

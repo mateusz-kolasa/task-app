@@ -18,6 +18,7 @@ describe('BoardService', () => {
   let service: BoardService
   let prisma: PrismaService
   let usersService: UsersService
+  let boardGateway: BoardGateway
 
   const request = {
     user: {
@@ -41,6 +42,9 @@ describe('BoardService', () => {
     service = module.get<BoardService>(BoardService)
     prisma = module.get<PrismaService>(PrismaService)
     usersService = module.get<UsersService>(UsersService)
+    boardGateway = module.get<BoardGateway>(BoardGateway)
+
+    boardGateway.sendMessage = jest.fn()
   })
 
   it('should be defined', () => {
