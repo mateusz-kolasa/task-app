@@ -5,6 +5,7 @@ import {
   Get,
   Param,
   ParseIntPipe,
+  Patch,
   Post,
   Req,
   UseGuards,
@@ -17,6 +18,8 @@ import { JwtAuthGuard } from 'src/auth/jwt-auth.guard'
 import { Board } from '@prisma/client'
 import { BoardFullData, UsersInBoardsWithUsername } from 'shared-types'
 import BoardAddUserData from 'src/dtos/board-add-user-data.dto'
+import ChangeBoardTitleData from 'src/dtos/board-change-title-data.dto'
+import ChangeBoardDescriptionData from 'src/dtos/board-change-description-data.dto'
 
 @ApiTags('board')
 @Controller('board')
@@ -48,6 +51,22 @@ export class BoardController {
     @Body() userData: BoardAddUserData
   ): Promise<UsersInBoardsWithUsername> {
     return this.boardService.addUser(request, userData)
+  }
+
+  @Patch('change-title')
+  async changeTitle(
+    @Req() request: AuthRequest,
+    @Body() titleData: ChangeBoardTitleData
+  ): Promise<Board> {
+    return this.boardService.changeTitle(request, titleData)
+  }
+
+  @Patch('change-description')
+  async changeDescription(
+    @Req() request: AuthRequest,
+    @Body() descriptionData: ChangeBoardDescriptionData
+  ): Promise<Board> {
+    return this.boardService.changeDescription(request, descriptionData)
   }
 
   @Delete(':id')

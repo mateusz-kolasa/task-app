@@ -55,7 +55,7 @@ export const SAMPLE_BOARDS_FULL: Record<string, BoardFullData> = {
   },
   '3': {
     id: 3,
-    description: '',
+    description: 'description',
     title: 'board 3',
     users: [
       {

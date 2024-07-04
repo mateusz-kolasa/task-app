@@ -1,1 +1,2 @@
 export const MAX_BOARD_TITLE_LENGTH = 256
+export const MAX_BOARD_DESCRIPTION_LENGTH = 512

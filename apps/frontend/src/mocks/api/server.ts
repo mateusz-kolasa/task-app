@@ -40,6 +40,12 @@ const handlers = [
     const { id } = params
     return new HttpResponse(JSON.stringify(SAMPLE_BOARDS_FULL[id as string]), { status: 200 })
   }),
+  http.patch('http://localhost:3000/api/board/change-title', async () => {
+    return new HttpResponse(JSON.stringify(SAMPLE_BOARDS_FULL['1']), { status: 200 })
+  }),
+  http.patch('http://localhost:3000/api/board/change-description', async () => {
+    return new HttpResponse(JSON.stringify(SAMPLE_BOARDS_FULL['1']), { status: 200 })
+  }),
   http.post('http://localhost:3000/api/list', async () => {
     return new HttpResponse(JSON.stringify(SAMPLE_BOARDS_FULL['3']), { status: 200 })
   }),

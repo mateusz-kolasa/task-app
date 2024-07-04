@@ -13,6 +13,8 @@ import { BadRequestException, ForbiddenException, NotFoundException } from '@nes
 import { BoardGateway } from './board.gateway'
 import { CoreModule } from 'src/core/core.module'
 import { ConfigModule } from '@nestjs/config'
+import ChangeBoardDescriptionData from 'src/dtos/board-change-description-data.dto'
+import ChangeBoardTitleData from 'src/dtos/board-change-title-data.dto'
 
 describe('BoardService', () => {
   let service: BoardService
@@ -322,6 +324,106 @@ describe('BoardService', () => {
           permissions: 3,
         })
       ).rejects.toThrow(ForbiddenException)
+    })
+  })
+
+  describe('changeTitle', () => {
+    const originalBoard: Board = {
+      title: 'old title',
+      id: 1,
+      description: '',
+    }
+
+    const changeTitleData: ChangeBoardTitleData = {
+      boardId: 1,
+      title: 'new title',
+    }
+
+    it('updates board with new title', async () => {
+      usersService.isUserAuthorized = jest.fn().mockResolvedValueOnce(true)
+      prisma.board.update = jest.fn()
+
+      await service.changeTitle(request, changeTitleData)
+      expect(prisma.board.update).toHaveBeenCalledWith({
+        data: {
+          title: changeTitleData.title,
+        },
+        where: {
+          id: changeTitleData.boardId,
+        },
+      })
+    })
+
+    it('returns updated board', async () => {
+      usersService.isUserAuthorized = jest.fn().mockResolvedValueOnce(true)
+      prisma.board.update = jest.fn().mockResolvedValueOnce({
+        ...originalBoard,
+        title: changeTitleData.title,
+      })
+
+      const response = await service.changeTitle(request, changeTitleData)
+      expect(response).toStrictEqual({
+        ...originalBoard,
+        title: changeTitleData.title,
+      })
+    })
+
+    it('throws forbidden for unauthorized user', async () => {
+      usersService.isUserAuthorized = jest.fn().mockResolvedValueOnce(false)
+      prisma.board.update = jest.fn()
+
+      expect(service.changeTitle(request, changeTitleData)).rejects.toThrow(ForbiddenException)
+    })
+  })
+
+  describe('changeDescription', () => {
+    const originalBoard: Board = {
+      title: '',
+      id: 1,
+      description: 'old description',
+    }
+
+    const changeDescriptionData: ChangeBoardDescriptionData = {
+      boardId: 1,
+      description: 'new description',
+    }
+
+    it('updates board with new title', async () => {
+      usersService.isUserAuthorized = jest.fn().mockResolvedValueOnce(true)
+      prisma.board.update = jest.fn()
+
+      await service.changeDescription(request, changeDescriptionData)
+      expect(prisma.board.update).toHaveBeenCalledWith({
+        data: {
+          description: changeDescriptionData.description,
+        },
+        where: {
+          id: changeDescriptionData.boardId,
+        },
+      })
+    })
+
+    it('returns updated board', async () => {
+      usersService.isUserAuthorized = jest.fn().mockResolvedValueOnce(true)
+      prisma.board.update = jest.fn().mockResolvedValueOnce({
+        ...originalBoard,
+        description: changeDescriptionData.description,
+      })
+
+      const response = await service.changeDescription(request, changeDescriptionData)
+      expect(response).toStrictEqual({
+        ...originalBoard,
+        description: changeDescriptionData.description,
+      })
+    })
+
+    it('throws forbidden for unauthorized user', async () => {
+      usersService.isUserAuthorized = jest.fn().mockResolvedValueOnce(false)
+      prisma.board.update = jest.fn()
+
+      expect(service.changeDescription(request, changeDescriptionData)).rejects.toThrow(
+        ForbiddenException
+      )
     })
   })
 

@@ -1,6 +1,8 @@
 import { Update } from '@reduxjs/toolkit'
 import {
   Card,
+  ChangeBoardDescriptionData,
+  ChangeBoardTitleData,
   ChangeCardPositionResultData,
   DeleteCardData,
   DeleteListData,
@@ -18,6 +20,28 @@ export const addUser = ({ boardId, payload }: SockedBoardUpdateData<UsersInBoard
   store.dispatch(
     boardApiSlice.util.updateQueryData('boardData', boardId.toString(), previousBoard => {
       previousBoard.users = userInBoardAdapter.addOne(previousBoard.users, payload)
+    })
+  )
+}
+
+export const changeBoardTitle = ({
+  boardId,
+  payload,
+}: SockedBoardUpdateData<ChangeBoardTitleData>) => {
+  store.dispatch(
+    boardApiSlice.util.updateQueryData('boardData', boardId.toString(), previousBoard => {
+      previousBoard.title = payload.title
+    })
+  )
+}
+
+export const changeBoardDescription = ({
+  boardId,
+  payload,
+}: SockedBoardUpdateData<ChangeBoardDescriptionData>) => {
+  store.dispatch(
+    boardApiSlice.util.updateQueryData('boardData', boardId.toString(), previousBoard => {
+      previousBoard.description = payload.description
     })
   )
 }

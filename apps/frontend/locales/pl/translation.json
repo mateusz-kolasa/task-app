@@ -78,6 +78,19 @@
         "unauthorized": "Tablica nie istnieje lub nie masz uprawnień do jej oglądania."
       }
     },
+    "title": {
+      "error": {
+        "title": "Nie udalo się zmienić nazwy tablicy"
+      }
+    },
+    "description": {
+      "empty": {
+        "text": "Dodaj opis tablicy."
+      },
+      "error": {
+        "title": "Nie udalo się zmienić opisu tablicy"
+      }
+    },
     "users": {
       "add": {
         "button": "Dodaj użytkownika",

@@ -15,6 +15,8 @@ import BoardAddUserData from 'src/dtos/board-add-user-data.dto'
 import { UsersService } from 'src/users/users.service'
 import { BoardGateway } from './board.gateway'
 import { BOARD_SOCKET_MESSAGES } from 'shared-consts'
+import ChangeBoardDescriptionData from 'src/dtos/board-change-description-data.dto'
+import ChangeBoardTitleData from 'src/dtos/board-change-title-data.dto'
 
 @Injectable()
 export class BoardService {
@@ -154,6 +156,63 @@ export class BoardService {
       payload: addedUser,
     })
     return addedUser
+  }
+
+  async changeTitle(request: AuthRequest, titleData: ChangeBoardTitleData): Promise<Board> {
+    const isAuthorized = await this.usersService.isUserAuthorized(
+      request.user.id,
+      titleData.boardId,
+      BOARD_PERMISSIONS.admin
+    )
+
+    if (!isAuthorized) {
+      throw new ForbiddenException()
+    }
+
+    const updatedBoard = await this.prisma.board.update({
+      where: {
+        id: titleData.boardId,
+      },
+      data: {
+        title: titleData.title,
+      },
+    })
+
+    this.boardGateway.sendMessage(BOARD_SOCKET_MESSAGES.ChangeBoardTitle, {
+      boardId: titleData.boardId,
+      payload: updatedBoard,
+    })
+    return updatedBoard
+  }
+
+  async changeDescription(
+    request: AuthRequest,
+    descriptionData: ChangeBoardDescriptionData
+  ): Promise<Board> {
+    const isAuthorized = await this.usersService.isUserAuthorized(
+      request.user.id,
+      descriptionData.boardId,
+      BOARD_PERMISSIONS.admin
+    )
+
+    if (!isAuthorized) {
+      throw new ForbiddenException()
+    }
+
+    const updatedBoard = await this.prisma.board.update({
+      where: {
+        id: descriptionData.boardId,
+      },
+      data: {
+        description: descriptionData.description,
+      },
+    })
+
+    this.boardGateway.sendMessage(BOARD_SOCKET_MESSAGES.ChangeBoardDescription, {
+      boardId: descriptionData.boardId,
+      payload: updatedBoard,
+    })
+    return updatedBoard
   }
 
   async delete(request: AuthRequest, boardId: number) {

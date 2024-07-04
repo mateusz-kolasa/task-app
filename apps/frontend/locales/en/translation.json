@@ -78,6 +78,19 @@
         "unauthorized": "The board does not exist or you do not have permissions to view it."
       }
     },
+    "title": {
+      "error": {
+        "title": "Could not rename board"
+      }
+    },
+    "description": {
+      "empty": {
+        "text": "Add board description."
+      },
+      "error": {
+        "title": "Could not change board title"
+      }
+    },
     "users": {
       "add": {
         "button": "Add user",

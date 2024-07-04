@@ -1,8 +1,11 @@
 import {
+  Board,
   BoardAddUserData,
   BoardCreateData,
   BoardData,
   BoardFullData,
+  ChangeBoardDescriptionData,
+  ChangeBoardTitleData,
   UsersInBoardsWithUsername,
 } from 'shared-types'
 import { apiSlice, cardsAdapter, listsAdapter, userInBoardAdapter } from './api-slice'
@@ -79,6 +82,46 @@ export const boardApiSlice = apiSlice.injectEndpoints({
         }
       },
     }),
+    changeBoardTitle: builder.mutation<Board, ChangeBoardTitleData>({
+      query: titleData => ({
+        url: API_PATHS.changeBoardTitle,
+        method: 'PATCH',
+        body: titleData,
+      }),
+      async onQueryStarted(_, { dispatch, queryFulfilled }) {
+        try {
+          const { data: board } = await queryFulfilled
+
+          dispatch(
+            boardApiSlice.util.updateQueryData('boardData', board.id.toString(), boardData => {
+              boardData.title = board.title
+            })
+          )
+        } catch (error) {
+          /* empty */
+        }
+      },
+    }),
+    changeBoardDescription: builder.mutation<Board, ChangeBoardDescriptionData>({
+      query: descriptionData => ({
+        url: API_PATHS.changeBoardDescription,
+        method: 'PATCH',
+        body: descriptionData,
+      }),
+      async onQueryStarted(_, { dispatch, queryFulfilled }) {
+        try {
+          const { data: board } = await queryFulfilled
+
+          dispatch(
+            boardApiSlice.util.updateQueryData('boardData', board.id.toString(), boardData => {
+              boardData.description = board.description
+            })
+          )
+        } catch (error) {
+          /* empty */
+        }
+      },
+    }),
     deleteBoard: builder.mutation<null, string>({
       query: id => ({
         url: `${API_PATHS.board}/${id}`,
@@ -101,6 +144,8 @@ export const {
   useBoardDataQuery,
   useCreateBoardMutation,
   useAddBoardUserMutation,
+  useChangeBoardTitleMutation,
+  useChangeBoardDescriptionMutation,
   useDeleteBoardMutation,
   useLeaveBoardMutation,
 } = boardApiSlice
