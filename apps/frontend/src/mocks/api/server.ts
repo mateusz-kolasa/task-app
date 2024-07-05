@@ -2,6 +2,7 @@ import SERVER_ERRORS from 'consts/server-errors'
 import { SAMPLE_BOARDS } from 'mocks/data/boards'
 import { SAMPLE_BOARDS_FULL } from 'mocks/data/boards-full'
 import { SAMPLE_LISTS } from 'mocks/data/lists'
+import { MOCK_USER } from 'mocks/data/user'
 import { http, HttpResponse, delay } from 'msw'
 import { setupServer } from 'msw/node'
 import { UserLogin } from 'pages/Login/Login'
@@ -19,6 +20,7 @@ const handlers = [
       return new HttpResponse(null, { status: 200 })
     }
   }),
+
   http.post('http://localhost:3000/api/auth/register', async ({ request }) => {
     const { username } = (await request.json()) as UserRegister
 
@@ -29,6 +31,12 @@ const handlers = [
     } else {
       return new HttpResponse(null, { status: 200 })
     }
+  }),
+  http.delete('http://localhost:3000/api/auth/logout', () => {
+    return new HttpResponse(null, { status: 200 })
+  }),
+  http.get('http://localhost:3000/api/auth', async () => {
+    return new HttpResponse(JSON.stringify(MOCK_USER), { status: 200 })
   }),
   http.get('http://localhost:3000/api/board', async () => {
     return new HttpResponse(JSON.stringify(SAMPLE_BOARDS[0]), { status: 200 })

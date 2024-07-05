@@ -26,6 +26,7 @@ describe('AuthService', () => {
 
   const response = {
     cookie: jest.fn(),
+    clearCookie: jest.fn(),
   } as unknown as Response
 
   beforeEach(async () => {
@@ -129,14 +130,9 @@ describe('AuthService', () => {
 
   describe('logout', () => {
     it('expires access_token', async () => {
-      const now = Date.now()
-      Date.now = jest.fn().mockReturnValue(now)
-
       jwtService.sign = jest.fn().mockReturnValueOnce('token_content')
       service.logout(response)
-      expect(response.cookie).toHaveBeenCalledWith('access_token', {
-        expires: now,
-      })
+      expect(response.clearCookie).toHaveBeenCalledWith('access_token')
     })
   })
 

@@ -79,7 +79,14 @@ export const authApiSlice = apiSlice.injectEndpoints({
         url: API_PATHS.logout,
         method: 'DELETE',
       }),
-      invalidatesTags: ['User'],
+      async onQueryStarted(_, { dispatch, queryFulfilled }) {
+        try {
+          await queryFulfilled
+          dispatch(apiSlice.util.resetApiState())
+        } catch {
+          /* empty */
+        }
+      },
     }),
   }),
 })

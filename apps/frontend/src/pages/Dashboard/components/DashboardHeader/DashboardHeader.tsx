@@ -1,14 +1,9 @@
-import { ActionIcon, Center, Group } from '@mantine/core'
-import { IconMenu2 } from '@tabler/icons-react'
+import { Center, Group } from '@mantine/core'
 import LanguagePicker from 'components/LanguagePicker/LanguagePicker'
 import LightModeSwitch from 'components/LightModeSwitch/LightModeSwitch'
 import UserAccount from 'components/UserAccount/UserAccount'
 
-interface BoardHeaderProps {
-  toggleMenu: () => void
-}
-
-function BoardHeader({ toggleMenu }: Readonly<BoardHeaderProps>) {
+function DashboardHeader() {
   return (
     <Center>
       <Group ml='auto'>
@@ -17,11 +12,8 @@ function BoardHeader({ toggleMenu }: Readonly<BoardHeaderProps>) {
       </Group>
 
       <UserAccount />
-      <ActionIcon mr='md' variant='subtle' onClick={toggleMenu}>
-        <IconMenu2 />
-      </ActionIcon>
     </Center>
   )
 }
 
-export default BoardHeader
+export default DashboardHeader
