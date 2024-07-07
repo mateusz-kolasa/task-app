@@ -20,7 +20,7 @@ class BoardSocket {
   socket: Socket
 
   constructor() {
-    this.socket = io('ws://localhost:3000/api/ws/board', {
+    this.socket = io('/api/ws/board', {
       transports: ['websocket'],
       autoConnect: false,
     })
