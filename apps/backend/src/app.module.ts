@@ -8,11 +8,17 @@ import { ListModule } from './list/list.module'
 import { CardModule } from './card/card.module'
 import { PrismaModule } from './prisma/prisma.module'
 import { CoreModule } from './core/core.module'
+import { ServeStaticModule } from '@nestjs/serve-static'
+import { join } from 'path'
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
+    }),
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '../..', 'frontend', 'dist'),
+      exclude: ['api/*'],
     }),
     CoreModule,
     UsersModule,
