@@ -1,16 +1,27 @@
-# Turborepo kitchen sink starter
+# Task-app
 
-This is an official starter Turborepo with multiple meta-frameworks all working in harmony and sharing packages.
+An webapp for creating task boards. Includes user account creation, inviting user to boards with varying permissions, and websocket for synchronizing users working on same board.
 
-This example also shows how to use [Workspace Configurations](https://turbo.build/repo/docs/core-concepts/monorepos/configuring-workspaces).
+Hosted at:
+https://task-app-3lqj.onrender.com
 
-## Using this example
+Api can be viewed at:
+https://task-app-3lqj.onrender.com/api
 
-Run the following command:
+## Using this app
+
+App is using postgres as database, to run it you need to set it up locally, and modify the backend app enviromental variable. After that, to start run the following command:
 
 ```sh
-npx create-turbo@latest -e kitchen-sink
+yarn install
+yarn dev
 ```
+
+Your local app will be hosted by default at:
+http://localhost:5173/
+
+Backend app includes swagger, which will be available at:
+http://localhost:3000/api
 
 ## What's inside?
 
@@ -20,14 +31,5 @@ This Turborepo includes the following packages and apps:
 
 - `backend`: an [NestJs](https://nestjs.com/) server
 - `frontend`: a [Vite](https://vitejs.dev/) single page app
-
-Each package and app is 100% [TypeScript](https://www.typescriptlang.org/).
-
-### Utilities
-
-This Turborepo has some additional tools already setup for you:
-
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Jest](https://jestjs.io) test runner for all things JavaScript
-- [Prettier](https://prettier.io) for code formatting
+- `shared-types`: common types like dtos, shared by frontend and backend
+- `shared-consts`: common values, like validation rules, shared by frontend and backend
