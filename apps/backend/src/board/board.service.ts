@@ -5,16 +5,15 @@ import {
   NotFoundException,
 } from '@nestjs/common'
 import { Board } from '@prisma/client'
-import { BOARD_PERMISSIONS } from 'src/consts/user.consts'
+import { BOARD_PERMISSIONS, BOARD_SOCKET_MESSAGES } from 'shared-consts'
 import BoardCreateData from 'src/dtos/board-create-data.dto'
 import { BoardWithListsData } from 'src/dtos/board-lists-data.dto'
 import { PrismaService } from 'src/prisma/prisma.service'
-import { AuthRequest } from 'src/types/user-jwt-payload'
+import { AuthRequest, BoardAuthRequest } from 'src/types/user-jwt-payload'
 import { BoardFullData, UsersInBoardsWithUsername } from 'shared-types'
 import BoardAddUserData from 'src/dtos/board-add-user-data.dto'
 import { UsersService } from 'src/users/users.service'
 import { BoardGateway } from './board.gateway'
-import { BOARD_SOCKET_MESSAGES } from 'shared-consts'
 import ChangeBoardDescriptionData from 'src/dtos/board-change-description-data.dto'
 import ChangeBoardTitleData from 'src/dtos/board-change-title-data.dto'
 
@@ -49,16 +48,7 @@ export class BoardService {
     })
   }
 
-  async getFull(request: AuthRequest, boardId: number): Promise<BoardFullData> {
-    const isAuthorized = await this.usersService.isUserAuthorized(
-      request.user.id,
-      boardId,
-      BOARD_PERMISSIONS.view
-    )
-    if (!isAuthorized) {
-      throw new ForbiddenException()
-    }
-
+  async getFull(boardId: number): Promise<BoardFullData> {
     return this.prisma.board.findUnique({
       where: {
         id: boardId,
@@ -102,20 +92,8 @@ export class BoardService {
     })
   }
 
-  async addUser(
-    request: AuthRequest,
-    userData: BoardAddUserData
-  ): Promise<UsersInBoardsWithUsername> {
-    const isAuthorized = await this.usersService.isUserAuthorized(
-      request.user.id,
-      userData.boardId,
-      BOARD_PERMISSIONS.admin
-    )
+  async addUser(userData: BoardAddUserData): Promise<UsersInBoardsWithUsername> {
     if (userData.permissions > BOARD_PERMISSIONS.admin) {
-      throw new ForbiddenException()
-    }
-
-    if (!isAuthorized) {
       throw new ForbiddenException()
     }
 
@@ -158,17 +136,7 @@ export class BoardService {
     return addedUser
   }
 
-  async changeTitle(request: AuthRequest, titleData: ChangeBoardTitleData): Promise<Board> {
-    const isAuthorized = await this.usersService.isUserAuthorized(
-      request.user.id,
-      titleData.boardId,
-      BOARD_PERMISSIONS.admin
-    )
-
-    if (!isAuthorized) {
-      throw new ForbiddenException()
-    }
-
+  async changeTitle(titleData: ChangeBoardTitleData): Promise<Board> {
     const updatedBoard = await this.prisma.board.update({
       where: {
         id: titleData.boardId,
@@ -185,20 +153,7 @@ export class BoardService {
     return updatedBoard
   }
 
-  async changeDescription(
-    request: AuthRequest,
-    descriptionData: ChangeBoardDescriptionData
-  ): Promise<Board> {
-    const isAuthorized = await this.usersService.isUserAuthorized(
-      request.user.id,
-      descriptionData.boardId,
-      BOARD_PERMISSIONS.admin
-    )
-
-    if (!isAuthorized) {
-      throw new ForbiddenException()
-    }
-
+  async changeDescription(descriptionData: ChangeBoardDescriptionData): Promise<Board> {
     const updatedBoard = await this.prisma.board.update({
       where: {
         id: descriptionData.boardId,
@@ -215,16 +170,7 @@ export class BoardService {
     return updatedBoard
   }
 
-  async delete(request: AuthRequest, boardId: number) {
-    const isAuthorized = await this.usersService.isUserAuthorized(
-      request.user.id,
-      boardId,
-      BOARD_PERMISSIONS.admin
-    )
-    if (!isAuthorized) {
-      throw new ForbiddenException()
-    }
-
+  async delete(boardId: number) {
     this.boardGateway.sendMessage(BOARD_SOCKET_MESSAGES.DeleteBoard, {
       boardId: boardId,
       payload: boardId,
@@ -236,15 +182,11 @@ export class BoardService {
     })
   }
 
-  async leave(request: AuthRequest, boardId: number) {
-    const isAuthorized = await this.usersService.isUserAuthorized(
-      request.user.id,
-      boardId,
-      BOARD_PERMISSIONS.admin
-    )
+  async leave(request: BoardAuthRequest, boardId: number) {
+    const { permissions } = request.user
 
     // Owner can't leave board
-    if (isAuthorized) {
+    if (permissions === BOARD_PERMISSIONS.owner) {
       throw new BadRequestException()
     }
 

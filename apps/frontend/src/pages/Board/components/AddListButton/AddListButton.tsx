@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next'
 import { LIST_WIDTH } from 'consts/style-consts'
 import AddListButtonForm from './AddListButtonForm'
 import useIsAuthorized from 'hooks/useIsAuthorized'
-import { BOARD_PERMISSIONS } from 'consts/user-permissions'
+import { BOARD_PERMISSIONS } from 'shared-consts'
 
 function AddListButton() {
   const { t } = useTranslation()

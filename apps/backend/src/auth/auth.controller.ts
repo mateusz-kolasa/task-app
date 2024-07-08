@@ -1,4 +1,4 @@
-import { Controller, Request, Post, UseGuards, Body, Res, Req, Get, Delete } from '@nestjs/common'
+import { Controller, Post, UseGuards, Body, Res, Req, Get, Delete } from '@nestjs/common'
 import { LocalAuthGuard } from './local-auth.guard'
 import { AuthService } from './auth.service'
 import UserRegisterData from 'src/dtos/user-register-data.dto'
@@ -26,7 +26,7 @@ export class AuthController {
   @Post('login')
   @ApiBody({ type: UserLoginData })
   async logIn(
-    @Request() request,
+    @Req() request,
     @Res({ passthrough: true }) response: Response
   ): Promise<UserInfoData> {
     return this.authService.login(request.user, response)

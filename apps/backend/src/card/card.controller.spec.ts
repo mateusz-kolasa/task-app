@@ -3,7 +3,6 @@ import { CardController } from './card.controller'
 import { PrismaModule } from 'src/prisma/prisma.module'
 import { CardService } from './card.service'
 import { ListModule } from 'src/list/list.module'
-import { UsersModule } from 'src/users/users.module'
 import { ConfigModule } from '@nestjs/config'
 import { BoardModule } from 'src/board/board.module'
 
@@ -20,7 +19,6 @@ describe('CardController', () => {
         }),
         ListModule,
         PrismaModule,
-        UsersModule,
         BoardModule,
       ],
     }).compile()

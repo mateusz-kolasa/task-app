@@ -3,7 +3,7 @@ import { useCallback, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import AddUserForm from './AddUserForm'
 import useIsAuthorized from 'hooks/useIsAuthorized'
-import { BOARD_PERMISSIONS } from 'consts/user-permissions'
+import { BOARD_PERMISSIONS } from 'shared-consts'
 
 function AddUserButton() {
   const { t } = useTranslation()

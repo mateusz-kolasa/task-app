@@ -1,29 +1,21 @@
-import {
-  BadRequestException,
-  ForbiddenException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common'
+import { BadRequestException, Injectable } from '@nestjs/common'
 import { List } from '@prisma/client'
 import { BOARD_SOCKET_MESSAGES } from 'shared-consts'
 import { DeleteListData, ListFullData } from 'shared-types'
 import { BoardGateway } from 'src/board/board.gateway'
 import { BoardService } from 'src/board/board.service'
-import { BOARD_PERMISSIONS } from 'src/consts/user.consts'
 import ChangeListPositionData from 'src/dtos/list-change-position.data.dto'
 import ChangeListTitleData from 'src/dtos/list-change-title-data.dto'
 import ListCreateData from 'src/dtos/list-create-data.dto'
 import { PrismaService } from 'src/prisma/prisma.service'
-import { AuthRequest } from 'src/types/user-jwt-payload'
-import { UsersService } from 'src/users/users.service'
+import { ListAuthRequest } from 'src/types/user-jwt-payload'
 
 @Injectable()
 export class ListService {
   constructor(
     private prisma: PrismaService,
     private boardService: BoardService,
-    private boardGateway: BoardGateway,
-    private usersService: UsersService
+    private boardGateway: BoardGateway
   ) {}
 
   async getFull(listId: number): Promise<ListFullData> {
@@ -37,17 +29,7 @@ export class ListService {
     })
   }
 
-  async create(request: AuthRequest, listData: ListCreateData): Promise<ListFullData> {
-    const isAuthorized = await this.usersService.isUserAuthorized(
-      request.user.id,
-      listData.boardId,
-      BOARD_PERMISSIONS.edit
-    )
-
-    if (!isAuthorized) {
-      throw new ForbiddenException()
-    }
-
+  async create(listData: ListCreateData): Promise<ListFullData> {
     const board = await this.boardService.getWithLists(listData.boardId)
     const lastListPosition = Math.max(...board.lists.map(list => list.position), 0)
 
@@ -126,31 +108,13 @@ export class ListService {
   }
 
   async changePosition(
-    request: AuthRequest,
+    request: ListAuthRequest,
     changePositionData: ChangeListPositionData
   ): Promise<List[]> {
-    const list = await this.prisma.list.findUnique({
-      where: {
-        id: changePositionData.listId,
-      },
-    })
-
-    if (!list) {
-      throw new NotFoundException()
-    }
+    const { list } = request
 
     if (list.position === changePositionData.position) {
       throw new BadRequestException()
-    }
-
-    const isAuthorized = await this.usersService.isUserAuthorized(
-      request.user.id,
-      list.boardId,
-      BOARD_PERMISSIONS.edit
-    )
-
-    if (!isAuthorized) {
-      throw new ForbiddenException()
     }
 
     // Make sure new position is within current bounds
@@ -179,27 +143,7 @@ export class ListService {
     return updatedLists
   }
 
-  async changeTitle(request: AuthRequest, changeTitleData: ChangeListTitleData): Promise<List> {
-    const list = await this.prisma.list.findUnique({
-      where: {
-        id: changeTitleData.listId,
-      },
-    })
-
-    if (!list) {
-      throw new NotFoundException()
-    }
-
-    const isAuthorized = await this.usersService.isUserAuthorized(
-      request.user.id,
-      list.boardId,
-      BOARD_PERMISSIONS.edit
-    )
-
-    if (!isAuthorized) {
-      throw new ForbiddenException()
-    }
-
+  async changeTitle(request: ListAuthRequest, changeTitleData: ChangeListTitleData): Promise<List> {
     const updatedList = await this.prisma.list.update({
       data: {
         title: changeTitleData.title,
@@ -210,32 +154,14 @@ export class ListService {
     })
 
     this.boardGateway.sendMessage(BOARD_SOCKET_MESSAGES.ChangeListTitle, {
-      boardId: list.boardId,
+      boardId: request.boardId,
       payload: updatedList,
     })
     return updatedList
   }
 
-  async delete(request: AuthRequest, listId: number): Promise<DeleteListData> {
-    const list = await this.prisma.list.findUnique({
-      where: {
-        id: listId,
-      },
-    })
-
-    if (!list) {
-      throw new NotFoundException()
-    }
-
-    const isAuthorized = await this.usersService.isUserAuthorized(
-      request.user.id,
-      list.boardId,
-      BOARD_PERMISSIONS.edit
-    )
-
-    if (!isAuthorized) {
-      throw new ForbiddenException()
-    }
+  async delete(request: ListAuthRequest, listId: number): Promise<DeleteListData> {
+    const { list } = request
 
     await this.prisma.$transaction([
       this.prisma.list.delete({

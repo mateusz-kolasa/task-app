@@ -3,11 +3,10 @@ import { CardService } from './card.service'
 import { CardController } from './card.controller'
 import { PrismaModule } from 'src/prisma/prisma.module'
 import { ListModule } from 'src/list/list.module'
-import { UsersModule } from 'src/users/users.module'
 import { BoardModule } from 'src/board/board.module'
 
 @Module({
-  imports: [PrismaModule, ListModule, UsersModule, BoardModule],
+  imports: [PrismaModule, ListModule, BoardModule],
   providers: [CardService],
   controllers: [CardController],
 })

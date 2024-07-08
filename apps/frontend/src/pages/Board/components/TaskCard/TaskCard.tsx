@@ -3,7 +3,7 @@ import { Text, Card } from '@mantine/core'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useBoardDataQuery } from 'store/slices/api/board-api-slice'
 import classes from './TaskCard.module.css'
-import { BOARD_PERMISSIONS } from 'consts/user-permissions'
+import { BOARD_PERMISSIONS } from 'shared-consts'
 import useIsAuthorized from 'hooks/useIsAuthorized'
 import { CARD_TEXT_WIDTH } from 'consts/style-consts'
 

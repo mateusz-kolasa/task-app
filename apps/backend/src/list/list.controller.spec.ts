@@ -3,7 +3,6 @@ import { ListController } from './list.controller'
 import { ListService } from './list.service'
 import { PrismaModule } from 'src/prisma/prisma.module'
 import { BoardModule } from 'src/board/board.module'
-import { UsersModule } from 'src/users/users.module'
 import { ConfigModule } from '@nestjs/config'
 
 describe('ListController', () => {
@@ -19,7 +18,6 @@ describe('ListController', () => {
         }),
         PrismaModule,
         BoardModule,
-        UsersModule,
       ],
     }).compile()
 

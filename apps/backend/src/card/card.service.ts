@@ -1,45 +1,25 @@
-import {
-  BadRequestException,
-  ForbiddenException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common'
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common'
 import { Card } from 'prisma/prisma-client'
 import { BOARD_SOCKET_MESSAGES } from 'shared-consts'
 import { ChangeCardPositionResultData, DeleteCardData, ListFullData } from 'shared-types'
 import { BoardGateway } from 'src/board/board.gateway'
-import { BOARD_PERMISSIONS } from 'src/consts/user.consts'
 import ChangeCardPositionData from 'src/dtos/card-change-position.data.dto'
 import ChangeCardTitleData from 'src/dtos/card-change-title-data.dto'
 import CardCreateData from 'src/dtos/card-create-data.dto'
 import { ListService } from 'src/list/list.service'
 import { PrismaService } from 'src/prisma/prisma.service'
-import { AuthRequest } from 'src/types/user-jwt-payload'
-import { UsersService } from 'src/users/users.service'
+import { CardAuthRequest } from 'src/types/user-jwt-payload'
 
 @Injectable()
 export class CardService {
   constructor(
     private prisma: PrismaService,
     private listService: ListService,
-    private usersService: UsersService,
     private boardGateway: BoardGateway
   ) {}
 
-  async create(request: AuthRequest, cardData: CardCreateData): Promise<Card> {
+  async create(cardData: CardCreateData): Promise<Card> {
     const list = await this.listService.getFull(cardData.listId)
-    if (!list) {
-      throw new BadRequestException('List not found')
-    }
-
-    const isAuthorized = await this.usersService.isUserAuthorized(
-      request.user.id,
-      list.boardId,
-      BOARD_PERMISSIONS.edit
-    )
-    if (!isAuthorized) {
-      throw new ForbiddenException()
-    }
 
     const lastListPosition = Math.max(...list.cards.map(card => card.position), 0)
     const createdCard = await this.prisma.card.create({
@@ -168,18 +148,10 @@ export class CardService {
   }
 
   async changePosition(
-    request: AuthRequest,
+    request: CardAuthRequest,
     changePositionData: ChangeCardPositionData
   ): Promise<ChangeCardPositionResultData> {
-    const card = await this.prisma.card.findUnique({
-      where: {
-        id: changePositionData.cardId,
-      },
-    })
-
-    if (!card) {
-      throw new NotFoundException()
-    }
+    const { card } = request
 
     if (
       card.position === changePositionData.position &&
@@ -215,16 +187,6 @@ export class CardService {
       if (newList.boardId !== list.boardId) {
         throw new BadRequestException()
       }
-    }
-
-    const isAuthorized = await this.usersService.isUserAuthorized(
-      request.user.id,
-      list.boardId,
-      BOARD_PERMISSIONS.edit
-    )
-
-    if (!isAuthorized) {
-      throw new ForbiddenException()
     }
 
     // Make sure new position is within current bounds
@@ -271,33 +233,7 @@ export class CardService {
     return positionUpdate
   }
 
-  async changeTitle(request: AuthRequest, changeTitleData: ChangeCardTitleData): Promise<Card> {
-    const card = await this.prisma.card.findUnique({
-      where: {
-        id: changeTitleData.cardId,
-      },
-    })
-
-    if (!card) {
-      throw new NotFoundException()
-    }
-
-    const list = await this.prisma.list.findUnique({
-      where: {
-        id: card.listId,
-      },
-    })
-
-    const isAuthorized = await this.usersService.isUserAuthorized(
-      request.user.id,
-      list.boardId,
-      BOARD_PERMISSIONS.edit
-    )
-
-    if (!isAuthorized) {
-      throw new ForbiddenException()
-    }
-
+  async changeTitle(request: CardAuthRequest, changeTitleData: ChangeCardTitleData): Promise<Card> {
     const updatedCard = await this.prisma.card.update({
       data: {
         title: changeTitleData.title,
@@ -307,38 +243,14 @@ export class CardService {
       },
     })
     this.boardGateway.sendMessage(BOARD_SOCKET_MESSAGES.ChangeCardTitle, {
-      boardId: list.boardId,
+      boardId: request.boardId,
       payload: updatedCard,
     })
     return updatedCard
   }
 
-  async delete(request: AuthRequest, cardId: number): Promise<DeleteCardData> {
-    const card = await this.prisma.card.findUnique({
-      where: {
-        id: cardId,
-      },
-    })
-
-    if (!card) {
-      throw new NotFoundException()
-    }
-
-    const list = await this.prisma.list.findUnique({
-      where: {
-        id: card.listId,
-      },
-    })
-
-    const isAuthorized = await this.usersService.isUserAuthorized(
-      request.user.id,
-      list.boardId,
-      BOARD_PERMISSIONS.edit
-    )
-
-    if (!isAuthorized) {
-      throw new ForbiddenException()
-    }
+  async delete(request: CardAuthRequest, cardId: number): Promise<DeleteCardData> {
+    const { card, boardId } = request
 
     await this.prisma.$transaction([
       this.prisma.card.delete({
@@ -373,7 +285,7 @@ export class CardService {
     }
 
     this.boardGateway.sendMessage(BOARD_SOCKET_MESSAGES.DeleteCard, {
-      boardId: list.boardId,
+      boardId: boardId,
       payload: deleteCardData,
     })
 

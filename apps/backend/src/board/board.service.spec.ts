@@ -1,11 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing'
 import { BoardService } from './board.service'
 import { PrismaService } from 'src/prisma/prisma.service'
-import { AuthRequest } from 'src/types/user-jwt-payload'
+import { AuthRequest, BoardAuthRequest } from 'src/types/user-jwt-payload'
 import { Board, UsersInBoards } from '@prisma/client'
 import { BoardWithListsData } from 'src/dtos/board-lists-data.dto'
 import { BoardFullData } from 'shared-types'
-import { BOARD_PERMISSIONS } from 'src/consts/user.consts'
 import { PrismaModule } from 'src/prisma/prisma.module'
 import { UsersModule } from 'src/users/users.module'
 import { UsersService } from 'src/users/users.service'
@@ -15,18 +14,13 @@ import { CoreModule } from 'src/core/core.module'
 import { ConfigModule } from '@nestjs/config'
 import ChangeBoardDescriptionData from 'src/dtos/board-change-description-data.dto'
 import ChangeBoardTitleData from 'src/dtos/board-change-title-data.dto'
+import { BOARD_PERMISSIONS } from 'shared-consts'
 
 describe('BoardService', () => {
   let service: BoardService
   let prisma: PrismaService
   let usersService: UsersService
   let boardGateway: BoardGateway
-
-  const request = {
-    user: {
-      id: 1,
-    },
-  } as AuthRequest
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -54,6 +48,12 @@ describe('BoardService', () => {
   })
 
   describe('getForUser', () => {
+    const request = {
+      user: {
+        id: 1,
+      },
+    } as AuthRequest
+
     it('Selects user boards', async () => {
       prisma.board.findMany = jest.fn()
       await service.getForUser(request)
@@ -124,8 +124,7 @@ describe('BoardService', () => {
   describe('getFull', () => {
     it('Selects board by id', async () => {
       prisma.board.findUnique = jest.fn()
-      usersService.isUserAuthorized = jest.fn().mockResolvedValueOnce(true)
-      await service.getFull(request, 1)
+      await service.getFull(1)
       expect(prisma.board.findUnique).toHaveBeenCalledWith({
         where: {
           id: 1,
@@ -166,19 +165,18 @@ describe('BoardService', () => {
       } as BoardFullData
 
       prisma.board.findUnique = jest.fn().mockResolvedValueOnce(board)
-      usersService.isUserAuthorized = jest.fn().mockResolvedValueOnce(true)
-      const response = await service.getFull(request, 1)
+      const response = await service.getFull(1)
       expect(response).toBe(board)
-    })
-
-    it('throws forbidden exception for user not in board', async () => {
-      prisma.board.findUnique = jest.fn()
-      usersService.isUserAuthorized = jest.fn().mockResolvedValueOnce(false)
-      expect(service.getFull(request, 1)).rejects.toThrow(ForbiddenException)
     })
   })
 
   describe('create', () => {
+    const request = {
+      user: {
+        id: 1,
+      },
+    } as AuthRequest
+
     it('Creates board with data', async () => {
       prisma.board.create = jest.fn()
       await service.create(request, { title: 'new board' })
@@ -214,14 +212,13 @@ describe('BoardService', () => {
 
   describe('addUser', () => {
     it('adds user to board', async () => {
-      usersService.isUserAuthorized = jest.fn().mockResolvedValueOnce(true)
       prisma.usersInBoards.findFirst = jest.fn().mockResolvedValueOnce(null)
       prisma.usersInBoards.create = jest.fn()
       usersService.findByUsername = jest.fn().mockResolvedValue({
         id: 1,
       })
 
-      await service.addUser(request, {
+      await service.addUser({
         boardId: 1,
         username: 'user',
         permissions: 0,
@@ -244,7 +241,6 @@ describe('BoardService', () => {
     })
 
     it('returns added user in board', async () => {
-      usersService.isUserAuthorized = jest.fn().mockResolvedValueOnce(true)
       const userInBoard: UsersInBoards = {
         boardId: 1,
         userId: 1,
@@ -258,7 +254,7 @@ describe('BoardService', () => {
         id: 1,
       })
 
-      const response = await service.addUser(request, {
+      const response = await service.addUser({
         boardId: 1,
         username: 'user',
         permissions: 0,
@@ -268,13 +264,12 @@ describe('BoardService', () => {
     })
 
     it('throws not found if user doesnt exists', async () => {
-      usersService.isUserAuthorized = jest.fn().mockResolvedValueOnce(true)
       prisma.usersInBoards.findFirst = jest.fn().mockResolvedValueOnce(null)
       prisma.usersInBoards.create = jest.fn()
       usersService.findByUsername = jest.fn().mockResolvedValue(null)
 
       expect(
-        service.addUser(request, {
+        service.addUser({
           boardId: 1,
           username: 'user',
           permissions: 0,
@@ -283,7 +278,6 @@ describe('BoardService', () => {
     })
 
     it('throws bad request if user is already in board', async () => {
-      usersService.isUserAuthorized = jest.fn().mockResolvedValueOnce(true)
       prisma.usersInBoards.findFirst = jest.fn().mockResolvedValueOnce({
         id: 1,
         userId: 1,
@@ -296,7 +290,7 @@ describe('BoardService', () => {
       })
 
       expect(
-        service.addUser(request, {
+        service.addUser({
           boardId: 1,
           username: 'user',
           permissions: 0,
@@ -304,21 +298,9 @@ describe('BoardService', () => {
       ).rejects.toThrow(BadRequestException)
     })
 
-    it('throws forbidden if request is not from admin', async () => {
-      usersService.isUserAuthorized = jest.fn().mockResolvedValueOnce(false)
-
-      expect(
-        service.addUser(request, {
-          boardId: 1,
-          username: 'user',
-          permissions: 0,
-        })
-      ).rejects.toThrow(ForbiddenException)
-    })
-
     it('throws forbidden if trying to set owners permissions', async () => {
       expect(
-        service.addUser(request, {
+        service.addUser({
           boardId: 1,
           username: 'user',
           permissions: 3,
@@ -340,10 +322,9 @@ describe('BoardService', () => {
     }
 
     it('updates board with new title', async () => {
-      usersService.isUserAuthorized = jest.fn().mockResolvedValueOnce(true)
       prisma.board.update = jest.fn()
 
-      await service.changeTitle(request, changeTitleData)
+      await service.changeTitle(changeTitleData)
       expect(prisma.board.update).toHaveBeenCalledWith({
         data: {
           title: changeTitleData.title,
@@ -355,24 +336,16 @@ describe('BoardService', () => {
     })
 
     it('returns updated board', async () => {
-      usersService.isUserAuthorized = jest.fn().mockResolvedValueOnce(true)
       prisma.board.update = jest.fn().mockResolvedValueOnce({
         ...originalBoard,
         title: changeTitleData.title,
       })
 
-      const response = await service.changeTitle(request, changeTitleData)
+      const response = await service.changeTitle(changeTitleData)
       expect(response).toStrictEqual({
         ...originalBoard,
         title: changeTitleData.title,
       })
-    })
-
-    it('throws forbidden for unauthorized user', async () => {
-      usersService.isUserAuthorized = jest.fn().mockResolvedValueOnce(false)
-      prisma.board.update = jest.fn()
-
-      expect(service.changeTitle(request, changeTitleData)).rejects.toThrow(ForbiddenException)
     })
   })
 
@@ -389,10 +362,9 @@ describe('BoardService', () => {
     }
 
     it('updates board with new title', async () => {
-      usersService.isUserAuthorized = jest.fn().mockResolvedValueOnce(true)
       prisma.board.update = jest.fn()
 
-      await service.changeDescription(request, changeDescriptionData)
+      await service.changeDescription(changeDescriptionData)
       expect(prisma.board.update).toHaveBeenCalledWith({
         data: {
           description: changeDescriptionData.description,
@@ -404,52 +376,41 @@ describe('BoardService', () => {
     })
 
     it('returns updated board', async () => {
-      usersService.isUserAuthorized = jest.fn().mockResolvedValueOnce(true)
       prisma.board.update = jest.fn().mockResolvedValueOnce({
         ...originalBoard,
         description: changeDescriptionData.description,
       })
 
-      const response = await service.changeDescription(request, changeDescriptionData)
+      const response = await service.changeDescription(changeDescriptionData)
       expect(response).toStrictEqual({
         ...originalBoard,
         description: changeDescriptionData.description,
       })
-    })
-
-    it('throws forbidden for unauthorized user', async () => {
-      usersService.isUserAuthorized = jest.fn().mockResolvedValueOnce(false)
-      prisma.board.update = jest.fn()
-
-      expect(service.changeDescription(request, changeDescriptionData)).rejects.toThrow(
-        ForbiddenException
-      )
     })
   })
 
   describe('delete', () => {
     it('deletes board by id', async () => {
       prisma.board.delete = jest.fn()
-      usersService.isUserAuthorized = jest.fn().mockResolvedValueOnce(true)
-      await service.delete(request, 1)
+      await service.delete(1)
       expect(prisma.board.delete).toHaveBeenCalledWith({
         where: {
           id: 1,
         },
       })
     })
-
-    it('throws forbidden exception if user is not owner', async () => {
-      prisma.board.delete = jest.fn()
-      usersService.isUserAuthorized = jest.fn().mockResolvedValueOnce(false)
-      expect(service.delete(request, 1)).rejects.toThrow(ForbiddenException)
-    })
   })
 
   describe('leave', () => {
     it('leaves board by id', async () => {
+      const request = {
+        user: {
+          id: 1,
+          permissions: BOARD_PERMISSIONS.view,
+        },
+      } as BoardAuthRequest
+
       prisma.usersInBoards.deleteMany = jest.fn()
-      usersService.isUserAuthorized = jest.fn().mockResolvedValueOnce(false)
       await service.leave(request, 1)
       expect(prisma.usersInBoards.deleteMany).toHaveBeenCalledWith({
         where: {
@@ -460,8 +421,14 @@ describe('BoardService', () => {
     })
 
     it('throws bad request if user is owner', async () => {
+      const request = {
+        user: {
+          id: 1,
+          permissions: BOARD_PERMISSIONS.owner,
+        },
+      } as BoardAuthRequest
+
       prisma.usersInBoards.deleteMany = jest.fn()
-      usersService.isUserAuthorized = jest.fn().mockResolvedValueOnce(true)
       expect(service.leave(request, 1)).rejects.toThrow(BadRequestException)
     })
   })

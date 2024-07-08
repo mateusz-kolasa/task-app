@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom'
 import { useBoardDataQuery } from 'store/slices/api/board-api-slice'
 import BoardTitleTextForm from './BoardTitleTextForm'
 import useIsAuthorized from 'hooks/useIsAuthorized'
-import { BOARD_PERMISSIONS } from 'consts/user-permissions'
+import { BOARD_PERMISSIONS } from 'shared-consts'
 
 function BoardTitleText() {
   const { boardId } = useParams()

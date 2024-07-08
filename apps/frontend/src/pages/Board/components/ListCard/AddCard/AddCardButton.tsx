@@ -3,7 +3,7 @@ import { IconPlus } from '@tabler/icons-react'
 import { useCallback, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import AddCardForm from './AddCardForm'
-import { BOARD_PERMISSIONS } from 'consts/user-permissions'
+import { BOARD_PERMISSIONS } from 'shared-consts'
 import useIsAuthorized from 'hooks/useIsAuthorized'
 
 interface AddCardButtonProps {

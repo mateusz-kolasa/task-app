@@ -3,9 +3,9 @@ import { useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { useBoardDataQuery } from 'store/slices/api/board-api-slice'
 import useIsAuthorized from 'hooks/useIsAuthorized'
-import { BOARD_PERMISSIONS } from 'consts/user-permissions'
 import BoardDescriptionTextForm from './BoardDescriptionTextForm'
 import { useTranslation } from 'react-i18next'
+import { BOARD_PERMISSIONS } from 'shared-consts'
 
 function BoardDescriptionText() {
   const { boardId } = useParams()
