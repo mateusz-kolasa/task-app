@@ -10,6 +10,7 @@ export enum BOARD_SOCKET_MESSAGES {
   DeleteList = 'list_delete',
   AddCard = 'card_add',
   ChangeCardTitle = 'card_title',
+  ChangeCardDescription = 'card_description',
   ChangeCardPosition = 'card_position',
   DeleteCard = 'card_delete',
 }

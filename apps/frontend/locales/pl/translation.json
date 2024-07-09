@@ -22,6 +22,15 @@
         "text": "Czy na pewno chcesz usunąć tę kartę"
       }
     },
+    "description": {
+      "label": "Opis",
+      "empty": {
+        "text": "Dodaj opis karty."
+      },
+      "error": {
+        "title": "Nie udalo się zmienić opisu karty"
+      }
+    },
     "title": {
       "error": {
         "title": "Nie udalo się zmienić nazwy karty"

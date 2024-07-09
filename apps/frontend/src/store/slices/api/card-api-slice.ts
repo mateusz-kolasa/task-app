@@ -1,6 +1,7 @@
 import {
   Card,
   CardCreateData,
+  ChangeCardDescriptionData,
   ChangeCardPositionData,
   ChangeCardTitleData,
   DeleteCardData,
@@ -11,7 +12,7 @@ import API_PATHS from 'consts/api-paths'
 import { movePosition } from 'utils/dndHelper'
 import { Update } from '@reduxjs/toolkit'
 
-interface WithContainerIds {
+type WithContainerIds<T> = T & {
   boardId: string
   listId: number
 }
@@ -20,9 +21,7 @@ interface CardCreateDataWithBoardId extends CardCreateData {
   boardId: string
 }
 
-interface ChangeCardPositionDataContainerIds extends ChangeCardPositionData, WithContainerIds {}
-interface ChangeCardTitleWithContainerIds extends ChangeCardTitleData, WithContainerIds {}
-interface CardIdWithContainerIds extends WithContainerIds {
+interface CardId {
   cardId: number
 }
 
@@ -54,7 +53,7 @@ export const cardApiSlice = apiSlice.injectEndpoints({
         }
       },
     }),
-    changeCardPosition: builder.mutation<Card[], ChangeCardPositionDataContainerIds>({
+    changeCardPosition: builder.mutation<Card[], WithContainerIds<ChangeCardPositionData>>({
       query: cardPosition => ({
         url: API_PATHS.changeCardPosition,
         method: 'POST',
@@ -132,11 +131,14 @@ export const cardApiSlice = apiSlice.injectEndpoints({
         }
       },
     }),
-    changeCardTitle: builder.mutation<Card, ChangeCardTitleWithContainerIds>({
+    changeCardTitle: builder.mutation<Card, WithContainerIds<ChangeCardTitleData>>({
       query: cardTitle => ({
         url: API_PATHS.changeCardTitle,
         method: 'PATCH',
-        body: cardTitle,
+        body: {
+          cardId: cardTitle.cardId,
+          title: cardTitle.title,
+        },
       }),
       async onQueryStarted({ title, cardId, listId, boardId }, { dispatch, queryFulfilled }) {
         const patchResult = dispatch(
@@ -152,7 +154,30 @@ export const cardApiSlice = apiSlice.injectEndpoints({
         }
       },
     }),
-    deleteCard: builder.mutation<DeleteCardData, CardIdWithContainerIds>({
+    changeCardDescription: builder.mutation<Card, WithContainerIds<ChangeCardDescriptionData>>({
+      query: cardDescription => ({
+        url: API_PATHS.changeCardDescription,
+        method: 'PATCH',
+        body: {
+          cardId: cardDescription.cardId,
+          description: cardDescription.description,
+        },
+      }),
+      async onQueryStarted({ description, cardId, listId, boardId }, { dispatch, queryFulfilled }) {
+        const patchResult = dispatch(
+          boardApiSlice.util.updateQueryData('boardData', boardId.toString(), previousBoard => {
+            previousBoard.lists.entities[listId].cards.entities[cardId].description = description
+          })
+        )
+
+        try {
+          await queryFulfilled
+        } catch {
+          patchResult.undo()
+        }
+      },
+    }),
+    deleteCard: builder.mutation<DeleteCardData, WithContainerIds<CardId>>({
       query: deleteCardData => ({
         url: `${API_PATHS.card}/${deleteCardData.cardId}`,
         method: 'DELETE',
@@ -188,5 +213,6 @@ export const {
   useCreateCardMutation,
   useChangeCardPositionMutation,
   useChangeCardTitleMutation,
+  useChangeCardDescriptionMutation,
   useDeleteCardMutation,
 } = cardApiSlice

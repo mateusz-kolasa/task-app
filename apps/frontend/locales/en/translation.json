@@ -22,6 +22,15 @@
         "text": "Are you sure you want to delete this card"
       }
     },
+    "description": {
+      "label": "Description",
+      "empty": {
+        "text": "Add card description."
+      },
+      "error": {
+        "title": "Could not change card description"
+      }
+    },
     "title": {
       "error": {
         "title": "Could not rename card"
@@ -89,7 +98,7 @@
         "text": "Add board description."
       },
       "error": {
-        "title": "Could not change board title"
+        "title": "Could not change board description"
       }
     },
     "title": {

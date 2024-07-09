@@ -10,7 +10,7 @@ export const SAMPLE_LISTS: ListFullData[] = [
       {
         id: 1,
         title: 'card 1',
-        description: '',
+        description: 'desc',
         listId: 1,
         position: 1,
       },

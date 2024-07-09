@@ -124,6 +124,15 @@ export const updateCardTitle = ({ boardId, payload }: SockedBoardUpdateData<Card
   )
 }
 
+export const updateCardDescription = ({ boardId, payload }: SockedBoardUpdateData<Card>) => {
+  store.dispatch(
+    boardApiSlice.util.updateQueryData('boardData', boardId.toString(), previousBoard => {
+      previousBoard.lists.entities[payload.listId].cards.entities[payload.id].description =
+        payload.description
+    })
+  )
+}
+
 export const changeCardPosition = ({
   boardId,
   payload,

@@ -21,6 +21,7 @@ import { BoardPermissionGuard } from 'src/guards/board-permission.guard'
 import { BoardPermissions } from 'src/decorators/board-permission.decorator'
 import { BOARD_PERMISSIONS } from 'shared-consts'
 import { CardAuthRequest } from 'src/types/user-jwt-payload'
+import ChangeCardDescriptionData from 'src/dtos/card-change-description-data.dto'
 
 @ApiTags('card')
 @Controller('card')
@@ -50,6 +51,15 @@ export class CardController {
     @Body() changeTitleData: ChangeCardTitleData
   ): Promise<Card> {
     return this.cardService.changeTitle(request, changeTitleData)
+  }
+
+  @BoardPermissions(BOARD_PERMISSIONS.edit)
+  @Patch('change-description')
+  changeDescription(
+    @Req() request: CardAuthRequest,
+    @Body() changeDescriptionData: ChangeCardDescriptionData
+  ): Promise<Card> {
+    return this.cardService.changeDescription(request, changeDescriptionData)
   }
 
   @BoardPermissions(BOARD_PERMISSIONS.edit)

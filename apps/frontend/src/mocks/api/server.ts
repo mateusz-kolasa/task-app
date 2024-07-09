@@ -80,5 +80,8 @@ const handlers = [
   http.patch('http://localhost:3000/api/card/change-title', async () => {
     return new HttpResponse(JSON.stringify(SAMPLE_LISTS[0].cards[0]), { status: 200 })
   }),
+  http.patch('http://localhost:3000/api/card/change-description', async () => {
+    return new HttpResponse(JSON.stringify(SAMPLE_LISTS[0].cards[0]), { status: 200 })
+  }),
 ]
 export const server = setupServer(...handlers)

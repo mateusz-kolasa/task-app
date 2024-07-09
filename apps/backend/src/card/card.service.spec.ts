@@ -14,6 +14,7 @@ import { BoardGateway } from 'src/board/board.gateway'
 import { ConfigModule } from '@nestjs/config'
 import { BoardModule } from 'src/board/board.module'
 import { CardAuthRequest } from 'src/types/user-jwt-payload'
+import ChangeCardDescriptionData from 'src/dtos/card-change-description-data.dto'
 
 describe('CardService', () => {
   let service: CardService
@@ -416,6 +417,52 @@ describe('CardService', () => {
       expect(response).toStrictEqual({
         ...originaCard,
         title: changeTitleData.title,
+      })
+    })
+  })
+
+  describe('changeDescription', () => {
+    const originaCard: Card = {
+      title: 'title',
+      id: 1,
+      listId: 1,
+      position: 1,
+      description: 'old description',
+    }
+
+    const changeDescriptionData: ChangeCardDescriptionData = {
+      cardId: 1,
+      description: 'new description',
+    }
+
+    const request = {
+      boardId: 1,
+    } as CardAuthRequest
+
+    it('updates card with new description', async () => {
+      prisma.card.update = jest.fn()
+
+      await service.changeDescription(request, changeDescriptionData)
+      expect(prisma.card.update).toHaveBeenCalledWith({
+        data: {
+          description: changeDescriptionData.description,
+        },
+        where: {
+          id: changeDescriptionData.cardId,
+        },
+      })
+    })
+
+    it('returns updated card', async () => {
+      prisma.card.update = jest.fn().mockResolvedValueOnce({
+        ...originaCard,
+        description: changeDescriptionData.description,
+      })
+
+      const response = await service.changeDescription(request, changeDescriptionData)
+      expect(response).toStrictEqual({
+        ...originaCard,
+        description: changeDescriptionData.description,
       })
     })
   })

@@ -15,6 +15,7 @@ const API_PATHS = {
   card: 'card',
   changeCardPosition: 'card/change-position',
   changeCardTitle: 'card/change-title',
+  changeCardDescription: 'card/change-description',
 }
 
 export default API_PATHS

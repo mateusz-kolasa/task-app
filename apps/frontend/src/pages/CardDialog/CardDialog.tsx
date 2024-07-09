@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { useBoardDataQuery } from 'store/slices/api/board-api-slice'
 import CardDialogTitleText from './components/CardDialogTitleText/CardDialogTitleText'
 import CardDeleteButton from './components/CardDeleteButton/CardDeleteButton'
+import CardDescriptionText from './components/CardDescriptionText/CardDescriptionText'
 
 function CardDialog() {
   const navigate = useNavigate()
@@ -46,9 +47,12 @@ function CardDialog() {
       }}
     >
       {card && (
-        <Group justify='flex-end' mt='md'>
-          <CardDeleteButton listId={card.listId} />
-        </Group>
+        <>
+          <CardDescriptionText listId={card.listId} />
+          <Group justify='flex-end' mt='md'>
+            <CardDeleteButton listId={card.listId} />
+          </Group>
+        </>
       )}
     </Modal>
   )

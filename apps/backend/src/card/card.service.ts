@@ -3,6 +3,7 @@ import { Card } from 'prisma/prisma-client'
 import { BOARD_SOCKET_MESSAGES } from 'shared-consts'
 import { ChangeCardPositionResultData, DeleteCardData, ListFullData } from 'shared-types'
 import { BoardGateway } from 'src/board/board.gateway'
+import ChangeCardDescriptionData from 'src/dtos/card-change-description-data.dto'
 import ChangeCardPositionData from 'src/dtos/card-change-position.data.dto'
 import ChangeCardTitleData from 'src/dtos/card-change-title-data.dto'
 import CardCreateData from 'src/dtos/card-create-data.dto'
@@ -243,6 +244,25 @@ export class CardService {
       },
     })
     this.boardGateway.sendMessage(BOARD_SOCKET_MESSAGES.ChangeCardTitle, {
+      boardId: request.boardId,
+      payload: updatedCard,
+    })
+    return updatedCard
+  }
+
+  async changeDescription(
+    request: CardAuthRequest,
+    changeDescriptionData: ChangeCardDescriptionData
+  ): Promise<Card> {
+    const updatedCard = await this.prisma.card.update({
+      data: {
+        description: changeDescriptionData.description,
+      },
+      where: {
+        id: changeDescriptionData.cardId,
+      },
+    })
+    this.boardGateway.sendMessage(BOARD_SOCKET_MESSAGES.ChangeCardDescription, {
       boardId: request.boardId,
       payload: updatedCard,
     })
