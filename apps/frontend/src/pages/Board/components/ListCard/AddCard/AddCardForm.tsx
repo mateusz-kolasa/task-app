@@ -5,9 +5,10 @@ import { FormProvider, SubmitHandler, useForm } from 'react-hook-form'
 import { TextInput } from 'react-hook-form-mantine'
 import { useTranslation } from 'react-i18next'
 import { notifications } from '@mantine/notifications'
-import schema from './schema'
 import { useCreateCardMutation } from 'store/slices/api/card-api-slice'
 import { useParams } from 'react-router-dom'
+import useSchema from './useSchema'
+import { MAX_CARD_TITLE_LENGTH } from 'shared-consts'
 
 interface CardData {
   title: string
@@ -24,6 +25,7 @@ function AddCardForm({ listId, handleCloseForm }: Readonly<AddCardFormProps>) {
 
   const [createCard, { isLoading }] = useCreateCardMutation()
 
+  const schema = useSchema()
   const methods = useForm({
     resolver: zodResolver(schema),
     defaultValues: {
@@ -58,7 +60,12 @@ function AddCardForm({ listId, handleCloseForm }: Readonly<AddCardFormProps>) {
   return (
     <Stack gap='sm'>
       <FormProvider {...methods}>
-        <TextInput name='title' placeholder={t('card.create.placeholder')} disabled={isLoading} />
+        <TextInput
+          name='title'
+          placeholder={t('card.create.placeholder')}
+          disabled={isLoading}
+          maxLength={MAX_CARD_TITLE_LENGTH}
+        />
         <Group wrap='nowrap'>
           <Button onClick={methods.handleSubmit(handleSubmit)}>{t('card.create.button')}</Button>
           <Button variant='subtle' p='xs' onClick={handleCloseClick} disabled={isLoading}>

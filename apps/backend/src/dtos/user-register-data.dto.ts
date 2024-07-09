@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger'
 import { IsString, IsStrongPassword, MaxLength, MinLength } from 'class-validator'
-import { MAX_LOGIN_LENGTH, MAX_PASSWORD_LENGTH } from 'src/consts/user.consts'
+import { MAX_LOGIN_LENGTH, MAX_PASSWORD_LENGTH } from 'shared-consts'
 
 export default class UserRegisterData {
   @IsString()

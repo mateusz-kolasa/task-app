@@ -7,6 +7,7 @@ import SERVER_ERRORS from '../../consts/server-errors'
 import { useRegisterMutation } from '../../store/slices/api/auth-api-slice'
 import { useTranslation } from 'react-i18next'
 import useSchema from './useSchema'
+import { MAX_LOGIN_LENGTH, MAX_PASSWORD_LENGTH } from 'shared-consts'
 
 export interface UserRegister {
   username: string
@@ -48,12 +49,23 @@ function Register() {
         <form>
           <Card withBorder>
             <Stack>
-              <TextInput name='username' label={t('username.label')} disabled={isLoading} />
-              <PasswordInput name='password' label={t('password.label')} disabled={isLoading} />
+              <TextInput
+                name='username'
+                label={t('username.label')}
+                disabled={isLoading}
+                maxLength={MAX_LOGIN_LENGTH}
+              />
+              <PasswordInput
+                name='password'
+                label={t('password.label')}
+                disabled={isLoading}
+                maxLength={MAX_PASSWORD_LENGTH}
+              />
               <PasswordInput
                 name='passwordConfirm'
                 label={t('password.confirm.label')}
                 disabled={isLoading}
+                maxLength={MAX_PASSWORD_LENGTH}
               />
               <Group justify='space-between'>
                 <Anchor

@@ -6,9 +6,10 @@ import { Select, TextInput } from 'react-hook-form-mantine'
 import { useTranslation } from 'react-i18next'
 import { notifications } from '@mantine/notifications'
 import { useParams } from 'react-router-dom'
-import schema from './schema'
 import { useAddBoardUserMutation } from 'store/slices/api/board-api-slice'
 import useBoardPermissionsText from 'hooks/useBoardPermissionsText'
+import useSchema from './useSchema'
+import { MAX_LOGIN_LENGTH } from 'shared-consts'
 
 interface UserData {
   username: string
@@ -28,6 +29,7 @@ function AddUserForm({ handleCloseForm }: Readonly<AddUserFormProps>) {
 
   const [addBoardUser, { isLoading }] = useAddBoardUserMutation()
 
+  const schema = useSchema()
   const methods = useForm({
     resolver: zodResolver(schema),
     defaultValues: {
@@ -81,6 +83,7 @@ function AddUserForm({ handleCloseForm }: Readonly<AddUserFormProps>) {
           name='username'
           placeholder={t('board.users.add.username')}
           disabled={isLoading}
+          maxLength={MAX_LOGIN_LENGTH}
         />
         <Select
           name='permissions'

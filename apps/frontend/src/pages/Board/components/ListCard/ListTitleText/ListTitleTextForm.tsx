@@ -1,12 +1,13 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useParams } from 'react-router-dom'
-import schema from './schema'
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form'
 import { Textarea } from 'react-hook-form-mantine'
 import { useChangeListTitleMutation } from 'store/slices/api/list-api-slice'
 import { useTranslation } from 'react-i18next'
 import { notifications } from '@mantine/notifications'
 import { selectOnFocus } from 'utils/formHelper'
+import useSchema from './useSchema'
+import { MAX_LIST_TITLE_LENGTH } from 'shared-consts'
 
 interface ListTitleTextFormProps {
   title: string
@@ -23,6 +24,7 @@ function ListTitleTextForm({ title, listId, handleClose }: Readonly<ListTitleTex
 
   const { t } = useTranslation()
 
+  const schema = useSchema()
   const methods = useForm({
     resolver: zodResolver(schema),
     mode: 'onBlur',
@@ -64,6 +66,7 @@ function ListTitleTextForm({ title, listId, handleClose }: Readonly<ListTitleTex
         minRows={1}
         autosize
         onBlur={methods.handleSubmit(handleSubmit)}
+        maxLength={MAX_LIST_TITLE_LENGTH}
       />
     </FormProvider>
   )

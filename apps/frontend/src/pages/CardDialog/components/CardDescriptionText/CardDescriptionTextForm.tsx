@@ -7,6 +7,7 @@ import { useTranslation } from 'react-i18next'
 import { notifications } from '@mantine/notifications'
 import { selectOnFocus } from 'utils/formHelper'
 import { useChangeCardDescriptionMutation } from 'store/slices/api/card-api-slice'
+import { MAX_CARD_DESCRIPTION_LENGTH } from 'shared-consts'
 
 interface CardDescriptionTextFormProps {
   listId: number
@@ -66,6 +67,7 @@ function CardDescriptionTextForm({
         minRows={1}
         autosize
         onBlur={methods.handleSubmit(handleSubmit)}
+        maxLength={MAX_CARD_DESCRIPTION_LENGTH}
       />
     </FormProvider>
   )

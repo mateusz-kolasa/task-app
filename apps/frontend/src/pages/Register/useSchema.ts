@@ -8,7 +8,10 @@ const useSchema = () => {
 
   return zod
     .object({
-      username: zod.string().trim().min(1),
+      username: zod
+        .string()
+        .trim()
+        .min(1, { message: t('username.validation.minLength') }),
       password: zod
         .string()
         .trim()
@@ -16,7 +19,7 @@ const useSchema = () => {
         .regex(strongPassword, {
           message: t('password.validation.strength'),
         }),
-      passwordConfirm: zod.string().trim().min(1),
+      passwordConfirm: zod.string().trim(),
     })
     .superRefine(({ passwordConfirm, password }, context) => {
       if (passwordConfirm !== password) {

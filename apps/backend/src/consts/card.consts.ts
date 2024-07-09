@@ -1,2 +1,0 @@
-export const MAX_CARD_TITLE_LENGTH = 256
-export const MAX_CARD_DESCRIPTION_LENGTH = 512

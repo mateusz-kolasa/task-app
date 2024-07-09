@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger'
 import { IsNumber, IsString, MaxLength, MinLength } from 'class-validator'
-import { MAX_BOARD_TITLE_LENGTH } from 'src/consts/board.consts'
+import { MAX_BOARD_TITLE_LENGTH } from 'shared-consts'
 
 export default class ListCreateData {
   @IsString()

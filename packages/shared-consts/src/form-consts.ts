@@ -1,0 +1,10 @@
+export const MAX_LOGIN_LENGTH = 64
+export const MAX_PASSWORD_LENGTH = 256
+
+export const MAX_BOARD_TITLE_LENGTH = 256
+export const MAX_BOARD_DESCRIPTION_LENGTH = 512
+
+export const MAX_CARD_TITLE_LENGTH = 256
+export const MAX_CARD_DESCRIPTION_LENGTH = 512
+
+export const MAX_LIST_TITLE_LENGTH = 256

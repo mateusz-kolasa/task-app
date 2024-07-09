@@ -147,27 +147,33 @@
       "button": "Dodaj tablicę"
     }
   },
-  "dashboard": {
-    "boards": {
-      "title": "Twoje tablice"
+  "title": {
+    "validation": {
+      "minLength": "Tytuł nie może być pusty"
     }
   },
   "username": {
     "validation": {
+      "minLength": "Nazwa użytkownika nie może być pusta",
       "auth": "Nazwa użytkownika lub hasło jest nieprawidłowe",
       "taken": "Nazwa użytkownika jest już zajęta"
     },
     "label": "Nazwa użytkownika"
   },
+  "dashboard": {
+    "boards": {
+      "title": "Twoje tablice"
+    }
+  },
   "password": {
     "label": "Hasło",
-    "confirm": {
-      "label": "Potwierdź hasło"
-    },
     "validation": {
       "minLength": "Hasło musi mieć conajmniej 8 znaków.",
       "strength": "Hasło musi zawierać małą i wielką litera, cyfrę oraz znak specjalny.",
-      "different": "Hasło muszą być identyczne."
+      "different": "Hasła muszą być identyczne."
+    },
+    "confirm": {
+      "label": "Potwierdź hasło"
     }
   },
   "signup": {

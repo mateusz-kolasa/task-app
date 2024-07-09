@@ -3,9 +3,10 @@ import { FormProvider, SubmitHandler, useForm } from 'react-hook-form'
 import { PasswordInput, TextInput } from 'react-hook-form-mantine'
 import { useNavigate } from 'react-router-dom'
 import { zodResolver } from '@hookform/resolvers/zod'
-import schema from './schema'
 import { useLoginMutation } from '../../store/slices/api/auth-api-slice'
 import { useTranslation } from 'react-i18next'
+import useSchema from './useSchema'
+import { MAX_LOGIN_LENGTH, MAX_PASSWORD_LENGTH } from 'shared-consts'
 
 export interface UserLogin {
   username: string
@@ -16,6 +17,7 @@ function Login() {
   const { t } = useTranslation()
   const navigate = useNavigate()
 
+  const schema = useSchema()
   const methods = useForm<UserLogin>({
     resolver: zodResolver(schema),
     defaultValues: {
@@ -44,8 +46,18 @@ function Login() {
         <form>
           <Card withBorder>
             <Stack>
-              <TextInput name='username' label={t('username.label')} disabled={isLoading} />
-              <PasswordInput name='password' label={t('password.label')} disabled={isLoading} />
+              <TextInput
+                name='username'
+                label={t('username.label')}
+                disabled={isLoading}
+                maxLength={MAX_LOGIN_LENGTH}
+              />
+              <PasswordInput
+                name='password'
+                label={t('password.label')}
+                disabled={isLoading}
+                maxLength={MAX_PASSWORD_LENGTH}
+              />
               <Group justify='space-between'>
                 <Anchor
                   component='button'

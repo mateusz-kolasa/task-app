@@ -7,6 +7,7 @@ import { useTranslation } from 'react-i18next'
 import { notifications } from '@mantine/notifications'
 import { selectOnFocus } from 'utils/formHelper'
 import { useChangeBoardDescriptionMutation } from 'store/slices/api/board-api-slice'
+import { MAX_BOARD_DESCRIPTION_LENGTH } from 'shared-consts'
 
 interface BoardDescriptionTextFormProps {
   description: string | null
@@ -64,6 +65,7 @@ function BoardDescriptionTextForm({
         minRows={1}
         autosize
         onBlur={methods.handleSubmit(handleSubmit)}
+        maxLength={MAX_BOARD_DESCRIPTION_LENGTH}
       />
     </FormProvider>
   )

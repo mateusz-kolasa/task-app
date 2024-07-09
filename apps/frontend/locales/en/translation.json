@@ -147,27 +147,33 @@
       "button": "Create board"
     }
   },
-  "dashboard": {
-    "boards": {
-      "title": "Your boards"
+  "title": {
+    "validation": {
+      "minLength": "Title can not be empty"
     }
   },
   "username": {
     "validation": {
+      "minLength": "Username can not be empty",
       "auth": "Used username or password is invalid.",
       "taken": "Username is already taken."
     },
     "label": "Username"
   },
+  "dashboard": {
+    "boards": {
+      "title": "Your boards"
+    }
+  },
   "password": {
     "label": "Password",
-    "confirm": {
-      "label": "Confirm password"
-    },
     "validation": {
       "minLength": "Password must have atleast 8 characters.",
       "strength": "Password must have small and capital letter, number and a special character.",
       "different": "Passwords must be same."
+    },
+    "confirm": {
+      "label": "Confirm password"
     }
   },
   "signup": {

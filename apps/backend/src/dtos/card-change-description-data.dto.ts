@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger'
 import { IsNumber, IsString, MaxLength, ValidateIf } from 'class-validator'
-import { MAX_CARD_DESCRIPTION_LENGTH } from 'src/consts/card.consts'
+import { MAX_CARD_DESCRIPTION_LENGTH } from 'shared-consts'
 
 export default class ChangeCardDescriptionData {
   @IsNumber()
