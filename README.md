@@ -10,10 +10,18 @@ https://task-app-3lqj.onrender.com/api
 
 ## Using this app
 
-App is using postgres as database, to run it you need to set it up locally, and modify the backend app enviromental variable. After that, to start run the following command:
+App is using postgres as database, to run it you need to set it up locally, and optionally modify the .env files. To setup the database you can use docker with following commands:
+
+```sh
+docker network create task-app
+docker-compose up
+```
+
+After that, to start run the following commands:
 
 ```sh
 yarn install
+yarn database
 yarn dev
 ```
 
