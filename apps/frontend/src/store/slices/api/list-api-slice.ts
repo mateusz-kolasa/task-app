@@ -51,7 +51,10 @@ export const listApiSlice = apiSlice.injectEndpoints({
       query: listPosition => ({
         url: API_PATHS.changeListPosition,
         method: 'POST',
-        body: listPosition,
+        body: {
+          listId: listPosition.listId,
+          position: listPosition.position,
+        },
       }),
       async onQueryStarted({ position, listId, boardId }, { dispatch, queryFulfilled }) {
         const patchResult = dispatch(
@@ -81,7 +84,10 @@ export const listApiSlice = apiSlice.injectEndpoints({
       query: listTitle => ({
         url: API_PATHS.changeListTitle,
         method: 'PATCH',
-        body: listTitle,
+        body: {
+          listId: listTitle.listId,
+          title: listTitle.title,
+        },
       }),
       async onQueryStarted({ title, listId, boardId }, { dispatch, queryFulfilled }) {
         const patchResult = dispatch(

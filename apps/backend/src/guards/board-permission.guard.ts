@@ -17,6 +17,10 @@ export class BoardPermissionGuard implements CanActivate {
       return true
     }
     const request: CardAuthRequest = context.switchToHttp().getRequest()
+    if (!this.validateRequest(request)) {
+      return false
+    }
+
     const boardId = await this.extractBoardId(request)
 
     if (boardId === undefined) {
@@ -37,6 +41,15 @@ export class BoardPermissionGuard implements CanActivate {
     request.user.permissions = userInBoard.permissions
     request.boardId = boardId
     return userInBoard.permissions >= requiredPermissions
+  }
+
+  private validateRequest(request: CardAuthRequest): boolean {
+    const boardId = parseInt(request.params.boardId) || request.body.boardId
+    const listId = parseInt(request.params.listId) || request.body.listId
+    const cardId = parseInt(request.params.cardId) || request.body.cardId
+
+    // Request should contain only one of the ids, and will be further cleaned by validation pipe
+    return [boardId, listId, cardId].filter(id => id !== undefined).length === 1
   }
 
   private async extractBoardId(request: CardAuthRequest): Promise<number> {
