@@ -45,6 +45,8 @@ function ListCard({ listId }: Readonly<ListCardProps>) {
                   mih={20}
                   w='100%'
                   ref={provided.innerRef}
+                  // Apply margin directly in children due to dnd library not recognizing including gap
+                  gap={0}
                   {...provided.droppableProps}
                 >
                   {cardIds?.map(cardId => (

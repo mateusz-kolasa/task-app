@@ -38,6 +38,7 @@ function TaskCard({ listId, cardId }: Readonly<TaskCard>) {
           className={classes.card}
           radius='md'
           p='xs'
+          mb='md'
           withBorder
           shadow='sm'
           onClick={handleCardClick}
