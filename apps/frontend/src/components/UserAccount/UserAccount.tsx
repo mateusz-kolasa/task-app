@@ -38,7 +38,7 @@ function UserAccount() {
   return (
     <Popover>
       <PopoverTarget>
-        <ActionIcon ml='auto' mr='md' variant='subtle'>
+        <ActionIcon mx='md' variant='subtle'>
           <IconUserCircle />
         </ActionIcon>
       </PopoverTarget>

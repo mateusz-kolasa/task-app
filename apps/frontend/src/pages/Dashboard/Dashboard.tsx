@@ -5,14 +5,14 @@ import BoardCard from './components/BoardCard/BoardCard'
 import { useTranslation } from 'react-i18next'
 import { APP_SHELL_MAIN_HEIGHT } from 'consts/style-consts'
 import BaseLayout from 'components/BaseLayout/BaseLayout'
-import DashboardHeader from './components/DashboardHeader/DashboardHeader'
+import AuthenticatedHeader from 'components/AuthenticatedHeader/AuthenticatedHeader'
 
 function Dashboard() {
   const { t } = useTranslation()
   const { data: boards = [] } = useUserBoardsQuery()
 
   return (
-    <BaseLayout SpecialHeader={<DashboardHeader />}>
+    <BaseLayout SpecialHeader={<AuthenticatedHeader />}>
       <ScrollArea h={APP_SHELL_MAIN_HEIGHT}>
         <Center mt='lg'>
           <Stack>

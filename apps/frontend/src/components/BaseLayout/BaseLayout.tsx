@@ -1,6 +1,7 @@
 import { AppShell } from '@mantine/core'
 import Header from 'components/Header/Header'
 import { PropsWithChildren, ReactNode } from 'react'
+import classes from './BaseLayout.module.css'
 
 interface BaseLayoutProps {
   SpecialHeader?: ReactNode
@@ -16,7 +17,7 @@ function BaseLayout({
 }: Readonly<PropsWithChildren<BaseLayoutProps>>) {
   return (
     <AppShell
-      header={{ height: 60 }}
+      header={{ height: 50 }}
       padding='md'
       aside={{
         width: 400,
@@ -24,9 +25,7 @@ function BaseLayout({
         collapsed: { desktop: isAsideCollapsed, mobile: isAsideCollapsed },
       }}
     >
-      <AppShell.Header style={{ alignContent: 'center' }}>
-        {SpecialHeader || <Header />}
-      </AppShell.Header>
+      <AppShell.Header className={classes.header}>{SpecialHeader || <Header />}</AppShell.Header>
       <AppShell.Main style={{ alignContent: 'center' }}>{children}</AppShell.Main>
       {Aside && <AppShell.Aside>{Aside}</AppShell.Aside>}
     </AppShell>
