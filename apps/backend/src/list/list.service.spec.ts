@@ -9,14 +9,12 @@ import ChangeListPositionData from 'src/dtos/list-change-position.data.dto'
 import { List } from '@prisma/client'
 import { ChangeListTitleData } from 'shared-types'
 import { ConfigModule } from '@nestjs/config'
-import { BoardGateway } from 'src/board/board.gateway'
 import { ListAuthRequest } from 'src/types/user-jwt-payload'
 
 describe('ListService', () => {
   let service: ListService
   let prisma: PrismaService
   let boardService: BoardService
-  let boardGateway: BoardGateway
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -33,9 +31,6 @@ describe('ListService', () => {
     service = module.get<ListService>(ListService)
     prisma = module.get<PrismaService>(PrismaService)
     boardService = module.get<BoardService>(BoardService)
-    boardGateway = module.get<BoardGateway>(BoardGateway)
-
-    boardGateway.sendMessage = jest.fn()
   })
 
   it('should be defined', () => {

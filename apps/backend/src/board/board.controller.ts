@@ -9,6 +9,7 @@ import {
   Post,
   Req,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common'
 import { BoardService } from './board.service'
 import { ApiTags } from '@nestjs/swagger'
@@ -21,12 +22,15 @@ import BoardAddUserData from 'src/dtos/board-add-user-data.dto'
 import ChangeBoardTitleData from 'src/dtos/board-change-title-data.dto'
 import ChangeBoardDescriptionData from 'src/dtos/board-change-description-data.dto'
 import { BoardPermissions } from 'src/decorators/board-permission.decorator'
-import { BOARD_PERMISSIONS } from 'shared-consts'
+import { BOARD_PERMISSIONS, BOARD_SOCKET_MESSAGES } from 'shared-consts'
 import { BoardPermissionGuard } from 'src/guards/board-permission.guard'
+import { BoardGatewayInterceptor } from 'src/interceptors/board-gateway.interceptor'
+import { BoardSocketMessage } from 'src/decorators/board-socket-message.decorator'
 
 @ApiTags('board')
 @Controller('board')
-@UseGuards(JwtAuthGuard)
+@UseInterceptors(BoardGatewayInterceptor)
+@UseGuards(JwtAuthGuard, BoardPermissionGuard)
 export class BoardController {
   constructor(private boardService: BoardService) {}
 
@@ -35,7 +39,6 @@ export class BoardController {
     return this.boardService.getForUser(request)
   }
 
-  @UseGuards(BoardPermissionGuard)
   @BoardPermissions(BOARD_PERMISSIONS.view)
   @Get(':boardId')
   async getFull(@Param('boardId', ParseIntPipe) boardId: number): Promise<BoardFullData> {
@@ -47,36 +50,36 @@ export class BoardController {
     return this.boardService.create(request, boardData)
   }
 
-  @UseGuards(BoardPermissionGuard)
   @BoardPermissions(BOARD_PERMISSIONS.admin)
+  @BoardSocketMessage(BOARD_SOCKET_MESSAGES.AddUser)
   @Post('users/add')
   async addUser(@Body() userData: BoardAddUserData): Promise<UsersInBoardsWithUsername> {
     return this.boardService.addUser(userData)
   }
 
-  @UseGuards(BoardPermissionGuard)
   @BoardPermissions(BOARD_PERMISSIONS.edit)
+  @BoardSocketMessage(BOARD_SOCKET_MESSAGES.ChangeBoardTitle)
   @Patch('change-title')
   async changeTitle(@Body() titleData: ChangeBoardTitleData): Promise<Board> {
     return this.boardService.changeTitle(titleData)
   }
 
-  @UseGuards(BoardPermissionGuard)
   @BoardPermissions(BOARD_PERMISSIONS.edit)
+  @BoardSocketMessage(BOARD_SOCKET_MESSAGES.ChangeBoardDescription)
   @Patch('change-description')
   async changeDescription(@Body() descriptionData: ChangeBoardDescriptionData): Promise<Board> {
     return this.boardService.changeDescription(descriptionData)
   }
 
-  @UseGuards(BoardPermissionGuard)
   @BoardPermissions(BOARD_PERMISSIONS.owner)
+  @BoardSocketMessage(BOARD_SOCKET_MESSAGES.DeleteBoard)
   @Delete(':boardId')
   async delete(@Param('boardId', ParseIntPipe) boardId: number) {
     return this.boardService.delete(boardId)
   }
 
-  @UseGuards(BoardPermissionGuard)
   @BoardPermissions(BOARD_PERMISSIONS.view)
+  @BoardSocketMessage(BOARD_SOCKET_MESSAGES.LeaveBoard)
   @Delete(':boardId/leave')
   async leave(@Req() request: BoardAuthRequest, @Param('boardId', ParseIntPipe) boardId: number) {
     return this.boardService.leave(request, boardId)

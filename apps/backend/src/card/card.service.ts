@@ -1,8 +1,6 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common'
 import { Card } from 'prisma/prisma-client'
-import { BOARD_SOCKET_MESSAGES } from 'shared-consts'
 import { ChangeCardPositionResultData, DeleteCardData, ListFullData } from 'shared-types'
-import { BoardGateway } from 'src/board/board.gateway'
 import ChangeCardDescriptionData from 'src/dtos/card-change-description-data.dto'
 import ChangeCardPositionData from 'src/dtos/card-change-position.data.dto'
 import ChangeCardTitleData from 'src/dtos/card-change-title-data.dto'
@@ -15,27 +13,20 @@ import { CardAuthRequest } from 'src/types/user-jwt-payload'
 export class CardService {
   constructor(
     private prisma: PrismaService,
-    private listService: ListService,
-    private boardGateway: BoardGateway
+    private listService: ListService
   ) {}
 
   async create(cardData: CardCreateData): Promise<Card> {
     const list = await this.listService.getFull(cardData.listId)
 
     const lastListPosition = Math.max(...list.cards.map(card => card.position), 0)
-    const createdCard = await this.prisma.card.create({
+    return this.prisma.card.create({
       data: {
         title: cardData.title,
         listId: cardData.listId,
         position: lastListPosition + 1,
       },
     })
-
-    this.boardGateway.sendMessage(BOARD_SOCKET_MESSAGES.AddCard, {
-      boardId: list.boardId,
-      payload: createdCard,
-    })
-    return createdCard
   }
 
   async moveBetweenLists(
@@ -221,21 +212,15 @@ export class CardService {
       })
     }
 
-    const positionUpdate: ChangeCardPositionResultData = {
+    return {
       sourceCard: card,
       targetCard,
       updatedCards,
     }
-    this.boardGateway.sendMessage(BOARD_SOCKET_MESSAGES.ChangeCardPosition, {
-      boardId: list.boardId,
-      payload: positionUpdate,
-    })
-
-    return positionUpdate
   }
 
   async changeTitle(request: CardAuthRequest, changeTitleData: ChangeCardTitleData): Promise<Card> {
-    const updatedCard = await this.prisma.card.update({
+    return this.prisma.card.update({
       data: {
         title: changeTitleData.title,
       },
@@ -243,18 +228,13 @@ export class CardService {
         id: changeTitleData.cardId,
       },
     })
-    this.boardGateway.sendMessage(BOARD_SOCKET_MESSAGES.ChangeCardTitle, {
-      boardId: request.boardId,
-      payload: updatedCard,
-    })
-    return updatedCard
   }
 
   async changeDescription(
     request: CardAuthRequest,
     changeDescriptionData: ChangeCardDescriptionData
   ): Promise<Card> {
-    const updatedCard = await this.prisma.card.update({
+    return await this.prisma.card.update({
       data: {
         description: changeDescriptionData.description,
       },
@@ -262,15 +242,10 @@ export class CardService {
         id: changeDescriptionData.cardId,
       },
     })
-    this.boardGateway.sendMessage(BOARD_SOCKET_MESSAGES.ChangeCardDescription, {
-      boardId: request.boardId,
-      payload: updatedCard,
-    })
-    return updatedCard
   }
 
   async delete(request: CardAuthRequest, cardId: number): Promise<DeleteCardData> {
-    const { card, boardId } = request
+    const { card } = request
 
     await this.prisma.$transaction([
       this.prisma.card.delete({
@@ -299,16 +274,9 @@ export class CardService {
       },
     })
 
-    const deleteCardData = {
+    return {
       deleted: card,
       remaining: updatedCards,
     }
-
-    this.boardGateway.sendMessage(BOARD_SOCKET_MESSAGES.DeleteCard, {
-      boardId: boardId,
-      payload: deleteCardData,
-    })
-
-    return deleteCardData
   }
 }

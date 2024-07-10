@@ -10,7 +10,6 @@ import { ListFullData } from 'shared-types'
 import { Card } from 'prisma/prisma-client'
 import ChangeCardPositionData from 'src/dtos/card-change-position.data.dto'
 import ChangeCardTitleData from 'src/dtos/card-change-title-data.dto'
-import { BoardGateway } from 'src/board/board.gateway'
 import { ConfigModule } from '@nestjs/config'
 import { BoardModule } from 'src/board/board.module'
 import { CardAuthRequest } from 'src/types/user-jwt-payload'
@@ -20,7 +19,6 @@ describe('CardService', () => {
   let service: CardService
   let prisma: PrismaService
   let listService: ListService
-  let boardGateway: BoardGateway
 
   const cardData = {
     title: 'card',
@@ -44,9 +42,6 @@ describe('CardService', () => {
     service = module.get<CardService>(CardService)
     prisma = module.get<PrismaService>(PrismaService)
     listService = module.get<ListService>(ListService)
-    boardGateway = module.get<BoardGateway>(BoardGateway)
-
-    boardGateway.sendMessage = jest.fn()
   })
 
   it('should be defined', () => {

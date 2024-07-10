@@ -1,8 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common'
 import { List } from '@prisma/client'
-import { BOARD_SOCKET_MESSAGES } from 'shared-consts'
 import { DeleteListData, ListFullData } from 'shared-types'
-import { BoardGateway } from 'src/board/board.gateway'
 import { BoardService } from 'src/board/board.service'
 import ChangeListPositionData from 'src/dtos/list-change-position.data.dto'
 import ChangeListTitleData from 'src/dtos/list-change-title-data.dto'
@@ -14,8 +12,7 @@ import { ListAuthRequest } from 'src/types/user-jwt-payload'
 export class ListService {
   constructor(
     private prisma: PrismaService,
-    private boardService: BoardService,
-    private boardGateway: BoardGateway
+    private boardService: BoardService
   ) {}
 
   async getFull(listId: number): Promise<ListFullData> {
@@ -33,7 +30,7 @@ export class ListService {
     const board = await this.boardService.getWithLists(listData.boardId)
     const lastListPosition = Math.max(...board.lists.map(list => list.position), 0)
 
-    const createdList = await this.prisma.list.create({
+    return this.prisma.list.create({
       data: {
         title: listData.title,
         boardId: listData.boardId,
@@ -43,12 +40,6 @@ export class ListService {
         cards: true,
       },
     })
-
-    this.boardGateway.sendMessage(BOARD_SOCKET_MESSAGES.AddList, {
-      boardId: createdList.boardId,
-      payload: createdList,
-    })
-    return createdList
   }
 
   async movePositionInList(changePositionData: ChangeListPositionData, currentListData: List) {
@@ -129,22 +120,15 @@ export class ListService {
     }
     await this.movePositionInList(changePositionData, list)
 
-    const updatedLists = await this.prisma.list.findMany({
+    return this.prisma.list.findMany({
       where: {
         boardId: list.boardId,
       },
     })
-
-    this.boardGateway.sendMessage(BOARD_SOCKET_MESSAGES.ChangeListPosition, {
-      boardId: list.boardId,
-      payload: updatedLists,
-    })
-
-    return updatedLists
   }
 
   async changeTitle(request: ListAuthRequest, changeTitleData: ChangeListTitleData): Promise<List> {
-    const updatedList = await this.prisma.list.update({
+    return this.prisma.list.update({
       data: {
         title: changeTitleData.title,
       },
@@ -152,12 +136,6 @@ export class ListService {
         id: changeTitleData.listId,
       },
     })
-
-    this.boardGateway.sendMessage(BOARD_SOCKET_MESSAGES.ChangeListTitle, {
-      boardId: request.boardId,
-      payload: updatedList,
-    })
-    return updatedList
   }
 
   async delete(request: ListAuthRequest, listId: number): Promise<DeleteListData> {
@@ -195,16 +173,9 @@ export class ListService {
       },
     })
 
-    const deleteListData = {
+    return {
       deleted: list,
       remaining: updatedLists,
     }
-
-    this.boardGateway.sendMessage(BOARD_SOCKET_MESSAGES.DeleteList, {
-      boardId: list.boardId,
-      payload: deleteListData,
-    })
-
-    return deleteListData
   }
 }

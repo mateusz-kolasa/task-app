@@ -8,6 +8,7 @@ import {
   Delete,
   ParseIntPipe,
   Param,
+  UseInterceptors,
 } from '@nestjs/common'
 import { ListService } from './list.service'
 import ListCreateData from 'src/dtos/list-create-data.dto'
@@ -19,22 +20,27 @@ import { List } from '@prisma/client'
 import ChangeListTitleData from 'src/dtos/list-change-title-data.dto'
 import { BoardPermissionGuard } from 'src/guards/board-permission.guard'
 import { BoardPermissions } from 'src/decorators/board-permission.decorator'
-import { BOARD_PERMISSIONS } from 'shared-consts'
+import { BOARD_PERMISSIONS, BOARD_SOCKET_MESSAGES } from 'shared-consts'
 import { ListAuthRequest } from 'src/types/user-jwt-payload'
+import { BoardGatewayInterceptor } from 'src/interceptors/board-gateway.interceptor'
+import { BoardSocketMessage } from 'src/decorators/board-socket-message.decorator'
 
 @ApiTags('list')
 @Controller('list')
+@UseInterceptors(BoardGatewayInterceptor)
 @UseGuards(JwtAuthGuard, BoardPermissionGuard)
 export class ListController {
   constructor(private readonly listService: ListService) {}
 
   @BoardPermissions(BOARD_PERMISSIONS.edit)
+  @BoardSocketMessage(BOARD_SOCKET_MESSAGES.AddList)
   @Post()
   create(@Body() createListData: ListCreateData): Promise<ListFullData> {
     return this.listService.create(createListData)
   }
 
   @BoardPermissions(BOARD_PERMISSIONS.edit)
+  @BoardSocketMessage(BOARD_SOCKET_MESSAGES.ChangeListPosition)
   @Post('change-position')
   changePosition(
     @Req() request: ListAuthRequest,
@@ -44,6 +50,7 @@ export class ListController {
   }
 
   @BoardPermissions(BOARD_PERMISSIONS.edit)
+  @BoardSocketMessage(BOARD_SOCKET_MESSAGES.ChangeListTitle)
   @Patch('change-title')
   changeTitle(
     @Req() request: ListAuthRequest,
@@ -53,6 +60,7 @@ export class ListController {
   }
 
   @BoardPermissions(BOARD_PERMISSIONS.edit)
+  @BoardSocketMessage(BOARD_SOCKET_MESSAGES.DeleteList)
   @Delete(':listId')
   delete(
     @Req() request: ListAuthRequest,
