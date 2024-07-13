@@ -1,4 +1,4 @@
-import { TestDragAndDropContext, customRender } from 'utils/testHelper'
+import { customRender } from 'utils/testHelper'
 import ListCard from './ListCard'
 import { SAMPLE_LISTS } from 'mocks/data/lists'
 import { waitFor } from '@testing-library/dom'
@@ -15,20 +15,12 @@ vi.mock(`react-router-dom`, async (): Promise<unknown> => {
 
 describe('ListCard', () => {
   it('renders ListCard component', () => {
-    customRender(
-      <TestDragAndDropContext>
-        <ListCard listId={SAMPLE_LISTS[0].id} />
-      </TestDragAndDropContext>
-    )
+    customRender(<ListCard listId={SAMPLE_LISTS[0].id} />)
   })
 
   SAMPLE_LISTS.forEach(list =>
     it(`Renders correctly with ${list.cards.length} cards`, async () => {
-      const { getByTestId } = customRender(
-        <TestDragAndDropContext>
-          <ListCard listId={list.id} />
-        </TestDragAndDropContext>
-      )
+      const { getByTestId } = customRender(<ListCard listId={list.id} />)
       const grid = getByTestId('list-stack')
       expect(grid).toBeTruthy()
 

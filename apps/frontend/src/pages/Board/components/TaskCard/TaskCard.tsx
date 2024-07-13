@@ -1,58 +1,56 @@
-import { Draggable } from '@hello-pangea/dnd'
 import { Text, Card } from '@mantine/core'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useBoardDataQuery } from 'store/slices/api/board-api-slice'
 import classes from './TaskCard.module.css'
-import { BOARD_PERMISSIONS } from 'shared-consts'
-import useIsAuthorized from 'hooks/useIsAuthorized'
 import { CARD_TEXT_WIDTH } from 'consts/style-consts'
+import { DraggableAttributes } from '@dnd-kit/core'
+import { SyntheticListenerMap } from '@dnd-kit/core/dist/hooks/utilities'
+import { memo, useRef } from 'react'
 
 interface TaskCard {
   listId: number
   cardId: number
+  attributes?: DraggableAttributes
+  listeners?: SyntheticListenerMap
 }
 
-function TaskCard({ listId, cardId }: Readonly<TaskCard>) {
+const TaskCard = memo(({ listId, cardId, attributes, listeners }: Readonly<TaskCard>) => {
   const { boardId } = useParams()
-  const { card } = useBoardDataQuery(boardId ?? '', {
+
+  const previousTitle = useRef('')
+  const { title = '' } = useBoardDataQuery(boardId ?? '', {
     selectFromResult: ({ data }) => {
       const list = data?.lists.entities[listId]
       const card = list?.cards.entities[cardId]
-      return { card }
+
+      // Keep previous value for DragOverlay in case of switching lists, to keep the title for drag end animation
+      if (!card) {
+        return { title: previousTitle.current }
+      }
+
+      previousTitle.current = card?.title ?? ''
+      return { title: card?.title }
     },
   })
 
   const navigate = useNavigate()
   const handleCardClick = () => navigate(`card/${cardId}`)
 
-  const isAuthorized = useIsAuthorized()
-
   return (
-    <Draggable
-      draggableId={`card_${cardId}`}
-      index={card?.position ?? 0}
-      isDragDisabled={!isAuthorized(BOARD_PERMISSIONS.edit)}
+    <Card
+      className={classes.card}
+      radius='md'
+      p='xs'
+      mb='md'
+      withBorder
+      shadow='sm'
+      onClick={handleCardClick}
     >
-      {provided => (
-        <Card
-          className={classes.card}
-          radius='md'
-          p='xs'
-          mb='md'
-          withBorder
-          shadow='sm'
-          onClick={handleCardClick}
-          {...provided.draggableProps}
-          {...provided.dragHandleProps}
-          ref={provided.innerRef}
-        >
-          <Text w={CARD_TEXT_WIDTH} truncate size='sm'>
-            {card?.title}
-          </Text>
-        </Card>
-      )}
-    </Draggable>
+      <Text w={CARD_TEXT_WIDTH} truncate size='sm' {...listeners} {...attributes}>
+        {title}
+      </Text>
+    </Card>
   )
-}
+})
 
 export default TaskCard

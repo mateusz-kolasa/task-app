@@ -22,13 +22,11 @@ const list = SAMPLE_LISTS[0]
 
 describe('ListTitleText', () => {
   it('renders ListTitleText component', () => {
-    customRender(<ListTitleText listId={1} dragHandleProps={null} />)
+    customRender(<ListTitleText listId={1} />)
   })
 
   it('Opens form on click', async () => {
-    const { getByText, queryByRole, getByRole } = customRender(
-      <ListTitleText listId={list.id} dragHandleProps={null} />
-    )
+    const { getByText, queryByRole, getByRole } = customRender(<ListTitleText listId={list.id} />)
     await waitFor(() => expect(getByText(list.title)).toBeTruthy())
     expect(queryByRole('textbox')).toBeNull()
     fireEvent.click(getByText(list.title))
@@ -38,9 +36,7 @@ describe('ListTitleText', () => {
   it('Doesnt open form for unauthorized', async () => {
     vi.spyOn(useIsAuthorized, 'default').mockReturnValue(() => false)
 
-    const { getByText, queryByRole } = customRender(
-      <ListTitleText listId={list.id} dragHandleProps={null} />
-    )
+    const { getByText, queryByRole } = customRender(<ListTitleText listId={list.id} />)
     await waitFor(() => expect(getByText(list.title)).toBeTruthy())
     expect(queryByRole('textbox')).toBeNull()
     fireEvent.click(getByText(list.title))
