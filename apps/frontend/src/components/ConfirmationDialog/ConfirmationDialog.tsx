@@ -12,7 +12,7 @@ function ConfirmationDialog({ title, isOpen, confirm, close }: Readonly<Confirma
   const { t } = useTranslation()
 
   return (
-    <Modal opened={isOpen} onClose={close} withCloseButton={false} size='xs'>
+    <Modal opened={isOpen} onClose={close} withCloseButton={false} size='xs' centered>
       <Text>{title}</Text>
       <Group mt='md' justify='space-between'>
         <Button onClick={confirm}>{t('button.confirm')}</Button>
