@@ -14,6 +14,7 @@ import { ConfigModule } from '@nestjs/config'
 import { BoardModule } from 'src/board/board.module'
 import { CardAuthRequest } from 'src/types/user-jwt-payload'
 import ChangeCardDescriptionData from 'src/dtos/card-change-description-data.dto'
+import CardAssignUserData from 'src/dtos/card-assign-user-data.dto'
 
 describe('CardService', () => {
   let service: CardService
@@ -51,7 +52,7 @@ describe('CardService', () => {
   describe('create', () => {
     it('creates card at end of list', async () => {
       prisma.card.create = jest.fn()
-      listService.getFull = jest.fn().mockReturnValueOnce({
+      listService.getFull = jest.fn().mockResolvedValueOnce({
         id: 1,
         title: 'list',
         position: 1,
@@ -75,7 +76,7 @@ describe('CardService', () => {
 
     it('creates card at start of list with no existing cards', async () => {
       prisma.card.create = jest.fn()
-      listService.getFull = jest.fn().mockReturnValueOnce({
+      listService.getFull = jest.fn().mockResolvedValueOnce({
         id: 1,
         title: 'list',
         position: 1,
@@ -94,7 +95,7 @@ describe('CardService', () => {
     it('returns list with created card', async () => {
       listService.getFull = jest
         .fn()
-        .mockReturnValueOnce({ id: 1, title: 'list', position: 1, boardId: 1, cards: [] })
+        .mockResolvedValueOnce({ id: 1, title: 'list', position: 1, boardId: 1, cards: [] })
 
       const card = {
         id: 1,
@@ -102,7 +103,7 @@ describe('CardService', () => {
         position: 1,
       }
 
-      prisma.card.create = jest.fn().mockReturnValueOnce(card)
+      prisma.card.create = jest.fn().mockResolvedValueOnce(card)
 
       const response = await service.create(cardData)
       expect(response).toBe(card)
@@ -121,6 +122,7 @@ describe('CardService', () => {
       title: '',
       listId: 1,
       description: '',
+      userId: null,
     }
 
     const originalList: ListFullData = {
@@ -134,6 +136,7 @@ describe('CardService', () => {
         title: '',
         listId: 1,
         description: '',
+        userId: null,
       })),
     }
 
@@ -377,6 +380,7 @@ describe('CardService', () => {
       listId: 1,
       position: 1,
       description: '',
+      userId: null,
     }
 
     const changeTitleData: ChangeCardTitleData = {
@@ -423,6 +427,7 @@ describe('CardService', () => {
       listId: 1,
       position: 1,
       description: 'old description',
+      userId: null,
     }
 
     const changeDescriptionData: ChangeCardDescriptionData = {
@@ -462,6 +467,62 @@ describe('CardService', () => {
     })
   })
 
+  describe('assignUser', () => {
+    const originaCard: Card = {
+      title: 'title',
+      id: 1,
+      listId: 1,
+      position: 1,
+      description: 'old description',
+      userId: null,
+    }
+
+    const assignUserData: CardAssignUserData = {
+      cardId: 1,
+      userId: 1,
+    }
+
+    const request = {
+      boardId: 1,
+    } as CardAuthRequest
+
+    it('assigns new user to card', async () => {
+      prisma.usersInBoards.findFirst = jest.fn().mockResolvedValueOnce({})
+      prisma.card.update = jest.fn()
+
+      await service.assignUser(request, assignUserData)
+      expect(prisma.card.update).toHaveBeenCalledWith({
+        data: {
+          userId: assignUserData.userId,
+        },
+        where: {
+          id: assignUserData.cardId,
+        },
+      })
+    })
+
+    it('returns updated card', async () => {
+      prisma.usersInBoards.findFirst = jest.fn().mockResolvedValueOnce({})
+      prisma.card.update = jest.fn().mockResolvedValueOnce({
+        ...originaCard,
+        userId: assignUserData.userId,
+      })
+
+      const response = await service.assignUser(request, assignUserData)
+      expect(response).toStrictEqual({
+        ...originaCard,
+        userId: assignUserData.userId,
+      })
+    })
+
+    it('throws bad request if user is not in the board', async () => {
+      prisma.usersInBoards.findFirst = jest.fn().mockResolvedValueOnce(null)
+      prisma.card.update = jest.fn()
+
+      expect(service.assignUser(request, assignUserData)).rejects.toThrow(BadRequestException)
+    })
+  })
+
   describe('delete', () => {
     const cardId = 1
     const originalCard: Card = {
@@ -470,6 +531,7 @@ describe('CardService', () => {
       title: '',
       listId: 1,
       description: '',
+      userId: null,
     }
 
     const request = {

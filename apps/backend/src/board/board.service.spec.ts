@@ -406,6 +406,8 @@ describe('BoardService', () => {
         },
       } as BoardAuthRequest
 
+      prisma.list.findMany = jest.fn().mockResolvedValueOnce([])
+      prisma.card.updateMany = jest.fn()
       prisma.usersInBoards.deleteMany = jest.fn()
       await service.leave(request, 1)
       expect(prisma.usersInBoards.deleteMany).toHaveBeenCalledWith({
@@ -424,6 +426,8 @@ describe('BoardService', () => {
         },
       } as BoardAuthRequest
 
+      prisma.list.findMany = jest.fn().mockResolvedValueOnce([])
+      prisma.card.updateMany = jest.fn()
       prisma.usersInBoards.deleteMany = jest.fn()
       expect(service.leave(request, 1)).rejects.toThrow(BadRequestException)
     })

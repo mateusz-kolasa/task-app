@@ -12,5 +12,6 @@ export enum BOARD_SOCKET_MESSAGES {
   ChangeCardTitle = 'card_title',
   ChangeCardDescription = 'card_description',
   ChangeCardPosition = 'card_position',
+  AssignCardUser = 'card_user',
   DeleteCard = 'card_delete',
 }

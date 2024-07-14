@@ -1,6 +1,7 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common'
 import { Card } from 'prisma/prisma-client'
 import { ChangeCardPositionResultData, DeleteCardData, ListFullData } from 'shared-types'
+import CardAssignUserData from 'src/dtos/card-assign-user-data.dto'
 import ChangeCardDescriptionData from 'src/dtos/card-change-description-data.dto'
 import ChangeCardPositionData from 'src/dtos/card-change-position.data.dto'
 import ChangeCardTitleData from 'src/dtos/card-change-title-data.dto'
@@ -240,6 +241,30 @@ export class CardService {
       },
       where: {
         id: changeDescriptionData.cardId,
+      },
+    })
+  }
+
+  async assignUser(request: CardAuthRequest, assignUserData: CardAssignUserData) {
+    if (assignUserData.userId !== null) {
+      const assignedUserInBoard = await this.prisma.usersInBoards.findFirst({
+        where: {
+          boardId: request.boardId,
+          userId: assignUserData.userId,
+        },
+      })
+
+      if (!assignedUserInBoard) {
+        throw new BadRequestException()
+      }
+    }
+
+    return this.prisma.card.update({
+      data: {
+        userId: assignUserData.userId,
+      },
+      where: {
+        id: assignUserData.cardId,
       },
     })
   }

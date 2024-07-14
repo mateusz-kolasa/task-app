@@ -35,6 +35,16 @@
       "error": {
         "title": "Nie udalo się zmienić nazwy karty"
       }
+    },
+    "user": {
+      "label": "Przypisano do:",
+      "none": {
+        "label": "Nie przypisano"
+      },
+      "error": {
+        "title": "Nie udało się przypisać użytkownika"
+      },
+      "placeholder": "Wybierz użytkownika"
     }
   },
   "error": {
@@ -101,12 +111,10 @@
         "title": "Nie udalo się zmienić opisu tablicy"
       }
     },
-    "title": {
-      "error": {
-        "title": "Nie udalo się zmienić nazwy tablicy"
-      }
-    },
     "users": {
+      "list": {
+        "title": "Użytkownicy"
+      },
       "add": {
         "button": "Dodaj użytkownika",
         "error": {
@@ -117,9 +125,11 @@
         },
         "username": "Nazwa użytkownika",
         "confirm": "Dodaj"
-      },
-      "list": {
-        "title": "Użytkownicy"
+      }
+    },
+    "title": {
+      "error": {
+        "title": "Nie udalo się zmienić nazwy tablicy"
       }
     },
     "leave": {

@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger'
-import { IsNumber, IsString, MaxLength, ValidateIf } from 'class-validator'
+import { IsNumber, IsOptional, IsString, MaxLength } from 'class-validator'
 import { MAX_CARD_DESCRIPTION_LENGTH } from 'shared-consts'
 
 export default class ChangeCardDescriptionData {
@@ -9,7 +9,7 @@ export default class ChangeCardDescriptionData {
 
   @IsString()
   @MaxLength(MAX_CARD_DESCRIPTION_LENGTH)
-  @ValidateIf(description => description !== null)
+  @IsOptional()
   @ApiProperty()
   description: string | null
 }

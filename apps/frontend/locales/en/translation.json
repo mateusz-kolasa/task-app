@@ -35,6 +35,16 @@
       "error": {
         "title": "Could not rename card"
       }
+    },
+    "user": {
+      "label": "Assigned to:",
+      "none": {
+        "label": "Unassigned"
+      },
+      "error": {
+        "title": "Could not assign user"
+      },
+      "placeholder": "Select user"
     }
   },
   "error": {
@@ -101,12 +111,10 @@
         "title": "Could not change board description"
       }
     },
-    "title": {
-      "error": {
-        "title": "Could not rename board"
-      }
-    },
     "users": {
+      "list": {
+        "title": "Users"
+      },
       "add": {
         "button": "Add user",
         "error": {
@@ -117,9 +125,11 @@
         },
         "username": "Username",
         "confirm": "Add user"
-      },
-      "list": {
-        "title": "Users"
+      }
+    },
+    "title": {
+      "error": {
+        "title": "Could not rename board"
       }
     },
     "leave": {

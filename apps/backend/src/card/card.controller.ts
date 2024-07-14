@@ -25,6 +25,7 @@ import { CardAuthRequest } from 'src/types/user-jwt-payload'
 import ChangeCardDescriptionData from 'src/dtos/card-change-description-data.dto'
 import { BoardSocketMessage } from 'src/decorators/board-socket-message.decorator'
 import { BoardGatewayInterceptor } from 'src/interceptors/board-gateway.interceptor'
+import CardAssignUserData from 'src/dtos/card-assign-user-data.dto'
 
 @ApiTags('card')
 @Controller('card')
@@ -68,6 +69,13 @@ export class CardController {
     @Body() changeDescriptionData: ChangeCardDescriptionData
   ): Promise<Card> {
     return this.cardService.changeDescription(request, changeDescriptionData)
+  }
+
+  @BoardPermissions(BOARD_PERMISSIONS.edit)
+  @BoardSocketMessage(BOARD_SOCKET_MESSAGES.AssignCardUser)
+  @Patch('assign-user')
+  assignUser(@Req() request: CardAuthRequest, @Body() assignUserData: CardAssignUserData) {
+    return this.cardService.assignUser(request, assignUserData)
   }
 
   @BoardPermissions(BOARD_PERMISSIONS.edit)

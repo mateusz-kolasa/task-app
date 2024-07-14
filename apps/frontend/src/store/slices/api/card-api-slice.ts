@@ -1,5 +1,6 @@
 import {
   Card,
+  CardAssignUserData,
   CardCreateData,
   ChangeCardDescriptionData,
   ChangeCardPositionData,
@@ -177,6 +178,29 @@ export const cardApiSlice = apiSlice.injectEndpoints({
         }
       },
     }),
+    assignCardUser: builder.mutation<Card, WithContainerIds<CardAssignUserData>>({
+      query: cardUser => ({
+        url: API_PATHS.assignCardUser,
+        method: 'PATCH',
+        body: {
+          cardId: cardUser.cardId,
+          userId: cardUser.userId,
+        },
+      }),
+      async onQueryStarted({ userId, cardId, listId, boardId }, { dispatch, queryFulfilled }) {
+        const patchResult = dispatch(
+          boardApiSlice.util.updateQueryData('boardData', boardId.toString(), previousBoard => {
+            previousBoard.lists.entities[listId].cards.entities[cardId].userId = userId
+          })
+        )
+
+        try {
+          await queryFulfilled
+        } catch {
+          patchResult.undo()
+        }
+      },
+    }),
     deleteCard: builder.mutation<DeleteCardData, WithContainerIds<CardId>>({
       query: deleteCardData => ({
         url: `${API_PATHS.card}/${deleteCardData.cardId}`,
@@ -214,5 +238,6 @@ export const {
   useChangeCardPositionMutation,
   useChangeCardTitleMutation,
   useChangeCardDescriptionMutation,
+  useAssignCardUserMutation,
   useDeleteCardMutation,
 } = cardApiSlice

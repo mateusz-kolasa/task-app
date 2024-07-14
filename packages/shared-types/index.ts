@@ -17,6 +17,7 @@ export type { ChangeCardPositionData } from './src/card-change-position-data.dto
 export type { ChangeCardPositionResultData } from './src/card-change-position-result-data.dto'
 export type { ChangeCardTitleData } from './src/card-change-title-data.dto'
 export type { ChangeCardDescriptionData } from './src/card-change-description-data.dto'
+export type { CardAssignUserData } from './src/card-assign-user-data.dto'
 export type { DeleteCardData } from './src/card-delete-data.dto'
 export type { Board, List, Card, User, UsersInBoards } from './src/prisma-import'
 export type { BoardAddUserData } from './src/board-add-user-data.dto'

@@ -13,6 +13,7 @@ export const SAMPLE_LISTS: ListFullData[] = [
         description: 'desc',
         listId: 1,
         position: 1,
+        userId: 1,
       },
     ],
   },
@@ -35,6 +36,7 @@ export const SAMPLE_LISTS: ListFullData[] = [
         description: '',
         listId: 3,
         position: 1,
+        userId: null,
       },
       {
         id: 3,
@@ -42,6 +44,7 @@ export const SAMPLE_LISTS: ListFullData[] = [
         description: '',
         listId: 3,
         position: 2,
+        userId: null,
       },
       {
         id: 4,
@@ -49,6 +52,7 @@ export const SAMPLE_LISTS: ListFullData[] = [
         description: '',
         listId: 3,
         position: 3,
+        userId: null,
       },
       {
         id: 5,
@@ -56,6 +60,7 @@ export const SAMPLE_LISTS: ListFullData[] = [
         description: '',
         listId: 3,
         position: 4,
+        userId: null,
       },
     ],
   },

@@ -4,6 +4,7 @@ import { useBoardDataQuery } from 'store/slices/api/board-api-slice'
 import CardDialogTitleText from './components/CardDialogTitleText/CardDialogTitleText'
 import CardDeleteButton from './components/CardDeleteButton/CardDeleteButton'
 import CardDescriptionText from './components/CardDescriptionText/CardDescriptionText'
+import CardUser from './components/CardUser/CardUser'
 
 function CardDialog() {
   const navigate = useNavigate()
@@ -49,6 +50,7 @@ function CardDialog() {
       {card && (
         <>
           <CardDescriptionText listId={card.listId} />
+          <CardUser listId={card.listId} />
           <Group justify='flex-end' mt='md'>
             <CardDeleteButton listId={card.listId} />
           </Group>

@@ -168,6 +168,28 @@ export class BoardService {
       throw new BadRequestException()
     }
 
+    const lists = await this.prisma.list.findMany({
+      where: {
+        boardId: boardId,
+      },
+    })
+    const listIds = lists.map(list => list.id)
+
+    // Unassign user from cards
+    if (listIds.length > 0) {
+      await this.prisma.card.updateMany({
+        data: {
+          userId: null,
+        },
+        where: {
+          userId: request.user.id,
+          listId: {
+            in: listIds,
+          },
+        },
+      })
+    }
+
     await this.prisma.usersInBoards.deleteMany({
       where: {
         boardId: boardId,

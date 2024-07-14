@@ -4,6 +4,7 @@ import {
   addCard,
   addList,
   addUser,
+  assignCardUser,
   changeBoardDescription,
   changeBoardTitle,
   changeCardPosition,
@@ -57,6 +58,7 @@ class BoardSocket {
     this.socket.on(BOARD_SOCKET_MESSAGES.AddCard, addCard)
     this.socket.on(BOARD_SOCKET_MESSAGES.ChangeCardTitle, updateCardTitle)
     this.socket.on(BOARD_SOCKET_MESSAGES.ChangeCardDescription, updateCardDescription)
+    this.socket.on(BOARD_SOCKET_MESSAGES.AssignCardUser, assignCardUser)
     this.socket.on(BOARD_SOCKET_MESSAGES.ChangeCardPosition, changeCardPosition)
     this.socket.on(BOARD_SOCKET_MESSAGES.DeleteCard, deleteCard)
   }

@@ -18,8 +18,8 @@ const handleClose = vi.fn()
 
 const card = SAMPLE_LISTS[0].cards[0]
 
-describe('BoardDescriptionTextForm', () => {
-  it('renders BoardDescriptionTextForm component', () => {
+describe('CardDescriptionTextForm', () => {
+  it('renders CardDescriptionTextForm component', () => {
     customRender(
       <CardDescriptionTextForm
         listId={card.listId}
@@ -59,7 +59,7 @@ describe('BoardDescriptionTextForm', () => {
 
     fireEvent.focus(getByRole('textbox'))
     fireEvent.change(getByRole('textbox'), {
-      target: { value: 'board new description' },
+      target: { value: 'card new description' },
     })
     fireEvent.blur(getByRole('textbox'))
     await waitFor(() => expect(getByText('card.description.error.title')).toBeTruthy())

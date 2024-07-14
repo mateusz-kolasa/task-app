@@ -3,20 +3,26 @@ import { useCallback, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { useBoardDataQuery } from 'store/slices/api/board-api-slice'
 import useIsAuthorized from 'hooks/useIsAuthorized'
-import CardDescriptionTextForm from './CardDescriptionTextForm'
 import { useTranslation } from 'react-i18next'
 import { BOARD_PERMISSIONS } from 'shared-consts'
+import CardUserSelect from './CardUserSelect'
 
-interface CardDescriptionTextProps {
+interface CardUserProps {
   listId: number
 }
 
-function CardDescriptionText({ listId }: Readonly<CardDescriptionTextProps>) {
+function CardUser({ listId }: Readonly<CardUserProps>) {
   const { boardId = '', cardId = '' } = useParams()
-  const { description = '' } = useBoardDataQuery(boardId ?? '', {
+  const { userId = null, username = '' } = useBoardDataQuery(boardId ?? '', {
     selectFromResult: ({ data }) => {
-      const card = data?.lists.entities[listId].cards.entities[parseInt(cardId)]
-      return { description: card?.description }
+      const userId = data?.lists.entities[listId].cards.entities[parseInt(cardId)].userId
+
+      let username = ''
+      if (userId) {
+        username = data?.users.entities[userId].user.username
+      }
+
+      return { userId, username }
     },
   })
 
@@ -35,20 +41,18 @@ function CardDescriptionText({ listId }: Readonly<CardDescriptionTextProps>) {
 
   return (
     <>
-      <Text fw='bold'>{t('card.description.label')}</Text>
+      <Text fw='bold' mt='md'>
+        {t('card.user.label')}
+      </Text>
       {isEditing ? (
-        <CardDescriptionTextForm
-          listId={listId}
-          description={description ?? ''}
-          handleClose={handleClose}
-        />
+        <CardUserSelect listId={listId} userId={userId} handleClose={handleClose} />
       ) : (
-        <Text onClick={handleTitleClick} fs={description ? 'normal' : 'italic'}>
-          {!description ? t('card.description.empty.text') : description}
+        <Text onClick={handleTitleClick} fs={userId ? 'normal' : 'italic'}>
+          {!userId ? t('card.user.none.label') : username}
         </Text>
       )}
     </>
   )
 }
 
-export default CardDescriptionText
+export default CardUser
