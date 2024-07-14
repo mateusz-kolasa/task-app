@@ -1,19 +1,25 @@
-import { Divider, Stack } from '@mantine/core'
-import BoardUsers from '../BoardUsers/BoardUsers'
-import BoardTitleText from './BoardTitleText/BoardTitleText'
-import BoardDescriptionText from './BoardDescriptionText/BoardDescriptionText'
+import BoardUsers from './BoardUsers/BoardUsers'
+import { useState } from 'react'
+import BoardMenuMain from './BoardMain/BoardMenuMain'
+import { Stack } from '@mantine/core'
 
 interface BoardMenuProps {
   toggleMenu: () => void
 }
 
 function BoardMenu({ toggleMenu }: Readonly<BoardMenuProps>) {
+  const [isInUsersSection, setIsInUsersSection] = useState<boolean>(false)
+
   return (
-    <Stack mt='md' h='100%'>
-      <BoardTitleText toggleMenu={toggleMenu} />
-      <BoardDescriptionText />
-      <Divider m='md' />
-      <BoardUsers />
+    <Stack p='md' h='100%'>
+      <BoardUsers
+        toggleMenu={toggleMenu}
+        isInUsersSection={isInUsersSection}
+        setIsInUsersSection={setIsInUsersSection}
+      />
+      {!isInUsersSection && (
+        <BoardMenuMain toggleMenu={toggleMenu} setIsInUsersSection={setIsInUsersSection} />
+      )}
     </Stack>
   )
 }

@@ -35,11 +35,11 @@ function BoardTitleText({ toggleMenu }: Readonly<BoardTitleTextProps>) {
       {isEditing ? (
         <BoardTitleTextForm title={title} handleClose={handleClose} />
       ) : (
-        <Text ta='center' fw='bold' size='lg' flex={1} ml='md' onClick={handleTitleClick}>
+        <Text ta='center' fw='bold' flex={1} onClick={handleTitleClick}>
           {title}
         </Text>
       )}
-      <ActionIcon variant='subtle' mr='md' onClick={toggleMenu}>
+      <ActionIcon variant='subtle' onClick={toggleMenu}>
         <IconX />
       </ActionIcon>
     </Group>

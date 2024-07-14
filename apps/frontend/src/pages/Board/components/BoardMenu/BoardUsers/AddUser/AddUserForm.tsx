@@ -77,7 +77,7 @@ function AddUserForm({ handleCloseForm }: Readonly<AddUserFormProps>) {
   }
 
   return (
-    <Stack gap='sm' p='md'>
+    <Stack gap='sm' mt='auto'>
       <FormProvider {...methods}>
         <TextInput
           name='username'
@@ -92,7 +92,7 @@ function AddUserForm({ handleCloseForm }: Readonly<AddUserFormProps>) {
             value: permissions.toString(),
           }))}
         />
-        <Group wrap='nowrap'>
+        <Group wrap='nowrap' justify='space-between'>
           <Button onClick={methods.handleSubmit(handleSubmit)}>
             {t('board.users.add.confirm')}
           </Button>

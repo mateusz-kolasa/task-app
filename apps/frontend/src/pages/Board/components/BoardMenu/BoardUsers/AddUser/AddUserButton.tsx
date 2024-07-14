@@ -25,7 +25,7 @@ function AddUserButton() {
       {isOpened ? (
         <AddUserForm handleCloseForm={handleCloseForm} />
       ) : (
-        <Button radius='md' m='md' onClick={handleOpenClick}>
+        <Button radius='md' mt='auto' onClick={handleOpenClick}>
           {t('board.users.add.button')}
         </Button>
       )}

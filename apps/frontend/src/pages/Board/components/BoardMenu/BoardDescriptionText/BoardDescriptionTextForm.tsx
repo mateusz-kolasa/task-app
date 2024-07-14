@@ -58,7 +58,6 @@ function BoardDescriptionTextForm({
     <FormProvider {...methods}>
       <Textarea
         name='description'
-        px='md'
         control={methods.control}
         onFocus={selectOnFocus}
         autoFocus

@@ -57,7 +57,6 @@ function BoardTitleTextForm({ title, handleClose }: Readonly<BoardTitleTextFormP
     <FormProvider {...methods}>
       <Textarea
         name='title'
-        pl='md'
         flex={1}
         control={methods.control}
         onFocus={selectOnFocus}

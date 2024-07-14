@@ -40,7 +40,7 @@ function LeaveBoard() {
 
   return (
     <>
-      <Button color='red' mt='auto' mb='md' radius='md' mx='md' onClick={open}>
+      <Button color='red' mt='auto' radius='md' onClick={open}>
         {isOwner ? t('board.delete.button') : t('board.leave.button')}
       </Button>
       <ConfirmationDialog

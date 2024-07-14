@@ -31,7 +31,7 @@ function BoardUserCard({ userId }: Readonly<BoardUserCardProps>) {
       </GridCol>
 
       <GridCol span={12}>
-        <Divider m='md' />
+        <Divider />
       </GridCol>
     </Fragment>
   )
