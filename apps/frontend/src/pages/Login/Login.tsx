@@ -1,12 +1,13 @@
 import { Anchor, Button, Card, Center, Group, Stack } from '@mantine/core'
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form'
-import { PasswordInput, TextInput } from 'react-hook-form-mantine'
+import { TextInput, PasswordInput } from 'react-hook-form-mantine'
 import { useNavigate } from 'react-router-dom'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useLoginMutation } from '../../store/slices/api/auth-api-slice'
 import { useTranslation } from 'react-i18next'
 import useSchema from './useSchema'
 import { MAX_LOGIN_LENGTH, MAX_PASSWORD_LENGTH } from 'shared-consts'
+import { handleKeyDown } from 'utils/formHelper'
 
 export interface UserLogin {
   username: string
@@ -38,6 +39,7 @@ function Login() {
       })
   }
 
+  const handleMoveToPassword = () => methods.setFocus('password')
   const handleSignUpClick = () => navigate('/register')
 
   return (
@@ -51,12 +53,14 @@ function Login() {
                 label={t('username.label')}
                 disabled={isLoading}
                 maxLength={MAX_LOGIN_LENGTH}
+                onKeyDown={handleKeyDown(handleMoveToPassword)}
               />
               <PasswordInput
                 name='password'
                 label={t('password.label')}
                 disabled={isLoading}
                 maxLength={MAX_PASSWORD_LENGTH}
+                onKeyDown={handleKeyDown(methods.handleSubmit(handleSubmit))}
               />
               <Group justify='space-between'>
                 <Anchor

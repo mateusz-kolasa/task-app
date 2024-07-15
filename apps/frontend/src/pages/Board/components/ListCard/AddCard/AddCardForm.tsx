@@ -9,6 +9,7 @@ import { useCreateCardMutation } from 'store/slices/api/card-api-slice'
 import { useParams } from 'react-router-dom'
 import useSchema from './useSchema'
 import { MAX_CARD_TITLE_LENGTH } from 'shared-consts'
+import { handleKeyDown } from 'utils/formHelper'
 
 interface CardData {
   title: string
@@ -65,6 +66,8 @@ function AddCardForm({ listId, handleCloseForm }: Readonly<AddCardFormProps>) {
           placeholder={t('card.create.placeholder')}
           disabled={isLoading}
           maxLength={MAX_CARD_TITLE_LENGTH}
+          autoFocus
+          onKeyDown={handleKeyDown(methods.handleSubmit(handleSubmit), handleCloseClick)}
         />
         <Group wrap='nowrap'>
           <Button onClick={methods.handleSubmit(handleSubmit)}>{t('card.create.button')}</Button>

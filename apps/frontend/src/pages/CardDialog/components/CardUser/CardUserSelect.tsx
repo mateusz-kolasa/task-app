@@ -4,6 +4,7 @@ import { notifications } from '@mantine/notifications'
 import { useAssignCardUserMutation } from 'store/slices/api/card-api-slice'
 import { Select } from '@mantine/core'
 import { useBoardDataQuery } from 'store/slices/api/board-api-slice'
+import { handleKeyDown } from 'utils/formHelper'
 
 interface CardUserSelectProps {
   listId: number
@@ -62,6 +63,7 @@ function CardUserSelect({ listId, userId, handleClose }: Readonly<CardUserSelect
       clearable
       searchable
       allowDeselect={false}
+      onKeyDown={handleKeyDown(() => {}, handleClose)}
     />
   )
 }

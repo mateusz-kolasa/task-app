@@ -10,6 +10,7 @@ import { notifications } from '@mantine/notifications'
 import ListCardBase from 'components/ListCardBase/ListCardBase'
 import useSchema from './useSchema'
 import { MAX_LIST_TITLE_LENGTH } from 'shared-consts'
+import { handleKeyDown } from 'utils/formHelper'
 
 interface ListData {
   title: string
@@ -65,6 +66,8 @@ function AddListButtonForm({ handleCloseForm }: Readonly<AddListButtonFormProps>
             placeholder={t('list.create.placeholder')}
             disabled={isLoading}
             maxLength={MAX_LIST_TITLE_LENGTH}
+            onKeyDown={handleKeyDown(methods.handleSubmit(handleSubmit), handleCloseClick)}
+            autoFocus
           />
           <Group>
             <Button onClick={methods.handleSubmit(handleSubmit)}>{t('list.create.button')}</Button>

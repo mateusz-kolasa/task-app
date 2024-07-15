@@ -5,6 +5,7 @@ import CardDialogTitleText from './components/CardDialogTitleText/CardDialogTitl
 import CardDeleteButton from './components/CardDeleteButton/CardDeleteButton'
 import CardDescriptionText from './components/CardDescriptionText/CardDescriptionText'
 import CardUser from './components/CardUser/CardUser'
+import { useHotkeys } from '@mantine/hooks'
 
 function CardDialog() {
   const navigate = useNavigate()
@@ -32,6 +33,10 @@ function CardDialog() {
   const handleClose = () => {
     navigate(`/board/${boardId}`)
   }
+
+  // Use hook instead closeOnEscape to prevent auto closing from text / description inputs
+  useHotkeys([['Escape', handleClose]])
+
   return (
     <Modal
       opened={true}
@@ -46,6 +51,7 @@ function CardDialog() {
           flex: 1,
         },
       }}
+      closeOnEscape={false}
     >
       {card && (
         <>

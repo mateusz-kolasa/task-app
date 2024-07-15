@@ -5,7 +5,7 @@ import { Textarea } from 'react-hook-form-mantine'
 import { useChangeListTitleMutation } from 'store/slices/api/list-api-slice'
 import { useTranslation } from 'react-i18next'
 import { notifications } from '@mantine/notifications'
-import { selectOnFocus } from 'utils/formHelper'
+import { handleKeyDown, selectOnFocus } from 'utils/formHelper'
 import useSchema from './useSchema'
 import { MAX_LIST_TITLE_LENGTH } from 'shared-consts'
 
@@ -67,6 +67,7 @@ function ListTitleTextForm({ title, listId, handleClose }: Readonly<ListTitleTex
         autosize
         onBlur={methods.handleSubmit(handleSubmit)}
         maxLength={MAX_LIST_TITLE_LENGTH}
+        onKeyDown={handleKeyDown(methods.handleSubmit(handleSubmit), handleClose)}
       />
     </FormProvider>
   )

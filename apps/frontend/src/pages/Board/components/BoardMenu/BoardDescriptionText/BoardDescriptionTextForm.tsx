@@ -5,7 +5,7 @@ import { FormProvider, SubmitHandler, useForm } from 'react-hook-form'
 import { Textarea } from 'react-hook-form-mantine'
 import { useTranslation } from 'react-i18next'
 import { notifications } from '@mantine/notifications'
-import { selectOnFocus } from 'utils/formHelper'
+import { handleKeyDown, selectOnFocus } from 'utils/formHelper'
 import { useChangeBoardDescriptionMutation } from 'store/slices/api/board-api-slice'
 import { MAX_BOARD_DESCRIPTION_LENGTH } from 'shared-consts'
 
@@ -65,6 +65,7 @@ function BoardDescriptionTextForm({
         autosize
         onBlur={methods.handleSubmit(handleSubmit)}
         maxLength={MAX_BOARD_DESCRIPTION_LENGTH}
+        onKeyDown={handleKeyDown(methods.handleSubmit(handleSubmit), handleClose)}
       />
     </FormProvider>
   )

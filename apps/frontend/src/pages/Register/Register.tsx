@@ -8,6 +8,7 @@ import { useRegisterMutation } from '../../store/slices/api/auth-api-slice'
 import { useTranslation } from 'react-i18next'
 import useSchema from './useSchema'
 import { MAX_LOGIN_LENGTH, MAX_PASSWORD_LENGTH } from 'shared-consts'
+import { handleKeyDown } from 'utils/formHelper'
 
 export interface UserRegister {
   username: string
@@ -41,6 +42,8 @@ function Register() {
       })
   }
 
+  const handleMoveToPassword = () => methods.setFocus('password')
+  const handleMoveToPasswordConfirmation = () => methods.setFocus('passwordConfirm')
   const handleSignInClick = () => navigate('/login')
 
   return (
@@ -54,18 +57,21 @@ function Register() {
                 label={t('username.label')}
                 disabled={isLoading}
                 maxLength={MAX_LOGIN_LENGTH}
+                onKeyDown={handleKeyDown(handleMoveToPassword)}
               />
               <PasswordInput
                 name='password'
                 label={t('password.label')}
                 disabled={isLoading}
                 maxLength={MAX_PASSWORD_LENGTH}
+                onKeyDown={handleKeyDown(handleMoveToPasswordConfirmation)}
               />
               <PasswordInput
                 name='passwordConfirm'
                 label={t('password.confirm.label')}
                 disabled={isLoading}
                 maxLength={MAX_PASSWORD_LENGTH}
+                onKeyDown={handleKeyDown(methods.handleSubmit(handleSubmit))}
               />
               <Group justify='space-between'>
                 <Anchor

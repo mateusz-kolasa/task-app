@@ -13,7 +13,7 @@ const useSchema = () => {
     password: zod
       .string()
       .trim()
-      .min(1, { message: t('password.validation.minLength') }),
+      .min(8, { message: t('password.validation.minLength') }),
   })
 }
 export default useSchema

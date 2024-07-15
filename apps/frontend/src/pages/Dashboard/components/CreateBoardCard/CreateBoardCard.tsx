@@ -10,6 +10,7 @@ import { BoardCreateData } from 'shared-types'
 import { useCreateBoardMutation } from 'store/slices/api/board-api-slice'
 import useSchema from './useSchema'
 import { MAX_BOARD_TITLE_LENGTH } from 'shared-consts'
+import { handleKeyDown } from 'utils/formHelper'
 
 function CreateBoardCard() {
   const { t } = useTranslation()
@@ -61,21 +62,20 @@ function CreateBoardCard() {
       </Popover.Target>
       <Popover.Dropdown>
         <FormProvider {...methods}>
-          <form>
-            <Stack>
-              <TextInput
-                name='title'
-                label={t('board.create.label')}
-                placeholder={t('board.create.label')}
-                size='xs'
-                disabled={isLoading}
-                maxLength={MAX_BOARD_TITLE_LENGTH}
-              />
-              <Button onClick={methods.handleSubmit(handleSubmit)} disabled={isLoading}>
-                {t('board.create.button')}
-              </Button>
-            </Stack>
-          </form>
+          <Stack>
+            <TextInput
+              name='title'
+              label={t('board.create.label')}
+              placeholder={t('board.create.label')}
+              size='xs'
+              disabled={isLoading}
+              maxLength={MAX_BOARD_TITLE_LENGTH}
+              onKeyDown={handleKeyDown(methods.handleSubmit(handleSubmit))}
+            />
+            <Button onClick={methods.handleSubmit(handleSubmit)} disabled={isLoading}>
+              {t('board.create.button')}
+            </Button>
+          </Stack>
         </FormProvider>
       </Popover.Dropdown>
     </Popover>

@@ -10,6 +10,7 @@ import { useAddBoardUserMutation } from 'store/slices/api/board-api-slice'
 import useBoardPermissionsText from 'hooks/useBoardPermissionsText'
 import useSchema from './useSchema'
 import { MAX_LOGIN_LENGTH } from 'shared-consts'
+import { handleKeyDown } from 'utils/formHelper'
 
 interface UserData {
   username: string
@@ -37,6 +38,8 @@ function AddUserForm({ handleCloseForm }: Readonly<AddUserFormProps>) {
       permissions: '0',
     },
   })
+
+  const handleMoveToPermissions = () => methods.setFocus('permissions')
 
   const handleCloseClick = () => {
     methods.reset()
@@ -84,6 +87,8 @@ function AddUserForm({ handleCloseForm }: Readonly<AddUserFormProps>) {
           placeholder={t('board.users.add.username')}
           disabled={isLoading}
           maxLength={MAX_LOGIN_LENGTH}
+          autoFocus
+          onKeyDown={handleKeyDown(handleMoveToPermissions)}
         />
         <Select
           name='permissions'
