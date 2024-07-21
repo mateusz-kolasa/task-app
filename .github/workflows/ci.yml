@@ -25,11 +25,22 @@ jobs:
           --health-retries 5
         ports:
           - 5432:5432
+      redis:
+        image: redis
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
 
     env:
       DATABASE_URL: postgresql://postgres:postgres@localhost:5432/task-app
       JWT_SECRET: 'ae79cc424e451a0af55ccf97ead94810906eb829290fd3000cf9dfd5db04b3e3'
+      JWT_REFRESH_SECRET: '8d673965bc5ccbaff6cea1e103354a4eae70208285ed29e7d402fff92e472c23'
+      AUTH_TOKEN_DURATION: '10m'
+      REFRESH_TOKEN_DURATION: '7d'
       PASSWORD_HASH_ROUNDS: 5
+      REDIS_URL: 'redis://@redis:6379'
     steps:
       - name: Check out code
         uses: actions/checkout@v4
