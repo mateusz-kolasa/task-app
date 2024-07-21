@@ -8,6 +8,7 @@ import { Response } from 'express'
 import { JwtAuthGuard } from './jwt-auth.guard'
 import { AuthRequest } from 'src/types/user-jwt-payload'
 import { UserInfoData } from 'shared-types'
+import { RefreshAuthGuard } from './refresh-auth.guard'
 
 @Controller('auth')
 export class AuthController {
@@ -33,13 +34,22 @@ export class AuthController {
   }
 
   @Delete('logout')
-  async logout(@Res({ passthrough: true }) response: Response) {
-    return this.authService.logout(response)
+  async logout(@Req() request: AuthRequest, @Res({ passthrough: true }) response: Response) {
+    return this.authService.logout(request, response)
   }
 
   @UseGuards(JwtAuthGuard)
   @Get()
   async getAuthStatus(@Req() request: AuthRequest): Promise<UserInfoData> {
     return this.authService.getAuthStatus(request)
+  }
+
+  @UseGuards(RefreshAuthGuard)
+  @Get('refresh')
+  async refreshToken(
+    @Req() request: AuthRequest,
+    @Res({ passthrough: true }) response: Response
+  ): Promise<UserInfoData> {
+    return this.authService.refreshToken(request, response)
   }
 }

@@ -10,6 +10,17 @@ services:
       - .env
     volumes:
       - postgres:/var/lib/postgresql/data
+  redis:
+    image: redis:latest
+    restart: always
+    ports:
+      - '${REDIS_PORT}:${REDIS_PORT}'
+    env_file:
+      - .env
+    command: >
+      --requirepass ${REDIS_PASSWORD}
+    volumes:
+      - redis:/data
 
 networks:
   task-app:
@@ -18,3 +29,5 @@ networks:
 volumes:
   postgres:
     name: task-app-db
+  redis:
+    name: task-app-redis

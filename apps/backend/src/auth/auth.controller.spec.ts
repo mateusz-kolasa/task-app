@@ -3,6 +3,7 @@ import { AuthController } from './auth.controller'
 import { AuthService } from './auth.service'
 import { JwtService } from '@nestjs/jwt'
 import { UsersModule } from 'src/users/users.module'
+import { CacheModule } from '@nestjs/cache-manager'
 
 describe('AuthController', () => {
   let controller: AuthController
@@ -11,7 +12,7 @@ describe('AuthController', () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [AuthController],
       providers: [AuthService, JwtService],
-      imports: [UsersModule],
+      imports: [UsersModule, CacheModule.register({ isGlobal: true })],
     }).compile()
 
     controller = module.get<AuthController>(AuthController)

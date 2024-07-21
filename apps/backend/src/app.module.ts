@@ -10,6 +10,9 @@ import { PrismaModule } from './prisma/prisma.module'
 import { CoreModule } from './core/core.module'
 import { ServeStaticModule } from '@nestjs/serve-static'
 import { join } from 'path'
+import { CacheModule } from '@nestjs/cache-manager'
+import { RedisClientOptions } from 'redis'
+import { redisStore } from 'cache-manager-redis-yet'
 
 @Module({
   imports: [
@@ -21,6 +24,11 @@ import { join } from 'path'
       exclude: ['api/*'],
     }),
     CoreModule,
+    CacheModule.register<RedisClientOptions>({
+      store: redisStore,
+      url: process.env.REDIS_URL,
+      isGlobal: true,
+    }),
     UsersModule,
     AuthModule,
     BoardModule,

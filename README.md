@@ -10,7 +10,7 @@ https://task-app-3lqj.onrender.com/api
 
 ## Using this app
 
-App is using postgres as database, to run it you need to set it up locally, and optionally modify the .env files. To setup the database you can use docker with following commands:
+App is using postgres as database and Redis as cache server, to run the app you need to set them up locally, and optionally modify the .env files. To setup the them you can use docker with following commands:
 
 ```sh
 docker network create task-app

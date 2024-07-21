@@ -3,10 +3,12 @@ import { AuthService } from './auth.service'
 import { UsersModule } from 'src/users/users.module'
 import { JwtService } from '@nestjs/jwt'
 import { UsersService } from 'src/users/users.service'
-import * as bcrypt from 'bcrypt'
+import bcrypt from 'bcrypt'
 import { AuthRequest } from 'src/types/user-jwt-payload'
 import { Response } from 'express'
 import { BadRequestException } from '@nestjs/common'
+import { CacheModule } from '@nestjs/cache-manager'
+import ms from 'ms'
 
 describe('AuthService', () => {
   let service: AuthService
@@ -24,15 +26,28 @@ describe('AuthService', () => {
     id: 1,
   }
 
+  const requestWithTokens = {
+    user: {
+      username: 'user',
+      id: 1,
+    },
+    cookies: {
+      access_token:
+        'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJ1c2VyIiwiaWF0IjoxNzIxNTU0MjMyLCJleHAiOjE3NTMwOTA4MzIsImF1ZCI6IiIsInN1YiI6IjEifQ.UTHdmTd3kWAu1zRT2FNueBHVU-qUff4zqIXHN07xlGs',
+      refresh_token:
+        'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJ1c2VyIiwiaWF0IjoxNzIxNTU0MjMyLCJleHAiOjE3NTM2OTUwMzIsImF1ZCI6IiIsInN1YiI6IjEifQ.IPTVgHW6tV1vZ7QVYO2GosDqfNwbQpGBDb_6c_CPZGM',
+    },
+  } as unknown as AuthRequest
+
   const response = {
-    cookie: jest.fn(),
+    cookie: jest.fn().mockResolvedValue({}),
     clearCookie: jest.fn(),
   } as unknown as Response
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [AuthService, JwtService],
-      imports: [UsersModule],
+      imports: [UsersModule, CacheModule.register({ isGlobal: true })],
     }).compile()
 
     service = module.get<AuthService>(AuthService)
@@ -116,23 +131,41 @@ describe('AuthService', () => {
   })
 
   describe('login', () => {
-    it('Sets access_token cookie', async () => {
+    it('sets tokens on cookie', async () => {
       const now = Date.now()
       Date.now = jest.fn().mockReturnValue(now)
 
-      jwtService.sign = jest.fn().mockReturnValueOnce('token_content')
+      jwtService.sign = jest
+        .fn()
+        .mockReturnValueOnce('auth_token_content')
+        .mockReturnValueOnce('refresh_token_content')
       service.login(user, response)
-      expect(response.cookie).toHaveBeenCalledWith('access_token', 'token_content', {
-        expires: new Date(now + 3600_000),
+      expect(response.cookie).toHaveBeenCalledWith('access_token', 'auth_token_content', {
+        expires: new Date(now + ms(process.env.AUTH_TOKEN_DURATION)),
+        httpOnly: true,
+        sameSite: 'strict',
+      })
+      expect(response.cookie).toHaveBeenCalledWith('refresh_token', 'refresh_token_content', {
+        expires: new Date(now + ms(process.env.REFRESH_TOKEN_DURATION)),
+        httpOnly: true,
+        sameSite: 'strict',
       })
     })
   })
 
   describe('logout', () => {
-    it('expires access_token', async () => {
-      jwtService.sign = jest.fn().mockReturnValueOnce('token_content')
-      service.logout(response)
+    it('expires tokens on cookie', async () => {
+      service.blacklistToken = jest.fn()
+      await service.logout(requestWithTokens, response)
       expect(response.clearCookie).toHaveBeenCalledWith('access_token')
+      expect(response.clearCookie).toHaveBeenCalledWith('refresh_token')
+    })
+
+    it('blacklists old tokens', async () => {
+      service.blacklistToken = jest.fn()
+      await service.logout(requestWithTokens, response)
+      expect(service.blacklistToken).toHaveBeenCalledWith(requestWithTokens.cookies.access_token)
+      expect(service.blacklistToken).toHaveBeenCalledWith(requestWithTokens.cookies.refresh_token)
     })
   })
 
@@ -153,6 +186,47 @@ describe('AuthService', () => {
       usersService.findById = jest.fn().mockReturnValueOnce(user)
       const response = await service.getAuthStatus(request as unknown as AuthRequest)
       expect(response).toStrictEqual({ username: user.username, id: user.id })
+    })
+  })
+
+  describe('refreshToken', () => {
+    it('sets tokens on cookie', async () => {
+      const now = Date.now()
+      Date.now = jest.fn().mockReturnValue(now)
+      service.blacklistToken = jest.fn().mockResolvedValue({})
+
+      jwtService.sign = jest
+        .fn()
+        .mockReturnValueOnce('auth_token_content')
+        .mockReturnValueOnce('refresh_token_content')
+      await service.refreshToken(requestWithTokens, response)
+      expect(response.cookie).toHaveBeenNthCalledWith(1, 'access_token', 'auth_token_content', {
+        expires: new Date(now + ms(process.env.AUTH_TOKEN_DURATION)),
+        httpOnly: true,
+        sameSite: 'strict',
+      })
+      expect(response.cookie).toHaveBeenNthCalledWith(2, 'refresh_token', 'refresh_token_content', {
+        expires: new Date(now + ms(process.env.REFRESH_TOKEN_DURATION)),
+        httpOnly: true,
+        sameSite: 'strict',
+      })
+    })
+
+    it('backlists old tokens', async () => {
+      service.blacklistToken = jest.fn().mockResolvedValue({})
+      jwtService.sign = jest
+        .fn()
+        .mockReturnValueOnce('auth_token_content')
+        .mockReturnValueOnce('refresh_token_content')
+      await service.refreshToken(requestWithTokens, response)
+      expect(service.blacklistToken).toHaveBeenNthCalledWith(
+        1,
+        requestWithTokens.cookies.access_token
+      )
+      expect(service.blacklistToken).toHaveBeenNthCalledWith(
+        2,
+        requestWithTokens.cookies.refresh_token
+      )
     })
   })
 })

@@ -1,5 +1,6 @@
 const API_PATHS = {
   getAuth: 'auth',
+  refreshAuth: 'auth/refresh',
   login: 'auth/login',
   register: 'auth/register',
   logout: 'auth/logout',

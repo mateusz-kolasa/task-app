@@ -3,11 +3,13 @@ import { Card, List } from 'shared-types'
 
 interface UserJwtPayload {
   id: number
+  username: string
 }
 
 interface BoardPermissionPayload {
   user: {
     id: number
+    username: string
     permissions: number
   }
   boardId: number
